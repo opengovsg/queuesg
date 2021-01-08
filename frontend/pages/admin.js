@@ -6,11 +6,9 @@ export default function Home() {
     <Layout>
       <main className={" flex flex-col-reverse mx-6 md:my-24 md:flex-row justify-center items-center bg-gray-200"}>
         <div className={'flex flex-col justify-center items-center'}>
-          <p className='w-80 font-medium text-3xl text-center'>
-            Enter the code to <span className='text-red-600 underline'>Line Up</span>
-          </p>
+
           <p className='w-96 font-medium text-3xl text-center'>
-            No app to download, no login required.
+            Hello there admin.
           </p>
         </div>
       </main>
