@@ -10,17 +10,18 @@ export default function Queue(props) {
   const router = useRouter()
 
   useEffect(() => {
+    console.log('useEffect');
     const query = queryString.parse(location.search);
-    // If code present, means new joiner 
+    // If only present, means new
     // join the queue and get a ticket
-    if (query.code) {
-      console.log('code');
-      axios.post(`http://localhost:4000/api/queue/${query.code}/join`)
-        .then((resp) => {
-          console.log(resp.data);
-        }).catch((err) => { console.log(err) })
+    if (query.id) {
+      console.log('ticket');
+      // try {
+      //   const resp = await axios.get(`http://localhost:4000/api/queue/${router.query.code}`)
+      // } catch (error) {
 
-      // router.push(`/ticket?id=12314`)
+      // }
+      // router.replace(`/queue?ticket=12314`)
     }
   }
 
@@ -31,7 +32,7 @@ export default function Queue(props) {
       <main className={" flex flex-col-reverse mx-6 md:my-24 md:flex-row justify-center items-center bg-gray-200"}>
         <div className={'flex flex-col justify-center items-center'}>
           <p className='w-96 font-medium text-3xl text-center'>
-            This is the interim screen to join a queue
+            This screen is supposed to display your ticket number and line
           </p>
         </div>
       </main>
