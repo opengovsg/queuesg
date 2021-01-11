@@ -1,17 +1,54 @@
 const express = require('express')
 const { v4: uuid } = require('uuid')
-const axios = require('axios')
+const axios = require('axios');
+const { getTicketsInQueue } = require('../classes/helper');
 const router = express.Router();
 
 const FIREBASE_URL = 'https://hack-queuesg-default-rtdb.firebaseio.com'
+const TICKET_STATUS = {
+  PENDING: 'pending',
+  REMOVED: 'removed',
+  ALERTED: 'alerted',
+  SERVED: 'served',
+  EXPIRED: 'expired'
+}
 
 router.get('/', async (req, res) => {
   try {
     // const email = req.user!.id
-
+    console.log('dc');
+    global.io.emit('receive-push', 'Test event emitter');
     res.status(200).json({ data: '123' })
   } catch (err) {
     res.status(400)
+  }
+})
+
+
+
+router.post('/admin/queue/:queueId/alert/:ticketId', async (req, res) => {
+  try {
+    // Get queue code & ticketId
+    const queueCode = req.params.queueId
+    const ticketId = req.params.ticketId
+
+    // Check queue and ticket exist, update ticket status
+    await axios.patch(
+      `${FIREBASE_URL}/queues/${queueCode}/tickets/${ticketId}.json`,
+      {
+        status: TICKET_STATUS.ALERTED
+      })
+
+    // Get latest tickets for DB
+    const tickets = await getTicketsInQueue(queueCode)
+
+    // Update users in that queue via socket
+    io.emit(`queue-update-${queueCode}`, { tickets });
+
+    return res.sendStatus(200)
+  } catch (err) {
+    console.log(err);
+    return res.status(400)
   }
 })
 
@@ -37,6 +74,8 @@ router.post('/admin/queue/create', async (req, res) => {
     return res.status(400)
   }
 })
+
+
 
 // For users to join a queue
 // Should create a ticket an return the ticket id
@@ -112,18 +151,5 @@ router.delete('/queue/:queueId/:ticketId', async function (req, res) {
   }
 });
 
-
-
-
-
-router.post('/sendNotification', function (req, res) {
-  const subscription = "1";
-  const payload = "1";
-  const options = {
-    TTL: "1"
-  };
-
-  res.status(200)
-});
 
 module.exports = router;

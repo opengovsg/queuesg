@@ -16,16 +16,14 @@ const Index = () => {
   useEffect(() => {
     console.log('useEffect');
     const query = queryString.parse(location.search);
-    // If only present, means new
-    // join the queue and get a ticket
+    // Join queue with code, server will return new ticket id
     if (query.code) {
-      console.log('code');
       axios.post(`http://localhost:4000/api/queue/${query.code}/join`)
         .then((resp) => {
-          console.log(resp.data);
+          const { ticketId } = resp.data
+          router.push(`/ticket?queue=${query.code}&ticket=${ticketId}`)
         }).catch((err) => { console.log(err) })
 
-      // router.push(`/ticket?id=12314`)
     }
   }, [])
 
