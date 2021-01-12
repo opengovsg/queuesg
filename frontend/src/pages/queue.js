@@ -10,6 +10,7 @@ import { useRouter } from 'next/router'
 import axios from 'axios'
 
 import queryString from 'query-string';
+import { BACKEND_URL } from '../constants'
 const Index = () => {
 
   const router = useRouter()
@@ -18,7 +19,7 @@ const Index = () => {
     const query = queryString.parse(location.search);
     // Join queue with code, server will return new ticket id
     if (query.code) {
-      axios.post(`http://localhost:4000/api/queue/${query.code}/join`)
+      axios.post(`${BACKEND_URL}/api/queue/${query.code}/join`)
         .then((resp) => {
           const { ticketId } = resp.data
           router.push(`/ticket?queue=${query.code}&ticket=${ticketId}`)

@@ -31,7 +31,6 @@ io.on('connection', (socket) => { // socket object may be used to send specific 
 
             //Get Latest Queue State from DB
             const tickets = await getTicketsInQueue(queueCode)
-
             //Push update via socket
             if (tickets) {
                 io.emit(`queue-update-${queueCode}`, { tickets });

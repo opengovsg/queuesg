@@ -1,12 +1,6 @@
 const axios = require('axios');
-const FIREBASE_URL = 'https://hack-queuesg-default-rtdb.firebaseio.com'
-const TICKET_STATUS = {
-  PENDING: 'pending',
-  REMOVED: 'removed',
-  ALERTED: 'alerted',
-  SERVED: 'served',
-  EXPIRED: 'expired'
-}
+const { TICKET_STATUS, FIREBASE_URL } = require('../constants')
+
 const getTicketsInQueue = async (queueCode) => {
   const resp = await axios.get(`${FIREBASE_URL}/queues/${queueCode}.json`)
   const queue = resp.data

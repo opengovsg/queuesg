@@ -3,15 +3,9 @@ const { v4: uuid } = require('uuid')
 const axios = require('axios');
 const { getTicketsInQueue } = require('../classes/helper');
 const router = express.Router();
+const { TICKET_STATUS, FIREBASE_URL } = require('../constants')
 
-const FIREBASE_URL = 'https://hack-queuesg-default-rtdb.firebaseio.com'
-const TICKET_STATUS = {
-  PENDING: 'pending',
-  REMOVED: 'removed',
-  ALERTED: 'alerted',
-  SERVED: 'served',
-  EXPIRED: 'expired'
-}
+
 
 router.get('/', async (req, res) => {
   try {
@@ -21,34 +15,6 @@ router.get('/', async (req, res) => {
     res.status(200).json({ data: '123' })
   } catch (err) {
     res.status(400)
-  }
-})
-
-
-
-router.post('/admin/queue/:queueId/alert/:ticketId', async (req, res) => {
-  try {
-    // Get queue code & ticketId
-    const queueCode = req.params.queueId
-    const ticketId = req.params.ticketId
-
-    // Check queue and ticket exist, update ticket status
-    await axios.patch(
-      `${FIREBASE_URL}/queues/${queueCode}/tickets/${ticketId}.json`,
-      {
-        status: TICKET_STATUS.ALERTED
-      })
-
-    // Get latest tickets for DB
-    const tickets = await getTicketsInQueue(queueCode)
-
-    // Update users in that queue via socket
-    io.emit(`queue-update-${queueCode}`, { tickets });
-
-    return res.sendStatus(200)
-  } catch (err) {
-    console.log(err);
-    return res.status(400)
   }
 })
 
@@ -75,6 +41,32 @@ router.post('/admin/queue/create', async (req, res) => {
   }
 })
 
+// Alerts a ticket in the queue
+router.post('/admin/queue/:queueId/alert/:ticketId', async (req, res) => {
+  try {
+    // Get queue code & ticketId
+    const queueCode = req.params.queueId
+    const ticketId = req.params.ticketId
+
+    // Check queue and ticket exist, update ticket status
+    await axios.patch(
+      `${FIREBASE_URL}/queues/${queueCode}/tickets/${ticketId}.json`,
+      {
+        status: TICKET_STATUS.ALERTED
+      })
+
+    // Get latest tickets for DB
+    const tickets = await getTicketsInQueue(queueCode)
+
+    // Update users in that queue via socket
+    io.emit(`queue-update-${queueCode}`, { tickets });
+
+    return res.sendStatus(200)
+  } catch (err) {
+    console.log(err);
+    return res.status(400)
+  }
+})
 
 
 // For users to join a queue
@@ -95,7 +87,7 @@ router.post('/queue/:queueId/join', async function (req, res) {
       `${FIREBASE_URL}/queues/${queueCode}/tickets.json`,
       {
         createdAt: new Date().getTime(),
-        status: 'active' //active/alerting/expired/complete
+        status: 'pending' //active/alerting/expired/complete
       })
 
     //Firebase will return a unique id as 'name'
@@ -103,7 +95,7 @@ router.post('/queue/:queueId/join', async function (req, res) {
 
     res.status(200).json({ ticketId })
   } catch (err) {
-    // console.log(err);
+    console.log(err);
   }
 });
 
@@ -129,7 +121,7 @@ router.get('/queue/:queueId', async function (req, res) {
     }
     res.status(200).json({ tickets: tickets })
   } catch (err) {
-    console.log(err);
+    //console.log(err);
     res.sendStatus(400)
   }
 });
@@ -144,9 +136,15 @@ router.delete('/queue/:queueId/:ticketId', async function (req, res) {
     //Delete ticket
     const resp = await axios.delete(`${FIREBASE_URL}/queues/${queueCode}/tickets/${ticketId}.json`)
 
+    // Get latest tickets for DB
+    const tickets = await getTicketsInQueue(queueCode)
+
+    // Update users in that queue via socket
+    io.emit(`queue-update-${queueCode}`, { tickets });
+
     return res.sendStatus(200)
   } catch (err) {
-    console.log(err);
+    //console.log(err);
     return res.sendStatus(400)
   }
 });
