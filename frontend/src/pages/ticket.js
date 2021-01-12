@@ -1,6 +1,5 @@
 import {
   Text,
-  Code,
   Flex,
   Heading,
   Box,
@@ -138,11 +137,7 @@ const Index = () => {
 
   return (
     <Container>
-      <Main
-        margin="0"
-        padding="0"
-        height="100vh"
-        justifyContent="space-evenly">
+      <Main>
 
         <Heading fontSize="32px" fontWeight="semi" textAlign="center">Ticket #</Heading>
 
