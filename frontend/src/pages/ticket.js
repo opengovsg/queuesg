@@ -168,7 +168,7 @@ const Index = () => {
   return (
     <Container>
       <Main>
-        <Heading fontSize="32px" fontWeight="semi" textAlign="center">Ticket #</Heading>
+        <Heading fontSize="32px" fontWeight="semi" textAlign="center">{displayQueueInfo}</Heading>
 
         {renderTicket()}
 

@@ -57,8 +57,8 @@ const Index = () => {
   return (
     <Container>
       <Main>
-        <Heading fontSize="32px" fontWeight="semi" textAlign="center">Joining</Heading>
         <Box>
+          <Heading fontSize="32px" fontWeight="semi" textAlign="center">Joining</Heading>
           <Heading fontSize="64px" fontWeight="bold" textAlign="center">{queueName}</Heading>
         </Box>
         <Flex direction="column" alignItems="center">

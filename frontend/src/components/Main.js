@@ -8,7 +8,7 @@ export const Main = (props) => (
     margin="0"
     padding="0"
     spacing="1.5rem"
-    justifyContent="start"
+    justifyContent="space-evenly"
     {...props}
   />
 )
