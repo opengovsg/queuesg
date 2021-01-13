@@ -9,7 +9,7 @@ exports.handler = async function (event, context) {
       const name = queryStringParameters.name || 'unknown user'
       const queue = queryStringParameters.queue
       if (queue) {
-        const resp = await axios.post(`https://api.trello.com/1/cards?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}&idList=${queue}&pos=top&name=${name}`)
+        const resp = await axios.post(`https://api.trello.com/1/cards?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}&idList=${queue}&name=${name}`)
 
         const { id } = resp.data
         return {
