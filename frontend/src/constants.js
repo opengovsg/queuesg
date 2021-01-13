@@ -3,7 +3,7 @@ export const TICKET_STATUS = {
   REMOVED: 'removed',
   ALERTED: 'alerted',
   SERVED: 'served',
-  EXPIRED: 'expired'
+  MISSED: 'missed'
 }
 
 export const BACKEND_URL = "http://localhost:8888"
