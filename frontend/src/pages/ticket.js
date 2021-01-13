@@ -9,48 +9,63 @@ import { Container } from '../components/Container'
 import { Main } from '../components/Main'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import socketClient from "socket.io-client";
 import queryString from 'query-string';
 import axios from 'axios'
-import { BACKEND_URL, TICKET_STATUS } from '../constants'
+import { BACKEND_URL } from '../constants'
 
 const Index = () => {
   const router = useRouter()
   const [numberOfTicketsAhead, setNumberOfTicketsAhead] = useState()
-  const [alert, setAlert] = useState(false)
+
+  //States: undefined, PENDING, ALERTED, EXPIRED
+  const [ticketState, setTicketState] = useState()
+
   const [lastUpdated, setLastUpdated] = useState('')
 
   const [ticketId, setTicketId] = useState()
   const [queueId, setQueueId] = useState()
-  const [queueName, setQueueName] = useState('')
+  const [displayQueueInfo, setDisplayQueueInfo] = useState('')
 
   useEffect(() => {
-    console.log('useEffect');
-
     const query = queryString.parse(location.search);
     if (query.ticket && query.queue) {
-      getTicketStatus(query.ticket, query.queue)
+      getTicketStatus(query.ticket)
+      const interval = setInterval(() => {
+        getTicketStatus(query.ticket)
+      }, 5000);
+      return () => clearInterval(interval);
     }
   }, [])
 
-  const getTicketStatus = async (ticket, queue) => {
+
+
+  const getTicketStatus = async (ticket) => {
     try {
       // To make sure ticket is valid
       // Get the list (queue), ticket (card) belongs to on the trello api
       const getListofCard = await axios.get(`https://api.trello.com/1/cards/${ticket}/list?fields=id,name`)
-      const { id, name } = getListofCard.data
-      setQueueId(id)
-      setQueueName(name)
+      const { id: queueId, name: queueName } = getListofCard.data
+      setQueueId(queueId)
       setTicketId(ticket)
 
 
       // Hack: Check whether to alert the user based on if the 
       // queue name contains the word 'alert'
-      if (name.includes('alert')) setAlert(true)
+      if (queueName.includes('[ALERT]')) {
+        setTicketState('ALERTED')
+        return
+      }
+      else if (queueName.includes('[DONE]')) {
+        setTicketState('EXPIRED')
+        return
+      } else {
+        setTicketState('PENDING')
+        setDisplayQueueInfo(queueName)
+      }
 
       // To check position in queue
       // Get list and all the cards in it to determind queue position
-      const getCardsOnList = await axios.get(`https://api.trello.com/1/lists/${queue}/cards`)
+      const getCardsOnList = await axios.get(`https://api.trello.com/1/lists/${queueId}/cards`)
       const ticketsInQueue = getCardsOnList.data
 
       //Reverse list as trello queue front at bottom makes more sense
@@ -58,7 +73,7 @@ const Index = () => {
       const index = ticketsInQueue.findIndex(val => val.id === ticket)
       setNumberOfTicketsAhead(index)
       console.log('id:', ticket);
-      console.log('queueName: ', name);
+      console.log('queueName: ', queueName);
       console.log('queue pos:', index);
 
       // Update timestamp
@@ -71,7 +86,7 @@ const Index = () => {
 
   const leaveQueue = async () => {
     try {
-      const resp = axios.delete(`http://localhost:8888/.netlify/functions/ticket?id=${ticketId}`)
+      axios.delete(`${BACKEND_URL}/.netlify/functions/ticket?id=${ticketId}`)
       router.reload()
     } catch (error) {
       console.log(error)
@@ -90,7 +105,8 @@ const Index = () => {
   const renderTicket = () => {
     // There are 4 possible ticket states
     // 1. Alerting - Ticket is called by admin
-    if (alert && numberOfTicketsAhead === -1) {
+    if (ticketState === 'ALERTED') {
+      console.log('render alert');
       return <>
         <Box>
           <Heading fontSize="80px" fontWeight="bold" textAlign="center">It's your turn!</Heading>
@@ -104,8 +120,15 @@ const Index = () => {
       </>
 
     }
-    // 2. Next - Ticket 1st in line
-    else if (!alert && numberOfTicketsAhead === 0) {
+    // 2. Expired/Removed - Ticket is in [DONE] / not in the queue / queue doesnt exist
+    else if (ticketState === 'EXPIRED' || numberOfTicketsAhead === -1) {
+      console.log('render expired');
+      return <Box>
+        <Heading fontSize="80px" fontWeight="bold" textAlign="center">Your queue number has expired</Heading>
+      </Box>
+    }
+    // 3. Next - Ticket 1st in line
+    else if (numberOfTicketsAhead === 0) {
       return <>
         <Box>
           <Heading fontSize="80px" fontWeight="bold" textAlign="center">You're next!</Heading>
@@ -118,8 +141,8 @@ const Index = () => {
         </Box>
       </>
     }
-    // 3. Line - Ticket is behind at least 1 person
-    else if (!alert && numberOfTicketsAhead > 0) {
+    // 4. Line - Ticket is behind at least 1 person
+    else if (numberOfTicketsAhead > 0) {
       return <>
         <Box>
           <Heading fontSize="32px" textAlign="center">There's</Heading>
@@ -134,12 +157,6 @@ const Index = () => {
         </Box>
       </>
 
-    }
-    // 4. Expired/Removed - Ticket is not in the queue / queue doesnt exist
-    else if (numberOfTicketsAhead === -1) {
-      return <Box>
-        <Heading fontSize="80px" fontWeight="bold" textAlign="center">Your queue number has expired</Heading>
-      </Box>
     }
     // This is blank as the loading state
     else {

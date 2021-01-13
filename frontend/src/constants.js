@@ -6,4 +6,4 @@ export const TICKET_STATUS = {
   EXPIRED: 'expired'
 }
 
-export const BACKEND_URL = "http://localhost:4000"
+export const BACKEND_URL = "http://localhost:8888"
