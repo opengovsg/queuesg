@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import queryString from 'query-string';
 import axios from 'axios'
-import { BACKEND_URL } from '../constants'
 import {
   Text,
   Flex,
@@ -45,7 +44,7 @@ const Index = () => {
     const query = queryString.parse(location.search);
     console.log(name, query.id);
     try {
-      const postJoinQueue = await axios.post(`${BACKEND_URL}/.netlify/functions/ticket?queue=${query.id}&name=${name}`)
+      const postJoinQueue = await axios.post(`/.netlify/functions/ticket?queue=${query.id}&name=${name}`)
       const { ticketId } = postJoinQueue.data
       console.log(ticketId);
       router.push(`/ticket?ticket=${ticketId}&queue=${query.id}`)

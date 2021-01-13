@@ -2,19 +2,16 @@ import {
   Heading,
   Flex,
   Text,
-  Button,
   Box,
   IconButton
 } from '@chakra-ui/react'
-import { AddIcon, MinusIcon, BellIcon } from '@chakra-ui/icons'
+import { MinusIcon, BellIcon } from '@chakra-ui/icons'
 import { Container } from '../../components/Container'
 import { Main } from '../../components/Main'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import axios from 'axios'
-import QRCode from 'qrcode.react'
 import queryString from 'query-string';
-import { BACKEND_URL, TICKET_STATUS } from '../../constants'
+import { TICKET_STATUS } from '../../constants'
 import { AdminNav } from '../../components/AdminNav'
 const Index = () => {
 

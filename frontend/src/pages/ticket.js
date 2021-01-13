@@ -11,7 +11,6 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import queryString from 'query-string';
 import axios from 'axios'
-import { BACKEND_URL } from '../constants'
 
 const Index = () => {
   const router = useRouter()
@@ -86,7 +85,7 @@ const Index = () => {
 
   const leaveQueue = async () => {
     try {
-      axios.delete(`${BACKEND_URL}/.netlify/functions/ticket?id=${ticketId}`)
+      axios.delete(`/.netlify/functions/ticket?id=${ticketId}`)
       router.reload()
     } catch (error) {
       console.log(error)
