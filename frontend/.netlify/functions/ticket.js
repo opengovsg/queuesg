@@ -1,23 +1,33 @@
 const axios = require('axios');
 
 exports.handler = async function (event, context) {
-  const { httpMethod, queryStringParameters } = event
-  const { TRELLO_KEY, TRELLO_TOKEN } = process.env
-  const name = queryStringParameters.name || 'john'
-
   try {
-    const resp = await axios.post(`https://api.trello.com/1/cards?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}&idList=5ffd586cf0085f1ec5ca65be&name=${name}`)
+    const { httpMethod, queryStringParameters } = event
+    const { TRELLO_KEY, TRELLO_TOKEN } = process.env
 
-    const { id } = resp.data
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ ticketId: id })
-    };
-  } catch (error) {
-    console.log(err)
-    return {
-      statusCode: 400
-    };
+    if (httpMethod === 'POST') {
+      const name = queryStringParameters.name || 'john'
+
+      const resp = await axios.post(`https://api.trello.com/1/cards?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}&idList=5ffd586cf0085f1ec5ca65be&pos=top&name=${name}`)
+
+      const { id } = resp.data
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ ticketId: id })
+      };
+    } else if (httpMethod === 'DELETE') {
+      const id = queryStringParameters.id
+      if (id) {
+        await axios.delete(`https://api.trello.com/1/cards/${id}?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`)
+      }
+      return {
+        statusCode: 200,
+      };
+    }
+
+  } catch (err) {
+    console.log(err.response)
+    return { statusCode: 400 };
   }
 
 

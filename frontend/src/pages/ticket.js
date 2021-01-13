@@ -20,57 +20,72 @@ const Index = () => {
   const [alert, setAlert] = useState(false)
   const [lastUpdated, setLastUpdated] = useState('')
 
-  const [queueCode, setQueueCode] = useState()
   const [ticketId, setTicketId] = useState()
+  const [queueId, setQueueId] = useState()
+  const [queueName, setQueueName] = useState('')
 
   useEffect(() => {
     console.log('useEffect');
 
-    // Based on queue and ticket id, subscribe to the socket event
-    // for that queue 
     const query = queryString.parse(location.search);
     if (query.ticket && query.queue) {
-      console.log('ticket');
-      console.log(query.ticket);
-
-      var socket = socketClient(BACKEND_URL);
-
-      socket.emit(`queue-trigger-update`, { queue: query.queue });
-      socket.on(`queue-update-${query.queue}`, (data) => {
-        const ticketsInQueue = data.tickets
-
-
-        const index = ticketsInQueue.findIndex(val => val.ticketId === query.ticket)
-        setNumberOfTicketsAhead(index)
-        if (index > -1) {
-          // Check if ticket is 'alerted' status
-          if (ticketsInQueue[index].status === TICKET_STATUS.ALERTED) setAlert(true)
-        } else {
-          setAlert(false)
-        }
-
-        setQueueCode(query.queue)
-        setTicketId(query.ticket)
-
-        const timestamp = new Date().toLocaleString('en-UK', { hour: 'numeric', minute: 'numeric', hour12: true })
-        setLastUpdated(timestamp)
-      });
-
+      getTicketStatus(query.ticket, query.queue)
     }
   }, [])
 
+  const getTicketStatus = async (ticket, queue) => {
+    try {
+      // To make sure ticket is valid
+      // Get the list (queue), ticket (card) belongs to on the trello api
+      const getListofCard = await axios.get(`https://api.trello.com/1/cards/${ticket}/list?fields=id,name`)
+      const { id, name } = getListofCard.data
+      setQueueId(id)
+      setQueueName(name)
+      setTicketId(ticket)
+
+
+      // Hack: Check whether to alert the user based on if the 
+      // queue name contains the word 'alert'
+      if (name.includes('alert')) setAlert(true)
+
+      // To check position in queue
+      // Get list and all the cards in it to determind queue position
+      const getCardsOnList = await axios.get(`https://api.trello.com/1/lists/${queue}/cards`)
+      const ticketsInQueue = getCardsOnList.data
+
+      //Reverse list as trello queue front at bottom makes more sense
+      ticketsInQueue.reverse()
+      const index = ticketsInQueue.findIndex(val => val.id === ticket)
+      setNumberOfTicketsAhead(index)
+      console.log('id:', ticket);
+      console.log('queueName: ', name);
+      console.log('queue pos:', index);
+
+      // Update timestamp
+      const timestamp = new Date().toLocaleString('en-UK', { hour: 'numeric', minute: 'numeric', hour12: true })
+      setLastUpdated(timestamp)
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   const leaveQueue = async () => {
     try {
-      const resp = axios.delete(`${BACKEND_URL}/api/queue/${queueCode}/${ticketId}`)
-      console.log(resp.data);
+      const resp = axios.delete(`http://localhost:8888/.netlify/functions/ticket?id=${ticketId}`)
+      router.reload()
     } catch (error) {
       console.log(error)
     }
   }
 
   const rejoinQueue = () => {
-    router.push(`/queue?code=${queueCode}`)
+    const query = queryString.parse(location.search);
+    if (query.queue) {
+      router.push(`/queue?id=${query.queue}`)
+    }
   }
+
+
 
   const renderTicket = () => {
     // There are 4 possible ticket states
@@ -133,31 +148,25 @@ const Index = () => {
 
   }
 
-
-
   return (
     <Container>
       <Main>
-
         <Heading fontSize="32px" fontWeight="semi" textAlign="center">Ticket #</Heading>
 
-
         {renderTicket()}
-
 
         <Flex direction="column" alignItems="center">
           {numberOfTicketsAhead > -1 ?
             <Button width="180px" colorScheme="purple" size="lg" variant="outline"
               onClick={leaveQueue}
-              disabled={!queueCode || !ticketId}
+              disabled={!queueId || !ticketId}
             >Leave the queue</Button> :
             <Button width="180px" colorScheme="purple" size="lg" variant="outline"
               onClick={rejoinQueue}
-
-              disabled={!queueCode}
             >Rejoin the queue</Button>}
 
         </Flex>
+
         <Flex direction="column" alignItems="center">
           <Text fontSize="20px" >This page updates automatically</Text>
           <Text fontSize="20px" >Last updated at {lastUpdated}</Text>

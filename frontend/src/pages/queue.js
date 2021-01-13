@@ -1,41 +1,35 @@
-import {
-  Text,
-  Code,
-} from '@chakra-ui/react'
-import { Hero } from '../components/Hero'
 import { Container } from '../components/Container'
 import { Main } from '../components/Main'
 import { useEffect } from 'react'
 import { useRouter } from 'next/router'
-import axios from 'axios'
-
 import queryString from 'query-string';
-import { BACKEND_URL } from '../constants'
-const Index = () => {
+import axios from 'axios'
+import { Hero } from '../components/Hero'
 
+const Index = () => {
   const router = useRouter()
+
   useEffect(() => {
     console.log('useEffect');
+
+    // Based on queue id, call netlify function to create a ticket
+    // for that queue, return the ticket id and redirect to ticket page
     const query = queryString.parse(location.search);
-    // Join queue with code, server will return new ticket id
-    if (query.code) {
-      axios.post(`${BACKEND_URL}/api/queue/${query.code}/join`)
+    if (query.id) {
+      console.log(query.id);
+      axios.post(`http://localhost:8888/.netlify/functions/ticket?name=bob`)
         .then((resp) => {
           const { ticketId } = resp.data
-          router.push(`/ticket?queue=${query.code}&ticket=${ticketId}`)
+          console.log(ticketId);
+          router.push(`/ticket?ticket=${ticketId}&queue=${query.id}`)
         }).catch((err) => { console.log(err) })
-
     }
   }, [])
 
   return (
     <Container>
-
       <Main>
-        <Hero title='queue' />
-        <Text>
-          Example repository of <Code>Next.js</Code> + <Code>chakra-ui</Code>.
-      </Text>
+        <Hero title='Join Queue' />
       </Main>
     </Container>
   )

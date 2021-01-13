@@ -2,7 +2,9 @@
   "name": "with-chakra-ui",
   "version": "0.1.0",
   "scripts": {
-    "dev": "netlify dev -c \"npm run start\"",
+    "dev": "next dev",
+    "prenetlify-dev": "next build",
+    "netlify-dev": "netlify dev -c \"npm run start\"",
     "build": "next build",
     "start": "next start"
   },

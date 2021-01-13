@@ -2,19 +2,17 @@ import {
   Text,
   Code,
   Heading,
+  Flex,
 } from '@chakra-ui/react'
+import { Hero } from '../components/Hero'
 import { Container } from '../components/Container'
 import { Main } from '../components/Main'
 
 const Index = () => (
   <Container>
     <Main>
-      <Heading fontSize="80px">Index page</Heading>
-      <Text>
-        Example repository of <Code>Next.js</Code> + <Code>chakra-ui</Code>.
-      </Text>
+      <Hero title='QueueSG' />
     </Main>
-
   </Container>
 )
 
