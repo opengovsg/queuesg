@@ -6,15 +6,18 @@ exports.handler = async function (event, context) {
     const { TRELLO_KEY, TRELLO_TOKEN } = process.env
 
     if (httpMethod === 'POST') {
-      const name = queryStringParameters.name || 'john'
+      const name = queryStringParameters.name || 'unknown user'
+      const queue = queryStringParameters.queue
+      if (queue) {
+        const resp = await axios.post(`https://api.trello.com/1/cards?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}&idList=${queue}&pos=top&name=${name}`)
 
-      const resp = await axios.post(`https://api.trello.com/1/cards?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}&idList=5ffd586cf0085f1ec5ca65be&pos=top&name=${name}`)
+        const { id } = resp.data
+        return {
+          statusCode: 200,
+          body: JSON.stringify({ ticketId: id })
+        };
+      }
 
-      const { id } = resp.data
-      return {
-        statusCode: 200,
-        body: JSON.stringify({ ticketId: id })
-      };
     } else if (httpMethod === 'DELETE') {
       const id = queryStringParameters.id
       if (id) {
