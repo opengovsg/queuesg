@@ -53,6 +53,9 @@ const Index = () => {
       setQueueId(queueId)
       setTicketId(ticket)
 
+      // Update timestamp
+      const timestamp = new Date().toLocaleString('en-UK', { hour: 'numeric', minute: 'numeric', hour12: true })
+      setLastUpdated(timestamp)
 
       // Hack: Check whether to alert the user based on if the 
       // queue name contains the word 'alert'
@@ -83,10 +86,6 @@ const Index = () => {
       console.log('id:', ticket);
       console.log('queueName: ', queueName);
       console.log('queue pos:', index);
-
-      // Update timestamp
-      const timestamp = new Date().toLocaleString('en-UK', { hour: 'numeric', minute: 'numeric', hour12: true })
-      setLastUpdated(timestamp)
     } catch (err) {
       console.log(err);
     }
@@ -196,7 +195,7 @@ const Index = () => {
         </Flex>
 
         <Flex direction="column" alignItems="center">
-          <Text fontSize="20px" >This page updates automatically every 10 seconds</Text>
+          <Text fontSize="20px" mx="20px" textAlign="center">This page updates automatically every 10 seconds</Text>
           <Text fontSize="20px" >Last updated at {lastUpdated}</Text>
         </Flex>
       </Main>
