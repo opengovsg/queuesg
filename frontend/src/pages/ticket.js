@@ -37,10 +37,10 @@ const Index = () => {
     }
   }, [])
 
-  // const refreshInterval = process.env.REFRESH_INTERVAL || 5000
-  // useInterval(() => {
-  //   if (refreshEnabled) getTicketStatus(ticketId)
-  // }, refreshInterval);
+  const refreshInterval = process.env.REFRESH_INTERVAL || 5000
+  useInterval(() => {
+    if (refreshEnabled) getTicketStatus(ticketId)
+  }, refreshInterval);
 
 
   const getTicketStatus = async (ticket) => {
