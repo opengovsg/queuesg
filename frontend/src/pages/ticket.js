@@ -21,24 +21,26 @@ const Index = () => {
   const [refreshEnabled, setRefreshEnabled] = useState(true)
 
   const [ticketState, setTicketState] = useState()
-  const [lastUpdated, setLastUpdated] = useState('')
+
 
   const [ticketId, setTicketId] = useState()
   const [queueId, setQueueId] = useState()
   const [displayQueueInfo, setDisplayQueueInfo] = useState('')
-
+  const [ticketNumber, setTicketNumber] = useState()
+  const [lastUpdated, setLastUpdated] = useState('')
 
   useEffect(() => {
     const query = queryString.parse(location.search);
-    if (query.ticket && query.queue) {
+    if (query.ticket && query.queue && query.ticketNumber) {
       getTicketStatus(query.ticket)
-
+      setTicketNumber(query.ticketNumber)
     }
   }, [])
 
-  useInterval(() => {
-    if (refreshEnabled) getTicketStatus(ticketId)
-  }, 5000);
+  // const refreshInterval = process.env.REFRESH_INTERVAL || 5000
+  // useInterval(() => {
+  //   if (refreshEnabled) getTicketStatus(ticketId)
+  // }, refreshInterval);
 
 
   const getTicketStatus = async (ticket) => {
@@ -93,7 +95,7 @@ const Index = () => {
   const leaveQueue = async () => {
     try {
       axios.delete(`/.netlify/functions/ticket?id=${ticketId}`)
-      router.reload()
+      router.push(`/`)
     } catch (error) {
       console.log(error)
     }
@@ -106,22 +108,21 @@ const Index = () => {
     }
   }
 
-
-
   const renderTicket = () => {
     // There are 4 possible ticket states
     // 1. Alerted - Ticket is called by admin
     if (ticketState === TICKET_STATUS.ALERTED) {
       return <>
         <Box>
-          <Heading fontSize="64px" fontWeight="bold" textAlign="center">It's your turn!</Heading>
+          <Heading fontSize="80px" fontWeight="bold" textAlign="center" color="#31B5BA">It's your turn!</Heading>
+          <Text fontSize="28px" fontWeight="semibold" textAlign="center" color="#31B5BA" my="20px">Show this screen to the staff</Text>
         </Box>
-        <Box fontWeight="semi" textAlign="center">
+        {/* <Box fontWeight="semi" textAlign="center">
           <Text fontSize="32px" >
             Your queue number will be held for
             </Text>
           <Heading fontSize="40px" >3 mins</Heading>
-        </Box>
+        </Box> */}
       </>
 
     }
@@ -145,7 +146,7 @@ const Index = () => {
     else if (numberOfTicketsAhead === 0) {
       return <>
         <Box>
-          <Heading fontSize="80px" fontWeight="bold" textAlign="center">You're next!</Heading>
+          <Heading fontSize="80px" fontWeight="bold" textAlign="center" color="#F8BD36">You're next!</Heading>
         </Box>
       </>
     }
@@ -154,14 +155,14 @@ const Index = () => {
       return <>
         <Box>
           <Heading fontSize="32px" textAlign="center">There's</Heading>
-          <Heading fontSize="72px" textAlign="center">{numberOfTicketsAhead}</Heading>
+          <Heading fontSize="120px" lineHeight="140px" textAlign="center" color="#FF1154">{numberOfTicketsAhead}</Heading>
           <Heading fontSize="32px" textAlign="center">{numberOfTicketsAhead === 1 ? 'person' : 'people'} ahead of you</Heading>
         </Box>
         <Box fontWeight="semi" textAlign="center">
-          <Text fontSize="32px" >
+          <Text fontSize="28px" >
             Estimated waiting time
                 </Text>
-          <Heading fontSize="40px" >{3 * numberOfTicketsAhead} mins</Heading>
+          <Heading fontSize="32px" >{3 * numberOfTicketsAhead} mins</Heading>
         </Box>
       </>
 
@@ -176,7 +177,10 @@ const Index = () => {
   return (
     <Container>
       <Main>
-        <Heading fontSize="32px" fontWeight="semi" textAlign="center">{displayQueueInfo}</Heading>
+        <Flex direction="column" alignItems="center">
+          <Heading fontSize="28px" fontWeight="semi" textAlign="center">Queue Number</Heading>
+          <Heading fontSize="40px" fontWeight="semi" textAlign="center" fontWeight="bold" mt="10px">#{ticketNumber}</Heading>
+        </Flex>
 
         {renderTicket()}
 

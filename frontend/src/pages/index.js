@@ -1,19 +1,24 @@
 import {
   Heading,
   Flex,
+  Box, Text, Link, Button
 } from '@chakra-ui/react'
 import { Container } from '../components/Container'
+import { DarkModeSwitch } from '../components/DarkModeSwitch'
 import { Main } from '../components/Main'
-import { Link } from "@chakra-ui/react"
 
 const Index = () => {
   return (
     <Container>
       <Main>
-        <Flex direction='column' justifyContent="center" alignItems="center" height="100vh">
-          <Heading fontSize="10vw">QueueSG</Heading>
-          <Link href="/queue?id=5ffe9b5ed74ec20e4e4f8dc3">Try joining the demo queue</Link>
-        </Flex>
+        <Box>
+          <Heading fontSize="32px" fontWeight="semi" textAlign="center">Welcome to</Heading>
+          <Heading fontSize="64px" fontWeight="bold" textAlign="center" >QueueSG</Heading>
+          <Text fontSize="24px" textAlign="center" my="30px" textDecoration="underline">
+            <Link href="/queue?id=5ffe9b5ed74ec20e4e4f8dc3">Try the demo</Link>
+          </Text>
+          <DarkModeSwitch />
+        </Box>
       </Main>
     </Container>
   )
