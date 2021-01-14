@@ -23,7 +23,7 @@ exports.handler = async function (event, context) {
 
         return {
           statusCode: 200,
-          body: JSON.stringify({ ticketId: id })
+          body: JSON.stringify({ ticketId: id, ticketNumber: idShort })
         };
       }
 

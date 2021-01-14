@@ -59,9 +59,9 @@ const Index = () => {
       // for that queue, return the ticket id and redirect to ticket page
       const query = queryString.parse(location.search);
       const postJoinQueue = await axios.post(`http://localhost:8888/.netlify/functions/ticket?queue=${query.id}`, { desc: desc })
-      const { ticketId } = postJoinQueue.data
+      const { ticketId, ticketNumber } = postJoinQueue.data
       console.log(ticketId);
-      router.push(`/ticket?queue=${query.id}&ticket=${ticketId}`)
+      router.push(`/ticket?queue=${query.id}&ticket=${ticketId}&ticketNumber=${ticketNumber}`)
     } catch (err) {
       console.log(err.response);
     }
@@ -70,14 +70,17 @@ const Index = () => {
   return (
     <Container>
       <Main>
-        <Box>
+        <Flex direction="column" alignItems="center">
           <Heading fontSize="32px" fontWeight="semi" textAlign="center">Welcome to</Heading>
           <Heading fontSize="64px" fontWeight="bold" textAlign="center">{boardName}</Heading>
-        </Box>
+        </Flex>
         <Flex direction="column" alignItems="center">
-          <Text fontSize="24px" >
+          <Text fontSize="24px" width="400px" textAlign="center">
             {message}
           </Text>
+        </Flex>
+        <Flex direction="column" alignItems="center">
+
           <form onSubmit={submit} >
             <Flex direction="column" alignItems="center">
               {registrationFields.map((val, index) => {
