@@ -58,7 +58,7 @@ const Index = () => {
       // call netlify function to create a ticket
       // for that queue, return the ticket id and redirect to ticket page
       const query = queryString.parse(location.search);
-      const postJoinQueue = await axios.post(`http://localhost:8888/.netlify/functions/ticket?queue=${query.id}`, { desc: desc })
+      const postJoinQueue = await axios.post(`/.netlify/functions/ticket?queue=${query.id}`, { desc: desc })
       const { ticketId, ticketNumber } = postJoinQueue.data
       console.log(ticketId);
       router.push(`/ticket?queue=${query.id}&ticket=${ticketId}&ticketNumber=${ticketNumber}`)
