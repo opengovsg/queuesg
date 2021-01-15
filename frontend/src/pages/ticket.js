@@ -65,11 +65,11 @@ const Index = () => {
       }
       else if (queueName.includes('[DONE]')) {
         setTicketState(TICKET_STATUS.SERVED)
-        setRefreshEnabled(false)
+        // setRefreshEnabled(false)
         return
       } else if (queueName.includes('[MISSED]')) {
         setTicketState(TICKET_STATUS.MISSED)
-        setRefreshEnabled(false)
+        // setRefreshEnabled(false)
         return
       } else {
         setTicketState(TICKET_STATUS.PENDING)
