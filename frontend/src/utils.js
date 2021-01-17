@@ -1,6 +1,12 @@
 import { useEffect, useRef } from 'react';
 
-export function useInterval(callback, delay) {
+/**
+ * React setInterval Equivalent
+ * 
+ * @param {*} callback 
+ * @param {*} delay 
+ */
+export const useInterval = (callback, delay) => {
   const savedCallback = useRef();
 
   // Remember the latest callback.
@@ -18,4 +24,24 @@ export function useInterval(callback, delay) {
       return () => clearInterval(id);
     }
   }, [delay]);
+}
+
+/**
+ * Gets the queue number from the card name
+ * 
+ * @param {string} name 
+ * @param {string} queueNumber 
+ */
+export const getQueueNumber = (name) => {
+  return '#' + name.split('-')[0]
+}
+
+/**
+ * Gets the customer name from the card name
+ * 
+ * @param {string} name 
+ * @param {string} customerName
+ */
+export const getCustomerName = (name) => {
+  return name.split('-')[1]
 }

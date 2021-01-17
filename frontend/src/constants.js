@@ -6,4 +6,11 @@ export const TICKET_STATUS = {
   MISSED: 'missed'
 }
 
+export const QUEUE_TITLES = {
+  PENDING: 'Queue',
+  ALERTED: '[ALERT]',
+  DONE: '[DONE]',
+  MISSED: '[MISSED]'
+}
+
 export const BACKEND_URL = "http://localhost:8888"
