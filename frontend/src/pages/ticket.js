@@ -37,7 +37,7 @@ const Index = () => {
     }
   }, [])
 
-  const refreshInterval = process.env.REFRESH_INTERVAL || 3000
+  const refreshInterval = process.env.NEXT_PUBLIC_REFRESH_INTERVAL || 3000
   useInterval(() => {
     if (refreshEnabled) getTicketStatus(ticketId)
   }, refreshInterval);
