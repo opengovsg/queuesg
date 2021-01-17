@@ -195,7 +195,7 @@ const Index = () => {
         </Flex>
 
         <Flex direction="column" alignItems="center">
-          <Text fontSize="20px" mx="20px" textAlign="center">This page updates automatically every 10 seconds</Text>
+          <Text fontSize="20px" mx="20px" textAlign="center">This page updates automatically every { refreshInterval/1000 } seconds</Text>
           <Text fontSize="20px" >Last updated at {lastUpdated}</Text>
         </Flex>
       </Main>
