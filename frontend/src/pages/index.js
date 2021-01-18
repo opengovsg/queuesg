@@ -1,15 +1,11 @@
 import {
-  Heading,
-  Flex,
-  Box, Text, Link, Button
+  Heading, Box, Text
 } from '@chakra-ui/react'
 import { Container } from '../components/Container'
-import { DarkModeSwitch } from '../components/DarkModeSwitch'
 import { Main } from '../components/Main'
 import useTranslation from 'next-translate/useTranslation'
-import i18nConfig from '../../i18n.json'
 import { NavBar } from '../components/Navbar'
-const { locales } = i18nConfig
+import Link from 'next/link'
 
 const Index = () => {
   const { t, lang } = useTranslation('common')

@@ -14,8 +14,10 @@ import axios from 'axios'
 import { TICKET_STATUS } from '../constants'
 import { useInterval } from '../utils'
 import { NavBar } from '../components/Navbar'
+import useTranslation from 'next-translate/useTranslation'
 
 const Index = () => {
+  const { t, lang } = useTranslation('common')
   const router = useRouter()
   const [numberOfTicketsAhead, setNumberOfTicketsAhead] = useState()
 
@@ -54,31 +56,31 @@ const Index = () => {
       setQueueId(queueId)
       setTicketId(ticket)
 
-      // Update timestamp
-      const timestamp = new Date().toLocaleString('en-UK', { hour: 'numeric', minute: 'numeric', hour12: true })
-      setLastUpdated(timestamp)
+      // // Update timestamp
+      // const timestamp = new Date().toLocaleString('en-UK', { hour: 'numeric', minute: 'numeric', hour12: true })
+      // setLastUpdated(timestamp)
 
       // Hack: Check whether to alert the user based on if the 
       // queue name contains the word 'alert'
       if (queueName.includes('[ALERT]')) {
-        setTicketState(TICKET_STATUS.ALERTED)
+        setTicketState('alerted')//USING THE CONSTANT BREAKS I18N? IDK HOW
         return
       }
       else if (queueName.includes('[DONE]')) {
-        setTicketState(TICKET_STATUS.SERVED)
+        setTicketState('served')
         // setRefreshEnabled(false)
         return
       } else if (queueName.includes('[MISSED]')) {
-        setTicketState(TICKET_STATUS.MISSED)
+        setTicketState('missed')
         // setRefreshEnabled(false)
         return
       } else {
-        setTicketState(TICKET_STATUS.PENDING)
+        setTicketState('pending')
         setDisplayQueueInfo(queueName)
       }
 
-      // To check position in queue
-      // Get list and all the cards in it to determind queue position
+      // // To check position in queue
+      // // Get list and all the cards in it to determind queue position
       const getCardsOnList = await axios.get(`https://api.trello.com/1/lists/${queueId}/cards`)
       const ticketsInQueue = getCardsOnList.data
 
@@ -161,7 +163,7 @@ const Index = () => {
         <Box fontWeight="semi" textAlign="center">
           <Text fontSize="28px" >
             Estimated waiting time
-                </Text>
+          </Text>
           <Heading fontSize="32px" >{3 * numberOfTicketsAhead} mins</Heading>
         </Box>
       </>

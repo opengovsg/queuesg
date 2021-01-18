@@ -34,7 +34,7 @@ export const NavBar = (props) => {
       >
         <Button
           rightIcon={<ChevronDownIcon />}
-          textColor="#636467" variant="link" _focus="none"
+          textColor="#636467" variant="link"
           onClick={() => setMenuVisible(!menuVisible)}
         >
           {t('lang')}
@@ -50,14 +50,14 @@ export const NavBar = (props) => {
           borderRadius="5px"
           width="160px"
         >
-          <Link href={`${router.pathname}`} locale={'en'} >
+          <Link href={`${router.asPath}`} locale={'en'} >
             <Text margin="16px" fontSize="16px" lineHeight="24px">English</Text>
           </Link>
-          <Link href={`${router.pathname}`} locale={'cn'} >
+          <Link href={`${router.asPath}`} locale={'cn'} >
             <Text margin="16px" fontSize="16px" lineHeight="24px">中文</Text></Link>
-          <Link href={`${router.pathname}`} locale={'ms'} >
+          <Link href={`${router.asPath}`} locale={'ms'} >
             <Text margin="16px" fontSize="16px" lineHeight="24px"> Bahasa Melayu</Text></Link>
-          <Link href={`${router.pathname}`} locale={'ta'} >
+          <Link href={`${router.asPath}`} locale={'ta'} >
             <Text margin="16px" fontSize="16px" lineHeight="24px"> தமிழ்</Text></Link>
 
         </Box>}

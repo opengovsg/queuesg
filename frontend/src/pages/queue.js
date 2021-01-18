@@ -16,7 +16,8 @@ import {
 } from '@chakra-ui/react'
 import useTranslation from 'next-translate/useTranslation'
 const Index = () => {
-  const { t } = useTranslation('common')
+  const { t, lang } = useTranslation('common')
+  console.log(lang);
   const router = useRouter()
 
   const [boardName, setBoardName] = useState('')
@@ -64,7 +65,8 @@ const Index = () => {
       const postJoinQueue = await axios.post(`/.netlify/functions/ticket?queue=${query.id}`, { desc: desc })
       const { ticketId, ticketNumber } = postJoinQueue.data
       console.log(ticketId);
-      router.push(`/ticket?queue=${query.id}&ticket=${ticketId}&ticketNumber=${ticketNumber}`)
+      const url = `/ticket?queue=${query.id}&ticket=${ticketId}&ticketNumber=${ticketNumber}`
+      router.push(url, url, { locale: lang })
     } catch (err) {
       console.log(err.response);
     }
@@ -87,9 +89,14 @@ const Index = () => {
 
           <form onSubmit={submit} >
             <Flex direction="column" alignItems="center">
-              {registrationFields.map((val, index) => {
+              <Input placeholder={'name'} name="name" size="lg" width="320px" fontSize="24px" my="10px" required />
+              <Input placeholder={'contact'} name="phone" size="lg" width="320px" fontSize="24px" my="10px"
+                pattern="^(8|9)(\d{7})$" required
+                title="contact should be an 8 digit Singapore number i.e. 8xxxxxxx" />
+              {/* For POC, fix the 2 fields to name and contact */}
+              {/* {registrationFields.map((val, index) => {
                 return <Input key={index} placeholder={val} size="lg" width="320px" fontSize="24px" my="10px" />
-              })}
+              })} */}
               <Button width="180px" colorScheme="purple" size="lg" variant="solid" marginTop="10px"
                 type="submit"
               >Join</Button>
