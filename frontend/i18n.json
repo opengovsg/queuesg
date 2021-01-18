@@ -1,0 +1,14 @@
+{
+  "locales": [
+    "en",
+    "cn",
+    "ms",
+    "ta"
+  ],
+  "defaultLocale": "en",
+  "pages": {
+    "*": [
+      "common"
+    ]
+  }
+}

@@ -2,7 +2,7 @@ import { Stack } from '@chakra-ui/react'
 
 export const Main = (props) => (
   <Stack
-    height="100vh"
+    height="90vh"
     width="100%"
     maxWidth="48rem"
     margin="0"
