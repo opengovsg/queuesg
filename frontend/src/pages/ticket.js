@@ -13,6 +13,7 @@ import queryString from 'query-string';
 import axios from 'axios'
 import { TICKET_STATUS } from '../constants'
 import { useInterval } from '../utils'
+import { NavBar } from '../components/Navbar'
 
 const Index = () => {
   const router = useRouter()
@@ -37,7 +38,7 @@ const Index = () => {
     }
   }, [])
 
-  const refreshInterval = process.env.NEXT_PUBLIC_REFRESH_INTERVAL || 3000
+  const refreshInterval = process.env.NEXT_PUBLIC_REFRESH_INTERVAL || 5000
   useInterval(() => {
     if (refreshEnabled) getTicketStatus(ticketId)
   }, refreshInterval);
@@ -175,6 +176,7 @@ const Index = () => {
 
   return (
     <Container>
+      <NavBar />
       <Main>
         <Flex direction="column" alignItems="center">
           <Heading fontSize="28px" fontWeight="semi" textAlign="center">Queue Number</Heading>
@@ -195,7 +197,7 @@ const Index = () => {
         </Flex>
 
         <Flex direction="column" alignItems="center">
-          <Text fontSize="20px" mx="20px" textAlign="center">This page updates automatically every { refreshInterval/1000 } seconds</Text>
+          <Text fontSize="20px" mx="20px" textAlign="center">This page updates automatically every {refreshInterval / 1000} seconds</Text>
           <Text fontSize="20px" >Last updated at {lastUpdated}</Text>
         </Flex>
       </Main>

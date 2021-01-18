@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import queryString from 'query-string';
 import axios from 'axios'
+import { NavBar } from '../components/Navbar'
+
 import {
   Text,
   Flex,
@@ -12,8 +14,9 @@ import {
   Button,
   Input
 } from '@chakra-ui/react'
-
+import useTranslation from 'next-translate/useTranslation'
 const Index = () => {
+  const { t } = useTranslation('common')
   const router = useRouter()
 
   const [boardName, setBoardName] = useState('')
@@ -69,9 +72,10 @@ const Index = () => {
 
   return (
     <Container>
+      <NavBar />
       <Main>
         <Flex direction="column" alignItems="center">
-          <Heading fontSize="32px" fontWeight="semi" textAlign="center">Welcome to</Heading>
+          <Heading fontSize="32px" fontWeight="semi" textAlign="center">{t('title')}</Heading>
           <Heading fontSize="64px" fontWeight="bold" textAlign="center">{boardName}</Heading>
         </Flex>
         <Flex direction="column" alignItems="center">
@@ -86,7 +90,7 @@ const Index = () => {
               {registrationFields.map((val, index) => {
                 return <Input key={index} placeholder={val} size="lg" width="320px" fontSize="24px" my="10px" />
               })}
-              <Button width="180px" colorScheme="purple" size="lg" variant="outline" marginTop="10px"
+              <Button width="180px" colorScheme="purple" size="lg" variant="solid" marginTop="10px"
                 type="submit"
               >Join</Button>
             </Flex>

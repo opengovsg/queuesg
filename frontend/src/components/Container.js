@@ -3,7 +3,7 @@ import { Flex, useColorMode } from '@chakra-ui/react'
 export const Container = (props) => {
   const { colorMode } = useColorMode()
 
-  const bgColor = { light: 'gray.50', dark: 'gray.900' }
+  const bgColor = { light: 'gray.100', dark: 'gray.900' }
 
   const color = { light: 'black', dark: 'white' }
   //bgColor[colorMode]
@@ -13,6 +13,7 @@ export const Container = (props) => {
       direction="column"
       justifyContent="start"
       alignItems="center"
+      bg={bgColor[colorMode]}
     >
       <Flex
         maxWidth="640px"
@@ -21,8 +22,8 @@ export const Container = (props) => {
         justifyContent="center"
         alignItems="center"
         direction="column"
-        // bg="#CCC"
-        bg={bgColor[colorMode]}
+        bg="#FFF"
+        // bg={bgColor[colorMode]}
         color={color[colorMode]}
         {...props}
       />

@@ -1,0 +1,70 @@
+import { Box, Text, Flex, Stack, IconButton, Button } from '@chakra-ui/react'
+import useTranslation from 'next-translate/useTranslation'
+import i18nConfig from '../../i18n.json'
+import { ChevronDownIcon } from '@chakra-ui/icons'
+import { useRouter } from 'next/router'
+import Link from 'next/link'
+import { useState } from 'react'
+
+export const NavBar = (props) => {
+  const router = useRouter()
+  const { t, lang } = useTranslation('common')
+
+  const [menuVisible, setMenuVisible] = useState(false)
+
+  return (
+    <Flex
+      as="nav"
+      align="center"
+      justify="space-between"
+      w="100%"
+      mb={8}
+      p={8}
+      bg={"primary.500"}
+      color={"white"}
+      {...props}>
+      <Box w="150px">
+        <Link href={`/`}  >
+          <Text fontSize="lg" fontWeight="bold" color="black">QueueSG</Text>
+        </Link>
+      </Box>
+      <Box
+        display={"block"}
+        flexBasis={"auto"}
+      >
+        <Button
+          rightIcon={<ChevronDownIcon />}
+          textColor="#636467" variant="link" _focus="none"
+          onClick={() => setMenuVisible(!menuVisible)}
+        >
+          {t('lang')}
+        </Button>
+        {menuVisible && <Box
+          position="absolute"
+          backgroundColor="white"
+          marginLeft="-80px"
+          marginTop="12px"
+          textColor="#48494B"
+          borderWidth="1px"
+          borderColor="#D2D3D6"
+          borderRadius="5px"
+          width="160px"
+        >
+          <Link href={`${router.pathname}`} locale={'en'} >
+            <Text margin="16px" fontSize="16px" lineHeight="24px">English</Text>
+          </Link>
+          <Link href={`${router.pathname}`} locale={'cn'} >
+            <Text margin="16px" fontSize="16px" lineHeight="24px">中文</Text></Link>
+          <Link href={`${router.pathname}`} locale={'ms'} >
+            <Text margin="16px" fontSize="16px" lineHeight="24px"> Bahasa Melayu</Text></Link>
+          <Link href={`${router.pathname}`} locale={'ta'} >
+            <Text margin="16px" fontSize="16px" lineHeight="24px"> தமிழ்</Text></Link>
+
+        </Box>}
+      </Box>
+
+    </Flex>
+  )
+}
+
+
