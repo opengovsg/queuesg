@@ -17,20 +17,21 @@ import { useInterval } from '../utils'
 import { NavBar } from '../components/Navbar'
 import useTranslation from 'next-translate/useTranslation'
 import { InQueue } from '../components/Ticket/InQueue'
+import { Alerted } from '../components/Ticket/Alerted'
 
 const Index = () => {
   const { t, lang } = useTranslation('common')
   const router = useRouter()
-  const [numberOfTicketsAhead, setNumberOfTicketsAhead] = useState()
-
   const [refreshEnabled, setRefreshEnabled] = useState(true)
+  
+  const [waitingTime, setWaitingTime] = useState(3)
+  
+  const [numberOfTicketsAhead, setNumberOfTicketsAhead] = useState()
+  const [displayQueueInfo, setDisplayQueueInfo] = useState('')
 
   const [ticketState, setTicketState] = useState()
-
-
   const [ticketId, setTicketId] = useState()
   const [queueId, setQueueId] = useState()
-  const [displayQueueInfo, setDisplayQueueInfo] = useState('')
   const [ticketNumber, setTicketNumber] = useState()
   const [lastUpdated, setLastUpdated] = useState('')
 
@@ -116,19 +117,12 @@ const Index = () => {
     // There are 4 possible ticket states
     // 1. Alerted - Ticket is called by admin
     if (ticketState === TICKET_STATUS.ALERTED) {
-      return <>
-        <Box>
-          <Heading fontSize="80px" fontWeight="bold" textAlign="center" color="#31B5BA">It's your turn!</Heading>
-          <Text fontSize="28px" fontWeight="semibold" textAlign="center" color="#31B5BA" my="20px">Show this screen to the staff</Text>
-        </Box>
-        {/* <Box fontWeight="semi" textAlign="center">
-          <Text fontSize="32px" >
-            Your queue number will be held for
-            </Text>
-          <Heading fontSize="40px" >3 mins</Heading>
-        </Box> */}
-      </>
-
+      return <Alerted
+        waitingTime={waitingTime}
+        leaveQueue={leaveQueue}
+        queueId={queueId}
+        ticketId={ticketId}
+        />
     }
     // 2. Served - Ticket is complete
     else if (ticketState === TICKET_STATUS.SERVED) {
@@ -157,6 +151,7 @@ const Index = () => {
     // 5. Line - Ticket is behind at least 1 person
     else if (numberOfTicketsAhead > 0) {
       return <InQueue
+        waitingTime={waitingTime}
         leaveQueue={leaveQueue}
         queueId={queueId}
         ticketId={ticketId}
