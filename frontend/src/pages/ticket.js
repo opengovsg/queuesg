@@ -17,15 +17,18 @@ import { useInterval } from '../utils'
 import { NavBar } from '../components/Navbar'
 import useTranslation from 'next-translate/useTranslation'
 import { InQueue } from '../components/Ticket/InQueue'
+import { NextInQueue } from '../components/Ticket/NextInQueue'
 import { Alerted } from '../components/Ticket/Alerted'
+import { Skipped } from '../components/Ticket/Skipped'
+import { Served } from '../components/Ticket/Served'
 
 const Index = () => {
   const { t, lang } = useTranslation('common')
   const router = useRouter()
   const [refreshEnabled, setRefreshEnabled] = useState(true)
-  
+
   const [waitingTime, setWaitingTime] = useState(3)
-  
+
   const [numberOfTicketsAhead, setNumberOfTicketsAhead] = useState()
   const [displayQueueInfo, setDisplayQueueInfo] = useState('')
 
@@ -33,6 +36,7 @@ const Index = () => {
   const [ticketId, setTicketId] = useState()
   const [queueId, setQueueId] = useState()
   const [ticketNumber, setTicketNumber] = useState()
+  const [displayTicketInfo, setDisplayTicketInfo] = useState('')
   const [lastUpdated, setLastUpdated] = useState('')
 
   useEffect(() => {
@@ -43,10 +47,10 @@ const Index = () => {
     }
   }, [])
 
-  const refreshInterval = process.env.NEXT_PUBLIC_REFRESH_INTERVAL || 5000
-  useInterval(() => {
-    if (refreshEnabled) getTicketStatus(ticketId)
-  }, refreshInterval);
+  // const refreshInterval = process.env.NEXT_PUBLIC_REFRESH_INTERVAL || 5000
+  // useInterval(() => {
+  //   if (refreshEnabled) getTicketStatus(ticketId)
+  // }, refreshInterval);
 
 
   const getTicketStatus = async (ticket) => {
@@ -58,6 +62,14 @@ const Index = () => {
       const { id: queueId, name: queueName } = getListofCard.data
       setQueueId(queueId)
       setTicketId(ticket)
+
+      // To get card description
+      const getCardDesc = await axios.get(`https://api.trello.com/1/cards/${ticket}`)
+      const { desc } = getCardDesc.data
+      if (desc !== '') {
+        const ticketInfo = JSON.parse(desc)
+        setDisplayTicketInfo(`${ticketInfo.name}, ${ticketInfo.contact}`)
+      }
 
       // // Update timestamp
       const timestamp = new Date().toLocaleString('en-UK', { hour: 'numeric', minute: 'numeric', hour12: true })
@@ -82,8 +94,10 @@ const Index = () => {
         setDisplayQueueInfo(queueName)
       }
 
-      // // To check position in queue
-      // // Get list and all the cards in it to determind queue position
+
+
+      // To check position in queue
+      // Get list and all the cards in it to determind queue position
       const getCardsOnList = await axios.get(`https://api.trello.com/1/lists/${queueId}/cards`)
       const ticketsInQueue = getCardsOnList.data
 
@@ -122,31 +136,25 @@ const Index = () => {
         leaveQueue={leaveQueue}
         queueId={queueId}
         ticketId={ticketId}
-        />
+      />
     }
     // 2. Served - Ticket is complete
     else if (ticketState === TICKET_STATUS.SERVED) {
-      return <Box>
-        <Heading fontSize="64px" fontWeight="bold" textAlign="center">
-          Thanks for coming!
-        </Heading>
-      </Box>
+      return <Served />
     }
     // 3. Missed - Ticket is in [MISSED] / not in the queue / queue doesnt exist
     else if (ticketState === TICKET_STATUS.MISSED || numberOfTicketsAhead === -1) {
-      return <Box>
-        <Heading fontSize="64px" fontWeight="bold" textAlign="center">
-          Sorry. Your queue number has been skipped.
-        </Heading>
-      </Box>
+      return <Skipped rejoinQueue={rejoinQueue} displayTicketInfo={displayTicketInfo} />
     }
     // 4. Next - Ticket 1st in line
     else if (numberOfTicketsAhead === 0) {
-      return <>
-        <Box>
-          <Heading fontSize="80px" fontWeight="bold" textAlign="center" color="#F8BD36">You're next!</Heading>
-        </Box>
-      </>
+      return <NextInQueue
+        waitingTime={waitingTime}
+        leaveQueue={leaveQueue}
+        queueId={queueId}
+        ticketId={ticketId}
+        numberOfTicketsAhead={numberOfTicketsAhead}
+      />
     }
     // 5. Line - Ticket is behind at least 1 person
     else if (numberOfTicketsAhead > 0) {
@@ -172,43 +180,39 @@ const Index = () => {
         <Flex direction="column" alignItems="center">
           <Heading
             textStyle="display2"
-            >
+          >
             #{ticketNumber}
           </Heading>
+          <Text textStyle="display3" fontWeight="400">
+            {displayTicketInfo}
+          </Text>
         </Flex>
 
         <Flex
           direction="column"
           alignItems="center"
-          >
+        >
           <Flex
             direction="column"
             alignItems="center"
-            w="350px">
+            w="360px">
             {renderTicket()}
+          </Flex>
+          <Flex
+            direction="column"
+            py="15px"
+            w="360px"
+          >
+            <Text
+              textStyle="body2"
+              color="gray.500"
+            >
+              {t("last-updated-automatically-at")} {lastUpdated}
+            </Text>
           </Flex>
         </Flex>
 
-        <Flex
-          direction="column"
-          alignItems="center"
-          >
-          {ticketState === TICKET_STATUS.MISSED && <Button width="180px" colorScheme="purple" size="lg" variant="outline"
-            onClick={rejoinQueue}
-          >Rejoin the queue</Button>}
-        </Flex>
 
-        <Flex
-          direction="column"
-          px="15px"
-          >
-          <Text
-            textStyle="body2"
-            color="gray.500"
-            >
-            { t("last-updated-automatically-at") } {lastUpdated}
-          </Text>
-        </Flex>
       </Main>
     </Container>
   )

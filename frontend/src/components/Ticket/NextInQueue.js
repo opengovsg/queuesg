@@ -10,7 +10,7 @@ import useTranslation from 'next-translate/useTranslation'
 
 import PeopleOnPhones from '../../assets/svg/people-on-phones.svg'
 
-export const InQueue = ({
+export const NextInQueue = ({
   leaveQueue,
   numberOfTicketsAhead,
   ticketId,
@@ -27,6 +27,7 @@ export const InQueue = ({
     </Center>
     <Box
       layerStyle="card"
+      bgColor="base.500"
     >
       <Text
         textStyle="subtitle2"
@@ -37,7 +38,7 @@ export const InQueue = ({
         textStyle="display3"
         mb="2rem"
       >
-        {numberOfTicketsAhead} {numberOfTicketsAhead === 1 ? 'person' : 'people'} {t('ahead-of-you')}
+        {t('youre-next')}
       </Heading>
 
       <Text
