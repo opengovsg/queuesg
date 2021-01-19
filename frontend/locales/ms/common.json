@@ -3,20 +3,22 @@
   "demo-title": "Welcome to QueueSG",
   "queue-welcome-message": "Hai dunia",
   "try-the-demo": "Cubalah Demo",
-  
   "your-name": "Nama",
   "mobile-number": "Nombor Telefon",
   "join-queue": "Sertai Barisan",
-
   "queue-position": "Queue Position",
   "estimated-waiting-time": "Estimated waiting time",
+  "youre-next": "You're next!",
   "ahead-of-you": "ahead of you",
   "minutes": "minutes",
   "leave-the-queue": "Leave the queue",
+  "your-queue-number-was": " Your queue number was already called and has since expired.",
+  "rejoin-the-queue": "Rejoin the queue",
   "last-updated-automatically-at": "Last updated automatically at ",
-
   "its-your-turn": "It's your turn!",
   "your-queue-number-will-be-held-for": "Your queue number will be held for",
-
-  "variable-example": "Using a variable {{count}}"
+  "thanks-for-coming": "Thanks for coming!",
+  "variable-example": "Using a variable {{count}}",
+  "built-by": "Built by",
+  "copyright": "Open Government Products, Government Technology Agency of Singapore"
 }

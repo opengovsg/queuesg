@@ -17,7 +17,9 @@ export const NavBar = (props) => {
       align="center"
       justify="space-between"
       w="360px"
-      py={8}
+      pt={4}
+      pb={8}
+      px={4}
       bg="base.100"
       color={"white"}
       {...props}>

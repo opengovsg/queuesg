@@ -1,5 +1,6 @@
 import { Container } from '../components/Container'
 import { Main } from '../components/Main'
+import { Footer } from '../components/Footer'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import queryString from 'query-string';
@@ -11,15 +12,13 @@ import ManWithHourglass from "../../src/assets/svg/man-with-hourglass.svg"
 import {
   Text,
   Flex,
-  Heading,
   Box,
   Button,
-  Input, Center
+  Input,
 } from '@chakra-ui/react'
 import useTranslation from 'next-translate/useTranslation'
 const Index = () => {
   const { t, lang } = useTranslation('common')
-  console.log(lang);
   const router = useRouter()
 
   const [boardName, setBoardName] = useState('')
@@ -138,11 +137,9 @@ const Index = () => {
             </form>
           </Box>
         </Flex>
-
-
-
       </Main>
-    </Container >
+      <Footer />
+    </Container>
   )
 }
 

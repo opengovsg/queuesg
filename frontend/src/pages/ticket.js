@@ -1,10 +1,7 @@
 import {
-  Center,
   Text,
   Flex,
   Heading,
-  Box,
-  Button
 } from '@chakra-ui/react'
 import { Container } from '../components/Container'
 import { Main } from '../components/Main'
@@ -13,7 +10,6 @@ import { useRouter } from 'next/router'
 import queryString from 'query-string';
 import axios from 'axios'
 import { TICKET_STATUS } from '../constants'
-import { useInterval } from '../utils'
 import { NavBar } from '../components/Navbar'
 import useTranslation from 'next-translate/useTranslation'
 import { InQueue } from '../components/Ticket/InQueue'
@@ -211,9 +207,8 @@ const Index = () => {
             </Text>
           </Flex>
         </Flex>
-
-
       </Main>
+      <Footer />
     </Container>
   )
 }
