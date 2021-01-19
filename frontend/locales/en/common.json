@@ -8,5 +8,15 @@
   "mobile-number": "Mobile number",
   "join-queue": "Join Queue",
 
+  "queue-position": "Queue position",
+  "estimated-waiting-time": "Estimated waiting time",
+  "ahead-of-you": "ahead of you",
+  "minutes": "minutes",
+  "leave-the-queue": "Leave the queue",
+  "last-updated-automatically-at": "Last updated automatically at ",
+
+  "its-your-turn": "It's your turn!",
+  "your-queue-number-will-be-held-for": "Your queue number will be held for",
+
   "variable-example": "Using a variable {{count}}"
 }
