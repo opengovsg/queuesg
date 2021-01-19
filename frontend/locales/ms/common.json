@@ -8,5 +8,12 @@
   "mobile-number": "Nombor Telefon",
   "join-queue": "Sertai Barisan",
 
+  "queue-position": "Queue Position",
+  "estimated-waiting-time": "Estimated waiting time",
+  "ahead-of-you": "ahead of you",
+  "minutes": "minutes",
+  "leave-the-queue": "Leave the queue",
+  "last-updated-automatically-at": "Last updated automatically at ",
+
   "variable-example": "Using a variable {{count}}"
 }

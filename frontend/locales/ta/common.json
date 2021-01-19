@@ -7,6 +7,13 @@
   "your-name": "பெயர்",
   "mobile-number": "கைபேசி எண்",
   "join-queue": "வரிசையில் சேருங்கள்",
+  
+  "queue-position": "Queue Position",
+  "estimated-waiting-time": "Estimated waiting time",
+  "ahead-of-you": "ahead of you",
+  "minutes": "minutes",
+  "leave-the-queue": "Leave the queue",
+  "last-updated-automatically-at": "Last updated automatically at ",
 
   "variable-example": "Using a variable {{count}}"
 }

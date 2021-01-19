@@ -1,4 +1,5 @@
 import {
+  Center,
   Text,
   Flex,
   Heading,
@@ -15,6 +16,7 @@ import { TICKET_STATUS } from '../constants'
 import { useInterval } from '../utils'
 import { NavBar } from '../components/Navbar'
 import useTranslation from 'next-translate/useTranslation'
+import { InQueue } from '../components/Ticket/InQueue'
 
 const Index = () => {
   const { t, lang } = useTranslation('common')
@@ -57,8 +59,8 @@ const Index = () => {
       setTicketId(ticket)
 
       // // Update timestamp
-      // const timestamp = new Date().toLocaleString('en-UK', { hour: 'numeric', minute: 'numeric', hour12: true })
-      // setLastUpdated(timestamp)
+      const timestamp = new Date().toLocaleString('en-UK', { hour: 'numeric', minute: 'numeric', hour12: true })
+      setLastUpdated(timestamp)
 
       // Hack: Check whether to alert the user based on if the 
       // queue name contains the word 'alert'
@@ -154,20 +156,12 @@ const Index = () => {
     }
     // 5. Line - Ticket is behind at least 1 person
     else if (numberOfTicketsAhead > 0) {
-      return <>
-        <Box>
-          <Heading fontSize="32px" textAlign="center">There's</Heading>
-          <Heading fontSize="120px" lineHeight="140px" textAlign="center" color="#FF1154">{numberOfTicketsAhead}</Heading>
-          <Heading fontSize="32px" textAlign="center">{numberOfTicketsAhead === 1 ? 'person' : 'people'} ahead of you</Heading>
-        </Box>
-        <Box fontWeight="semi" textAlign="center">
-          <Text fontSize="28px" >
-            Estimated waiting time
-          </Text>
-          <Heading fontSize="32px" >{3 * numberOfTicketsAhead} mins</Heading>
-        </Box>
-      </>
-
+      return <InQueue
+        leaveQueue={leaveQueue}
+        queueId={queueId}
+        ticketId={ticketId}
+        numberOfTicketsAhead={numberOfTicketsAhead}
+      />
     }
     // This is blank as the loading state
     else {
@@ -181,26 +175,44 @@ const Index = () => {
       <NavBar />
       <Main>
         <Flex direction="column" alignItems="center">
-          <Heading fontSize="28px" fontWeight="semi" textAlign="center">Queue Number</Heading>
-          <Heading fontSize="40px" fontWeight="semi" textAlign="center" fontWeight="bold" mt="10px">#{ticketNumber}</Heading>
+          <Heading
+            textStyle="display2"
+            >
+            #{ticketNumber}
+          </Heading>
         </Flex>
 
-        {renderTicket()}
+        <Flex
+          direction="column"
+          alignItems="center"
+          >
+          <Flex
+            direction="column"
+            alignItems="center"
+            w="350px">
+            {renderTicket()}
+          </Flex>
+        </Flex>
 
-        <Flex direction="column" alignItems="center">
+        <Flex
+          direction="column"
+          alignItems="center"
+          >
           {ticketState === TICKET_STATUS.MISSED && <Button width="180px" colorScheme="purple" size="lg" variant="outline"
             onClick={rejoinQueue}
           >Rejoin the queue</Button>}
-          {ticketState === TICKET_STATUS.PENDING && numberOfTicketsAhead > -1 &&
-            <Button width="180px" colorScheme="purple" size="lg" variant="outline"
-              onClick={leaveQueue}
-              disabled={!queueId || !ticketId}
-            >Leave the queue</Button>}
         </Flex>
 
-        <Flex direction="column" alignItems="center">
-          <Text fontSize="20px" mx="20px" textAlign="center">This page updates automatically every {refreshInterval / 1000} seconds</Text>
-          <Text fontSize="20px" >Last updated at {lastUpdated}</Text>
+        <Flex
+          direction="column"
+          px="15px"
+          >
+          <Text
+            textStyle="body2"
+            color="gray.500"
+            >
+            { t("last-updated-automatically-at") } {lastUpdated}
+          </Text>
         </Flex>
       </Main>
     </Container>
