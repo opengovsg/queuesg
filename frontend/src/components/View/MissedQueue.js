@@ -11,12 +11,12 @@ export const MissedQueue = ({
 }) => {
   return (
     <Center h="100%">
-      <Box textAlign="center">
+      <Box>
         <Heading
-          size="3xl"
+          textStyle="display1"
           mb="1em"
           >
-            Missed Queue
+            Missed queue
         </Heading>
         {
           (tickets.length > 0)
@@ -25,15 +25,19 @@ export const MissedQueue = ({
             tickets.map(ticket => {
               return <Heading
                 key={ticket.id}
-                size="3xl"
+                textStyle="display2"
                 mb="0.5em"
                 >
-                  { getQueueNumber(ticket.name) }
+                { getQueueNumber(ticket.name) }
               </Heading>
             })
           )
           :
-          <Heading size="4xl">-</Heading>
+          <Heading
+            textStyle="display2"
+            >
+            -
+          </Heading>
         }
       </Box>
     </Center>

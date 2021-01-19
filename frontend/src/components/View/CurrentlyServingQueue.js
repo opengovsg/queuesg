@@ -10,12 +10,12 @@ export const CurrentlyServingQueue = ({
 }) => {
   return (
     <Center h="100%">
-      <Box textAlign="center">
+      <Box>
         <Heading
-          size="4xl"
+          textStyle="display1"
           mb="1em"
           >
-            Currently Serving
+            Currently serving
         </Heading>
         {
           (tickets.length > 0)
@@ -23,8 +23,8 @@ export const CurrentlyServingQueue = ({
           (
             tickets.map(ticket => {
               return <Heading
+                textStyle="display2"
                 key={ticket.id}
-                size="4xl"
                 mb="0.5em"
                 >
                   { getQueueNumber(ticket.name) }
@@ -32,7 +32,11 @@ export const CurrentlyServingQueue = ({
             })
           )
           :
-          <Heading size="4xl">-</Heading>
+          <Heading
+            textStyle="display2"
+            >
+            -
+          </Heading>
         }
       </Box>
     </Center>

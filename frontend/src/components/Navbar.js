@@ -1,4 +1,4 @@
-import { Box, Text, Flex, Stack, IconButton, Button } from '@chakra-ui/react'
+import { Box, Text, Flex, Button, Heading } from '@chakra-ui/react'
 import useTranslation from 'next-translate/useTranslation'
 import i18nConfig from '../../i18n.json'
 import { ChevronDownIcon } from '@chakra-ui/icons'
@@ -17,16 +17,19 @@ export const NavBar = (props) => {
       as="nav"
       align="center"
       justify="space-between"
-      w="100%"
-      mb={8}
+      w="100vw"
       p={8}
-      bg={"primary.500"}
+      bg="base"
       color={"white"}
       {...props}>
-      <Box w="150px">
-        <Link href={`/`}  >
-          <Text fontSize="lg" fontWeight="bold" color="black">QueueSG</Text>
-        </Link>
+      <Box w="200px">
+        <Heading
+          textStyle="subtitle1"
+          fontWeight="bold"
+          color="accent.500"
+          >
+          queue.gov.sg
+        </Heading>
       </Box>
       <Box
         display={"block"}

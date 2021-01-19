@@ -14,6 +14,24 @@ const breakpoints = createBreakpoints({
   xl: '80em',
 })
 
+const layerStyles = extendTheme({
+  card: {
+    boxShadow: '0px 0px 10px rgba(216, 222, 235, 0.5)',
+    borderRadius: '20px',
+    backgroundColor: 'white',
+    paddingTop: '2rem',
+    paddingBottom: '2rem',
+    paddingLeft: '1rem',
+    paddingRight: '1rem',
+  },
+  formInput: {
+    width: '300px',
+    borderRadius: '3px',
+    border: '1px solid #D2D3D6',
+    marginBottom: '1rem',
+  }
+})
+
 const textStyles = extendTheme({
   display1: {
     fontSize: ['3.5rem'],
@@ -47,7 +65,7 @@ const textStyles = extendTheme({
     fontSize: ['1.75rem'],
     lineHeight: ['2rem'],
     fontWeight: ['bold'],
-    letterSpacing: ['-0.14rem'],
+    letterSpacing: ['-0.014rem'],
     color: 'primary.600',
   },
   subtitle1: {
@@ -81,6 +99,9 @@ const theme = extendTheme({
   colors: {
     base: '#FEFBF8',
     black: '#16161D',
+    accent: {
+      500: '#FA9579'
+    },
     primary: {
       500: '#82648F',
       600: '#454367',
@@ -131,6 +152,7 @@ const theme = extendTheme({
     },
   },
   textStyles,
+  layerStyles,
 })
 
 export default theme
