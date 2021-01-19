@@ -22,33 +22,33 @@ export const InQueue = ({
   return <>
     <Center>
       <PeopleOnPhones
-        style={{ width: '350px', maxWidth: '100%' }}
-        />
+        style={{ width: '360px', maxWidth: '100%' }}
+      />
     </Center>
     <Box
       layerStyle="card"
-      >
+    >
       <Text
         textStyle="subtitle2"
-        >
-        { t('queue-position') }
+      >
+        {t('queue-position')}
       </Text>
       <Heading
         textStyle="display3"
         mb="2rem"
-        >
-        {numberOfTicketsAhead} {numberOfTicketsAhead === 1 ? 'person' : 'people'} { t('ahead-of-you') }
+      >
+        {numberOfTicketsAhead} {numberOfTicketsAhead === 1 ? 'person' : 'people'} {t('ahead-of-you')}
       </Heading>
 
       <Text
         textStyle="subtitle2"
-        >
-        { t('estimated-waiting-time') }
+      >
+        {t('estimated-waiting-time')}
       </Text>
       <Heading
         textStyle="display3"
-        >
-        {waitingTime * numberOfTicketsAhead} { t('minutes') }
+      >
+        {waitingTime * numberOfTicketsAhead} {t('minutes')}
       </Heading>
     </Box>
 
@@ -63,7 +63,7 @@ export const InQueue = ({
       onClick={leaveQueue}
       disabled={!queueId || !ticketId}
     >
-      { t('leave-the-queue') }
+      {t('leave-the-queue')}
     </Button>
   </>
 }

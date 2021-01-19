@@ -14,7 +14,7 @@ import {
   Heading,
   Box,
   Button,
-  Input
+  Input, Center
 } from '@chakra-ui/react'
 import useTranslation from 'next-translate/useTranslation'
 const Index = () => {
@@ -79,40 +79,39 @@ const Index = () => {
       <NavBar />
       <Main>
         <Flex direction="column" alignItems="center">
-          <Text textStyle="body1" color="primary.500" textAlign="center">{t('queue-welcome-message')}</Text>
-          <Text textStyle="heading1" textAlign="center">{boardName}</Text>
+          <Text textStyle="display3" color="primary.500" fontWeight="400" textAlign="center">{t('queue-welcome-message')}</Text>
+          <Text textStyle="display3" textAlign="center">{boardName}</Text>
         </Flex>
         <Flex direction="column" alignItems="center">
-          <ManWithHourglass
-            style={{ maxWidth: '200px' }}
+          <Flex direction="column" alignItems="center">
+            <ManWithHourglass
+              style={{ width: '200px', maxWidth: '100%' }}
             />
-        </Flex>
-        <Flex direction="column" alignItems="center">
+          </Flex>
           <Box
-            mt="-10px"
             layerStyle="card"
-            >
+          >
             <form
               onSubmit={submit}
-              >
+            >
               <Flex direction="column">
                 <Text
                   pb="0.5rem"
                   textStyle="subtitle1"
-                  >
-                  { t('your-name') }
+                >
+                  {t('your-name')}
                 </Text>
                 <Input
                   layerStyle="formInput"
                   name="name"
                   required
-                  />
+                />
                 <Text
                   pt="0.5rem"
                   pb="0.5rem"
                   textStyle="subtitle1"
-                  >
-                  { t('mobile-number') }
+                >
+                  {t('mobile-number')}
                 </Text>
                 <Input
                   layerStyle="formInput"
@@ -139,6 +138,9 @@ const Index = () => {
             </form>
           </Box>
         </Flex>
+
+
+
       </Main>
     </Container >
   )

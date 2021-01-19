@@ -8,10 +8,11 @@ import {
 } from '@chakra-ui/react'
 import useTranslation from 'next-translate/useTranslation'
 
-import AlarmBell from '../../assets/svg/alarm-bell.svg'
+import PeopleOnPhones from '../../assets/svg/people-on-phones.svg'
 
-export const Alerted = ({
+export const NextInQueue = ({
   leaveQueue,
+  numberOfTicketsAhead,
   ticketId,
   queueId,
   waitingTime = 3,
@@ -20,39 +21,35 @@ export const Alerted = ({
 
   return <>
     <Center>
-      <AlarmBell
+      <PeopleOnPhones
         style={{ width: '360px', maxWidth: '100%' }}
       />
     </Center>
     <Box
       layerStyle="card"
-      bgColor="secondary.600"
+      bgColor="base.500"
     >
       <Text
         textStyle="subtitle2"
-        color="white"
       >
         {t('queue-position')}
       </Text>
       <Heading
         textStyle="display3"
-        color="white"
         mb="2rem"
       >
-        {t('its-your-turn')}
+        {t('youre-next')}
       </Heading>
 
       <Text
         textStyle="subtitle2"
-        color="white"
       >
-        {t('your-queue-number-will-be-held-for')}
+        {t('estimated-waiting-time')}
       </Text>
       <Heading
         textStyle="display3"
-        color="white"
       >
-        {waitingTime} {t('minutes')}
+        {waitingTime * numberOfTicketsAhead} {t('minutes')}
       </Heading>
     </Box>
 

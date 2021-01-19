@@ -3,20 +3,20 @@
   "demo-title": "Welcome to QueueSG",
   "queue-welcome-message": "You are joining the queue at",
   "try-the-demo": "Try the demo",
-  
   "your-name": "Your name",
   "mobile-number": "Mobile number",
   "join-queue": "Join Queue",
-
   "queue-position": "Queue position",
   "estimated-waiting-time": "Estimated waiting time",
+  "youre-next": "You're next!",
   "ahead-of-you": "ahead of you",
   "minutes": "minutes",
   "leave-the-queue": "Leave the queue",
+  "your-queue-number-was": " Your queue number was already called and has since expired.",
+  "rejoin-the-queue": "Rejoin the queue",
   "last-updated-automatically-at": "Last updated automatically at ",
-
   "its-your-turn": "It's your turn!",
   "your-queue-number-will-be-held-for": "Your queue number will be held for",
-
+  "thanks-for-coming": "Thanks for coming!",
   "variable-example": "Using a variable {{count}}"
 }

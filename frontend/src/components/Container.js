@@ -13,7 +13,7 @@ export const Container = (props) => {
         justifyContent="center"
         alignItems="center"
         direction="column"
-        bg="base"
+        bg="base.100"
         color='primary.600'
         {...props}
       />

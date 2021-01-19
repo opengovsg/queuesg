@@ -5,17 +5,17 @@ export const ViewHeader = ({ board }) => {
     <Grid
       w="100%"
       h="100%"
-      bg="base"
+      bg="base.100"
       templateColumns="repeat(6, 1fr)"
-      >
+    >
       <GridItem
         colSpan="3"
-        >
+      >
         <Flex
           h="100%"
           alignContent="center"
           mx="6"
-          >
+        >
           <Center>
             <Text fontSize="lg" fontWeight="bold" color="primary.500">QueueSG</Text>
           </Center>
@@ -23,18 +23,18 @@ export const ViewHeader = ({ board }) => {
       </GridItem>
       <GridItem
         colSpan="3"
-        >
+      >
         <Flex
           h="100%"
           alignContent="center"
           justifyContent="flex-end"
           mx="6"
-          >
+        >
           <Center>
             <Text
               textStyle="heading1"
-              >
-              { board ? board.name : '-' }
+            >
+              {board ? board.name : '-'}
             </Text>
           </Center>
         </Flex>
