@@ -3,20 +3,22 @@
   "demo-title": "Welcome to QueueSG",
   "queue-welcome-message": "你好，世界",
   "try-the-demo": "尝试演示",
-  
   "your-name": "名称",
   "mobile-number": "手机号码",
   "join-queue": "加入队列",
-
   "queue-position": "Queue Position",
   "estimated-waiting-time": "Estimated waiting time",
+  "youre-next": "You're next!",
   "ahead-of-you": "ahead of you",
   "minutes": "minutes",
   "leave-the-queue": "Leave the queue",
+  "your-queue-number-was": " Your queue number was already called and has since expired.",
+  "rejoin-the-queue": "Rejoin the queue",
   "last-updated-automatically-at": "Last updated automatically at ",
-
   "its-your-turn": "It's your turn!",
   "your-queue-number-will-be-held-for": "Your queue number will be held for",
-
-  "variable-example": "Using a variable {{count}}"
+  "thanks-for-coming": "Thanks for coming!",
+  "variable-example": "Using a variable {{count}}",
+  "built-by": "Built by",
+  "copyright": "Open Government Products, Government Technology Agency of Singapore"
 }

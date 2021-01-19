@@ -2,11 +2,11 @@ import {
   Heading,
   Center,
   Box,
-  Button,
-  Text
+  Button
 } from '@chakra-ui/react'
 import { Container } from '../components/Container'
 import { Main } from '../components/Main'
+import { Footer } from '../components/Footer'
 import useTranslation from 'next-translate/useTranslation'
 import { NavBar } from '../components/Navbar'
 import Link from 'next/link'
@@ -52,6 +52,7 @@ const Index = () => {
           </Center>
         </Box>
       </Main>
+      <Footer />
     </Container>
   )
 }

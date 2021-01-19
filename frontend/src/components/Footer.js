@@ -1,3 +1,35 @@
-import { Flex } from '@chakra-ui/react'
+import { Box, Flex, Text } from '@chakra-ui/react'
+import useTranslation from 'next-translate/useTranslation'
 
-export const Footer = (props) => <Flex as="footer" py="8rem" {...props} />
+import LogoOgp from "../../src/assets/svg/logo-ogp.svg"
+
+export const Footer = (props) => {
+  const { t, lang } = useTranslation('common')
+
+  return <Box
+    bgColor="primary.600"
+    color="white"
+    w="100vw"
+    maxWidth="400px"
+    mt="1rem"
+    px={4}
+    py={8}
+    as="footer"
+  >
+    <Text
+      color="gray.500"
+      textStyle="body2"
+      mb={4}
+    >
+      {t('built-by')}
+    </Text>
+    <LogoOgp />
+    <Text
+      color="gray.500"
+      textStyle="body2"
+      mt={4}
+    >
+      {t('copyright')}
+    </Text>
+  </Box>
+}
