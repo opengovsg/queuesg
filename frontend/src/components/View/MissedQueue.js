@@ -3,14 +3,18 @@ import {
   Center,
   Heading,
 } from '@chakra-ui/react'
-
+import { QrCode } from './QrCode'
 import { getQueueNumber } from '../../utils'
 
 export const MissedQueue = ({
-  tickets = []
+  tickets = [],
+  queuePendingUrl,
 }) => {
-  return (
-    <Center h="100%">
+  return <>
+    <Box
+      mx={20}
+      my={20}
+      >
       <Box>
         <Heading
           textStyle="display1"
@@ -40,6 +44,14 @@ export const MissedQueue = ({
           </Heading>
         }
       </Box>
-    </Center>
-  )
+    </Box>
+    <Box
+      mx={20}
+      my={20}
+      >
+      <QrCode
+        queuePendingUrl={queuePendingUrl}
+        />
+    </Box>
+  </>
 }

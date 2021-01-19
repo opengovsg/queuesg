@@ -9,7 +9,10 @@ export const CurrentlyServingQueue = ({
   tickets = []
 }) => {
   return (
-    <Center h="100%">
+    <Box
+      mx={20}
+      my={20}
+      >
       <Box>
         <Heading
           textStyle="display1"
@@ -39,6 +42,6 @@ export const CurrentlyServingQueue = ({
           </Heading>
         }
       </Box>
-    </Center>
+    </Box>
   )
 }

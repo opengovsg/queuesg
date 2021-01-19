@@ -16,6 +16,8 @@ import { ViewFooter } from '../components/View/ViewFooter'
 
 const Index = () => {
   const [board, setBoard] = useState(null) 
+  const [queuePendingId, setQueuePendingId] = useState(null)
+  const [queuePendingUrl, setQueuePendingUrl] = useState('') 
   const [queueAlertedId, setQueueAlertedId] = useState(null)
   const [ticketsAlerted, setTicketsAlerted] = useState([])
   const [queueMissedId, setQueueMissedId] = useState(null)
@@ -63,6 +65,9 @@ const Index = () => {
             setQueueAlertedId(list.id)
           } else if(list.name.indexOf(QUEUE_TITLES.MISSED) > -1) {
             setQueueMissedId(list.id)
+          } else if(list.name.indexOf(QUEUE_TITLES.PENDING) > -1) {
+            setQueuePendingId(list.id)
+            setQueuePendingUrl(location.origin + `/queue?id=${queuePendingId}`)
           }
         })
       } catch (error) {
@@ -117,6 +122,7 @@ const Index = () => {
         >
         <MissedQueue
           tickets={ticketsMissed}
+          queuePendingUrl={queuePendingUrl}
           />
       </GridItem>
       <GridItem
