@@ -19,7 +19,7 @@ export const NavBar = (props) => {
       justify="space-between"
       w="100vw"
       p={8}
-      bg="base"
+      bg="base.100"
       color={"white"}
       {...props}>
       <Box w="200px">
@@ -27,7 +27,7 @@ export const NavBar = (props) => {
           textStyle="subtitle1"
           fontWeight="bold"
           color="accent.500"
-          >
+        >
           queue.gov.sg
         </Heading>
       </Box>
