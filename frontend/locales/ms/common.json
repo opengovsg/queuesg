@@ -1,5 +1,12 @@
 {
   "lang": "Bahasa Melayu",
-  "title": "Hai dunia",
+  "demo-title": "Welcome to QueueSG",
+  "queue-welcome-message": "Hai dunia",
+  "try-the-demo": "Cubalah Demo",
+  
+  "your-name": "Nama",
+  "mobile-number": "Nombor Telefon",
+  "join-queue": "Sertai Barisan",
+
   "variable-example": "Using a variable {{count}}"
 }

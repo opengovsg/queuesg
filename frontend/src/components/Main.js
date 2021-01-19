@@ -2,12 +2,8 @@ import { Stack } from '@chakra-ui/react'
 
 export const Main = (props) => (
   <Stack
-    height="90vh"
-    width="100%"
-    maxWidth="48rem"
-    margin="0"
-    padding="0"
-    spacing="1.5rem"
+    w="100vw"
+    h="calc(100vh - 96px)"
     justifyContent="space-evenly"
     {...props}
   />

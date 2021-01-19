@@ -6,6 +6,8 @@ import queryString from 'query-string';
 import axios from 'axios'
 import { NavBar } from '../components/Navbar'
 
+import ManWithHourglass from "../../src/assets/svg/man-with-hourglass.svg"
+
 import {
   Text,
   Flex,
@@ -77,31 +79,65 @@ const Index = () => {
       <NavBar />
       <Main>
         <Flex direction="column" alignItems="center">
-          <Heading fontSize="32px" fontWeight="semi" textAlign="center">{t('title')}</Heading>
-          <Heading fontSize="64px" fontWeight="bold" textAlign="center">{boardName}</Heading>
+          <Text textStyle="body1" color="primary.500" textAlign="center">{t('queue-welcome-message')}</Text>
+          <Text textStyle="heading1" textAlign="center">{boardName}</Text>
         </Flex>
         <Flex direction="column" alignItems="center">
-          <Text fontSize="24px" width="400px" textAlign="center">
-            {message}
-          </Text>
+          <ManWithHourglass
+            style={{ maxWidth: '200px' }}
+            />
         </Flex>
         <Flex direction="column" alignItems="center">
-
-          <form onSubmit={submit} >
-            <Flex direction="column" alignItems="center">
-              <Input placeholder={'name'} name="name" size="lg" width="320px" fontSize="24px" my="10px" required />
-              <Input placeholder={'contact'} name="phone" size="lg" width="320px" fontSize="24px" my="10px"
-                pattern="^(8|9)(\d{7})$" required
-                title="contact should be an 8 digit Singapore number i.e. 8xxxxxxx" />
-              {/* For POC, fix the 2 fields to name and contact */}
-              {/* {registrationFields.map((val, index) => {
-                return <Input key={index} placeholder={val} size="lg" width="320px" fontSize="24px" my="10px" />
-              })} */}
-              <Button width="180px" colorScheme="purple" size="lg" variant="solid" marginTop="10px"
-                type="submit"
-              >Join</Button>
-            </Flex>
-          </form>
+          <Box
+            mt="-10px"
+            layerStyle="card"
+            >
+            <form
+              onSubmit={submit}
+              >
+              <Flex direction="column">
+                <Text
+                  pb="0.5rem"
+                  textStyle="subtitle1"
+                  >
+                  { t('your-name') }
+                </Text>
+                <Input
+                  layerStyle="formInput"
+                  name="name"
+                  required
+                  />
+                <Text
+                  pt="0.5rem"
+                  pb="0.5rem"
+                  textStyle="subtitle1"
+                  >
+                  { t('mobile-number') }
+                </Text>
+                <Input
+                  layerStyle="formInput"
+                  name="phone"
+                  pattern="^(8|9)(\d{7})$" required
+                  title="contact should be an 8 digit Singapore number i.e. 8xxxxxxx" />
+                {/* For POC, fix the 2 fields to name and contact */}
+                {/* {registrationFields.map((val, index) => {
+                  return <Input key={index} placeholder={val} size="lg" width="320px" fontSize="24px" my="10px" />
+                })} */}
+                <Button
+                  bgColor="primary.500"
+                  borderRadius="3px"
+                  isFullWidth={true}
+                  color="white"
+                  size="lg"
+                  variant="solid"
+                  marginTop="10px"
+                  type="submit"
+                >
+                  {t('join-queue')}
+                </Button>
+              </Flex>
+            </form>
+          </Box>
         </Flex>
       </Main>
     </Container >
