@@ -14,6 +14,69 @@ const breakpoints = createBreakpoints({
   xl: '80em',
 })
 
+const textStyles = extendTheme({
+  display1: {
+    fontSize: ['3.5rem'],
+    lineHeight: ['4rem'],
+    fontWeight: 'bold',
+    letterSpacing: '-0.022rem',
+    color: 'primary.600',
+  },
+  display2: {
+    fontSize: ['2.5rem'],
+    lineHeight: ['3.5rem'],
+    fontWeight: 'semibold',
+    letterSpacing: '-0.022rem',
+    color: 'primary.600',
+  },
+  display3: {
+    fontSize: ['1.5rem'],
+    lineHeight: ['2rem'],
+    fontWeight: 'semibold',
+    letterSpacing: '0.019rem',
+    color: 'primary.600',
+  },
+  heading1: {
+    fontSize: ['1rem', '1.5rem'],
+    lineHeight: ['1.5rem', '2rem'],
+    fontWeight: ['semibold', 'bold'],
+    letterSpacing: ['0.08rem', '0.1rem'],
+    color: 'primary.600',
+  },
+  heading2: {
+    fontSize: ['1.75rem'],
+    lineHeight: ['2rem'],
+    fontWeight: ['bold'],
+    letterSpacing: ['-0.14rem'],
+    color: 'primary.600',
+  },
+  subtitle1: {
+    fontSize: ['1rem'],
+    lineHeight: ['1.5rem'],
+    fontWeight: ['semibold'],
+    letterSpacing: ['-0.011rem'],
+    color: 'primary.600',
+  },
+  body1: {
+    fontSize: ['1rem'],
+    lineHeight: ['1.5rem'],
+    letterSpacing: ['-0.011rem'],
+    color: 'primary.600',
+  },
+  body2: {
+    fontSize: ['0.875rem'],
+    lineHeight: ['1.5rem'],
+    letterSpacing: ['-0.006rem'],
+    color: 'primary.600',
+  },
+  body3: {
+    fontSize: ['0.8125rem'],
+    lineHeight: ['1rem'],
+    letterSpacing: ['-0.025rem'],
+    color: 'primary.600',
+  },
+})
+
 const theme = extendTheme({
   colors: {
     base: '#FEFBF8',
@@ -67,6 +130,7 @@ const theme = extendTheme({
       viewBox: '0 0 3000 3163',
     },
   },
+  textStyles,
 })
 
 export default theme
