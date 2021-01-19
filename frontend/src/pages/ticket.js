@@ -5,6 +5,7 @@ import {
 } from '@chakra-ui/react'
 import { Container } from '../components/Container'
 import { Main } from '../components/Main'
+import { Footer } from '../components/Footer'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import queryString from 'query-string';
