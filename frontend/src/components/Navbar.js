@@ -1,6 +1,5 @@
 import { Box, Text, Flex, Button, Heading } from '@chakra-ui/react'
 import useTranslation from 'next-translate/useTranslation'
-import i18nConfig from '../../i18n.json'
 import { ChevronDownIcon } from '@chakra-ui/icons'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
@@ -17,8 +16,8 @@ export const NavBar = (props) => {
       as="nav"
       align="center"
       justify="space-between"
-      w="100vw"
-      p={8}
+      w="360px"
+      py={8}
       bg="base.100"
       color={"white"}
       {...props}>

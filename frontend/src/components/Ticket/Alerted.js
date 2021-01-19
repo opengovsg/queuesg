@@ -21,38 +21,38 @@ export const Alerted = ({
   return <>
     <Center>
       <AlarmBell
-        style={{ width: '350px', maxWidth: '100%' }}
-        />
+        style={{ width: '360px', maxWidth: '100%' }}
+      />
     </Center>
     <Box
       layerStyle="card"
       bgColor="secondary.600"
-      >
+    >
       <Text
         textStyle="subtitle2"
         color="white"
-        >
-        { t('queue-position') }
+      >
+        {t('queue-position')}
       </Text>
       <Heading
         textStyle="display3"
         color="white"
         mb="2rem"
-        >
-        { t('its-your-turn') }
+      >
+        {t('its-your-turn')}
       </Heading>
 
       <Text
         textStyle="subtitle2"
         color="white"
-        >
-        { t('your-queue-number-will-be-held-for') }
+      >
+        {t('your-queue-number-will-be-held-for')}
       </Text>
       <Heading
         textStyle="display3"
         color="white"
-        >
-        { waitingTime } { t('minutes') }
+      >
+        {waitingTime} {t('minutes')}
       </Heading>
     </Box>
 
@@ -67,7 +67,7 @@ export const Alerted = ({
       onClick={leaveQueue}
       disabled={!queueId || !ticketId}
     >
-      { t('leave-the-queue') }
+      {t('leave-the-queue')}
     </Button>
   </>
 }

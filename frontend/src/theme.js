@@ -20,7 +20,7 @@ const layerStyles = extendTheme({
     borderRadius: '20px',
     backgroundColor: 'white',
     padding: '1.5rem',
-    width: "350px",
+    width: "360px",
     maxWidth: '100%',
   },
   formInput: {
