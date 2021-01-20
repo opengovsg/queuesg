@@ -7,7 +7,8 @@ import {
 import { Container } from '../components/Container'
 import { Main } from '../components/Main'
 import { Footer } from '../components/Footer'
-import { useEffect, useState, useInterval } from 'react'
+import { useInterval } from '../utils'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import queryString from 'query-string';
 import axios from 'axios'
