@@ -3,7 +3,7 @@ import { Main } from '../components/Main'
 import { Footer } from '../components/Footer'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import queryString from 'query-string';
+import queryString from 'query-string'
 import axios from 'axios'
 import { NavBar } from '../components/Navbar'
 

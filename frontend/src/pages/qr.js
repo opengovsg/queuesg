@@ -1,39 +1,83 @@
-import { Container } from '../components/Container'
-import { Main } from '../components/Main'
+import axios from 'axios'
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/router'
 import {
-  Flex,
   Heading,
   Box,
-  Input
+  Center,
+  Text,
 } from '@chakra-ui/react'
-
+import queryString from 'query-string'
 import QRCode from 'qrcode.react'
+
+import { Container } from '../components/Container'
+import { Main } from '../components/Main'
+import { NavBar } from '../components/Navbar'
+import PeopleOnPhones from '../assets/svg/people-on-phones.svg'
 const Index = () => {
-  const router = useRouter()
   const [url, setUrl] = useState('')
+  const [boardName, setBoardName] = useState('')
 
-  const handleChange = (event) => setUrl(event.target.value)
-
-  useEffect(() => {
-    setUrl(`${location.origin}/queue?id=5ffe9b5ed74ec20e4e4f8dc3`)
+  useEffect(async () => {
+    const query = queryString.parse(location.search)
+    setUrl(`${location.origin}/queue?id=${query.queue}`)
+    await getQueue(query.queue)
   }, [])
+
+  const getQueue = async (queue) => {
+    try {
+      // Get the board queue belongs to this
+      // 1. Verifies that queue actually exists
+      // 2. Gets info stored as JSON in board description
+      const getBoardQueueBelongsTo = await axios.get(`https://api.trello.com/1/lists/${queue}/board?fields=name`)
+      const { name } = getBoardQueueBelongsTo.data
+      setBoardName(name)
+    } catch (err) {
+      console.log('err', err);
+    }
+  }
 
   return (
     <Container>
+      <NavBar />
       <Main>
-        <Heading fontSize="32px" fontWeight="semi" textAlign="center">Generate QR</Heading>
-
-        <Flex direction="column" alignItems="center">
-          <Input placeholder="John Tan" size="lg" paddingX="50px" fontSize="24px" my="20px"
-            onChange={handleChange} value={url} />
-          <Box marginY="30px">
+        <Heading
+          textAlign="center"
+          textStyle="display3"
+          color="primary.500"
+          >
+          {boardName}
+        </Heading>
+        <Heading
+          textAlign="center"
+          textStyle="display2"
+          >
+          Scan QR Code to join the queue
+        </Heading>
+        <Box
+          layerStyle="card"
+          textAlign="center"
+          py={10}
+          >
+          <Center>
             <QRCode value={url} size={220} />
-          </Box>
-        </Flex>
+          </Center>
+
+          <Text
+            textStyle="subtitle1"
+            color="primary.500"
+            mt={6}
+            >
+            {url}
+          </Text>
+        </Box>
+
+        <Center>
+          <PeopleOnPhones
+            style={{ width: '360px', maxWidth: '100%' }}
+          />
+        </Center>
       </Main>
-    </Container >
+    </Container>
   )
 }
 
