@@ -3,7 +3,8 @@ export const TICKET_STATUS = {
   REMOVED: 'removed',
   ALERTED: 'alerted',
   SERVED: 'served',
-  MISSED: 'missed'
+  MISSED: 'missed',
+  ERROR: 'error'
 }
 
 export const QUEUE_TITLES = {
