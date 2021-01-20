@@ -11,7 +11,10 @@ exports.handler = async function (event, context) {
       let res = {}
       // params: type
       const { type } = queryStringParameters
-      if (type === 'boardlists' && queryStringParameters.board) {
+      if (type === 'board' && queryStringParameters.board) {
+        const board = await axios.get(`https://api.trello.com/1/boards/${queryStringParameters.board}?${tokenAndKeyParams}`)
+        res = board.data
+      } else if (type === 'boardlists' && queryStringParameters.board) {
         const boardLists = await axios.get(`https://api.trello.com/1/boards/${queryStringParameters.board}/lists?${tokenAndKeyParams}`)
         res = boardLists.data
       } else if (type === 'queues' && queryStringParameters.queue) {
