@@ -9,7 +9,7 @@ import {
 } from '@chakra-ui/react'
 import useTranslation from 'next-translate/useTranslation'
 
-import AlarmClock from '../../assets/svg/alarm-clock.svg'
+import LadyHoldingPhone from '../../assets/svg/lady-holding-phone.svg'
 
 export const Served = ({ }) => {
   const { t } = useTranslation('common')
@@ -17,20 +17,25 @@ export const Served = ({ }) => {
   return <>
     <Center>
       <Flex direction="column" >
-        <AlarmClock
+        <LadyHoldingPhone
           style={{ width: '360px', maxWidth: '100%' }}
         />
       </Flex>
 
     </Center>
-    <Box
-      layerStyle="card"
-    >
+    <Box>
       <Text
-        marginY="24px"
-        textStyle="body1"
+        mt={8}
+        textStyle="display3"
       >
         {t('thanks-for-coming')}
+      </Text>
+    </Box>
+    <Box>
+      <Text
+        textStyle="body1"
+      >
+        {t('wish-you-good-day-ahead')}
       </Text>
     </Box>
   </>
