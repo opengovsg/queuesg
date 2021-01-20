@@ -20,6 +20,7 @@ import { NextInQueue } from '../components/Ticket/NextInQueue'
 import { Alerted } from '../components/Ticket/Alerted'
 import { Skipped } from '../components/Ticket/Skipped'
 import { Served } from '../components/Ticket/Served'
+import { NotFound } from '../components/Ticket/NotFound'
 import { LeaveModal } from '../components/Ticket/LeaveModal'
 
 const Index = () => {
@@ -111,6 +112,7 @@ const Index = () => {
       console.log('queue pos:', index);
     } catch (err) {
       console.log(err);
+      setTicketState('error')
     }
   }
 
@@ -133,6 +135,7 @@ const Index = () => {
   }
 
   const renderTicket = () => {
+    console.log(ticketState);
     // There are 4 possible ticket states
     // 1. Alerted - Ticket is called by admin
     if (ticketState === TICKET_STATUS.ALERTED) {
@@ -150,6 +153,9 @@ const Index = () => {
     // 3. Missed - Ticket is in [MISSED] / not in the queue / queue doesnt exist
     else if (ticketState === TICKET_STATUS.MISSED || numberOfTicketsAhead === -1) {
       return <Skipped rejoinQueue={rejoinQueue} displayTicketInfo={displayTicketInfo} />
+    }
+    else if (ticketState === TICKET_STATUS.ERROR) {
+      return <NotFound />
     }
     // 4. Next - Ticket 1st in line
     else if (numberOfTicketsAhead === 0) {
@@ -183,16 +189,12 @@ const Index = () => {
       <LeaveModal isOpen={isOpen} onOpen={onOpen} onClose={onClose} leaveQueue={leaveQueue} />
       <NavBar />
       <Main>
-        <Flex direction="column" alignItems="center">
-          <Heading
-            textStyle="display2"
-          >
-            #{ticketNumber}
-          </Heading>
+        {ticketState != TICKET_STATUS.ERROR && <Flex direction="column" alignItems="center">
+          <Heading textStyle="display2">#{ticketNumber}</Heading>
           <Text textStyle="display3" fontWeight="400">
             {displayTicketInfo}
           </Text>
-        </Flex>
+        </Flex>}
 
         <Flex
           direction="column"

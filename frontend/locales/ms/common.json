@@ -24,5 +24,7 @@
   "are-you-sure-you-want-to-leave": "Are you sure you want to leave the queue?",
   "you-will-need-to-scan-again": "You will need to scan the QR code again to rejoin it.",
   "yes-leave-the-queue": "Yes, leave the queue",
-  "no-dont-leave": "No, don't leave"
+  "no-dont-leave": "No, don't leave",
+  "the-queue-you-are-trying-does-not-exist": "The queue you are trying to join does not exist. ",
+  "please-check-link": "Please check the link or approach the staff for help."
 }
