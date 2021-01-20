@@ -6,30 +6,33 @@ import LogoOgp from "../../src/assets/svg/logo-ogp.svg"
 export const Footer = (props) => {
   const { t, lang } = useTranslation('common')
 
-  return <Box
+  return <Flex
     bgColor="primary.600"
-    color="white"
     w="100vw"
-    maxWidth="400px"
-    mt="1rem"
-    px={4}
-    py={8}
     as="footer"
+    justifyContent="center"
   >
-    <Text
-      color="gray.500"
-      textStyle="body2"
-      mb={4}
-    >
-      {t('built-by')}
-    </Text>
-    <LogoOgp />
-    <Text
-      color="gray.500"
-      textStyle="body2"
-      mt={4}
-    >
-      {t('copyright')}
-    </Text>
-  </Box>
+    <Box
+      color="white"
+      maxWidth="360px"
+      px={4}
+      py={8}>
+      <Text
+        color="gray.500"
+        textStyle="body2"
+        mb={4}
+      >
+        {t('built-by')}
+      </Text>
+      <LogoOgp />
+      <Text
+        color="gray.500"
+        textStyle="body2"
+        mt={4}
+      >
+        {t('copyright')}
+      </Text>
+    </Box>
+
+  </Flex>
 }
