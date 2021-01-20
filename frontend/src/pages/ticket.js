@@ -60,20 +60,14 @@ const Index = () => {
   const getTicketStatus = async (ticket) => {
     console.log('getTicketStatus');
     try {
-      // To make sure ticket is valid
-      // Get the list (queue), ticket (card) belongs to on the trello api
-      const getListofCard = await axios.get(`https://api.trello.com/1/cards/${ticket}/list?fields=id,name`)
-      const { id: queueId, name: queueName } = getListofCard.data
+      const getTicket = await axios.get(`/.netlify/functions/ticket?id=${ticket}`)
+      const { queueId, queueName, ticketDesc, numberOfTicketsAhead } = getTicket.data
       setQueueId(queueId)
       setTicketId(ticket)
-
-      // To get card description
-      const getCardDesc = await axios.get(`https://api.trello.com/1/cards/${ticket}`)
-      const { desc } = getCardDesc.data
-      if (desc !== '') {
-        const ticketInfo = JSON.parse(desc)
-        setDisplayTicketInfo(`${ticketInfo.name}, ${ticketInfo.contact}`)
+      if (ticketDesc !== '') {
+        setDisplayTicketInfo(`${ticketDesc.name}, ${ticketDesc.contact}`)
       }
+      setNumberOfTicketsAhead(numberOfTicketsAhead)
 
       // // Update timestamp
       const timestamp = new Date().toLocaleString('en-UK', { hour: 'numeric', minute: 'numeric', hour12: true })
@@ -81,35 +75,15 @@ const Index = () => {
 
       // Hack: Check whether to alert the user based on if the 
       // queue name contains the word 'alert'
-      if (queueName.includes('[ALERT]')) {
-        setTicketState('alerted')//USING THE CONSTANT BREAKS I18N? IDK HOW
-        return
-      }
-      else if (queueName.includes('[DONE]')) {
-        setTicketState('served')
-        // setRefreshEnabled(false)
-        return
-      } else if (queueName.includes('[MISSED]')) {
-        setTicketState('missed')
-        // setRefreshEnabled(false)
-        return
-      } else {
+      // USING THE CONSTANT BREAKS I18N? IDK HOW
+      if (queueName.includes('[ALERT]')) setTicketState('alerted')
+      else if (queueName.includes('[DONE]')) setTicketState('served')
+      else if (queueName.includes('[MISSED]')) setTicketState('missed')
+      else {
         setTicketState('pending')
         setDisplayQueueInfo(queueName)
       }
 
-
-
-      // To check position in queue
-      // Get list and all the cards in it to determind queue position
-      const getCardsOnList = await axios.get(`https://api.trello.com/1/lists/${queueId}/cards`)
-      const ticketsInQueue = getCardsOnList.data
-
-      const index = ticketsInQueue.findIndex(val => val.id === ticket)
-      setNumberOfTicketsAhead(index)
-      console.log('id:', ticket);
-      console.log('queueName: ', queueName);
-      console.log('queue pos:', index);
     } catch (err) {
       console.log(err);
       setTicketState('error')

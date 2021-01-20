@@ -44,7 +44,7 @@ const Index = () => {
   const getBoard = async (boardId) => {
     if(boardId) {
       try {
-        const board = await axios.get(`https://api.trello.com/1/boards/${boardId}`)
+        const board = await axios.get(`/.netlify/functions/view?type=board&board=${boardId}`)
         setBoard(board.data)
       } catch (error) {
         console.error(error)
@@ -58,8 +58,7 @@ const Index = () => {
   const getBoardLists = async (boardId) => {
     if(boardId) {
       try {
-        const boardLists = await axios.get(`https://api.trello.com/1/boards/${boardId}/lists`)
-        
+        const boardLists = await axios.get(`/.netlify/functions/view?type=boardlists&board=${boardId}`)
         boardLists.data.forEach(list => {
           if(list.name.indexOf(QUEUE_TITLES.ALERTED) > -1) {
             setQueueAlertedId(list.id)
@@ -80,12 +79,12 @@ const Index = () => {
    * Gets Queues
    */
   const getQueues = async () => {
-    if(queueAlertedId) {
-      const tickets = await axios.get(`https://api.trello.com/1/lists/${queueAlertedId}/cards`)
+    if (queueAlertedId) {
+      const tickets = await axios.get(`/.netlify/functions/view?type=queues&queue=${queueAlertedId}`)
       setTicketsAlerted(tickets.data)
     }
-    if(queueMissedId) {
-      const tickets = await axios.get(`https://api.trello.com/1/lists/${queueMissedId}/cards`)
+    if (queueMissedId) {
+      const tickets = await axios.get(`/.netlify/functions/view?type=queues&queue=${queueMissedId}`)
       setTicketsMissed(tickets.data)
     }
   }
