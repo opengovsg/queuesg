@@ -11,7 +11,7 @@ import useTranslation from 'next-translate/useTranslation'
 import PeopleOnPhones from '../../assets/svg/people-on-phones.svg'
 
 export const NextInQueue = ({
-  leaveQueue,
+  openLeaveModal,
   numberOfTicketsAhead,
   ticketId,
   queueId,
@@ -61,7 +61,7 @@ export const NextInQueue = ({
       size="lg"
       variant="solid"
       marginTop="2rem"
-      onClick={leaveQueue}
+      onClick={openLeaveModal}
       disabled={!queueId || !ticketId}
     >
       {t('leave-the-queue')}

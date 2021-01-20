@@ -2,10 +2,12 @@ import {
   Text,
   Flex,
   Heading,
+  useDisclosure,
 } from '@chakra-ui/react'
 import { Container } from '../components/Container'
 import { Main } from '../components/Main'
 import { Footer } from '../components/Footer'
+import { useInterval } from '../utils'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import queryString from 'query-string';
@@ -18,6 +20,7 @@ import { NextInQueue } from '../components/Ticket/NextInQueue'
 import { Alerted } from '../components/Ticket/Alerted'
 import { Skipped } from '../components/Ticket/Skipped'
 import { Served } from '../components/Ticket/Served'
+import { LeaveModal } from '../components/Ticket/LeaveModal'
 
 const Index = () => {
   const { t, lang } = useTranslation('common')
@@ -36,6 +39,9 @@ const Index = () => {
   const [displayTicketInfo, setDisplayTicketInfo] = useState('')
   const [lastUpdated, setLastUpdated] = useState('')
 
+  // Leave queue modal
+  const { isOpen, onOpen, onClose } = useDisclosure()
+
   useEffect(() => {
     const query = queryString.parse(location.search);
     if (query.ticket && query.queue && query.ticketNumber) {
@@ -44,10 +50,10 @@ const Index = () => {
     }
   }, [])
 
-  // const refreshInterval = process.env.NEXT_PUBLIC_REFRESH_INTERVAL || 5000
-  // useInterval(() => {
-  //   if (refreshEnabled) getTicketStatus(ticketId)
-  // }, refreshInterval);
+  const refreshInterval = process.env.NEXT_PUBLIC_REFRESH_INTERVAL || 5000
+  useInterval(() => {
+    if (refreshEnabled) getTicketStatus(ticketId)
+  }, refreshInterval);
 
 
   const getTicketStatus = async (ticket) => {
@@ -130,7 +136,7 @@ const Index = () => {
     if (ticketState === TICKET_STATUS.ALERTED) {
       return <Alerted
         waitingTime={waitingTime}
-        leaveQueue={leaveQueue}
+        openLeaveModal={onOpen}
         queueId={queueId}
         ticketId={ticketId}
       />
@@ -147,7 +153,7 @@ const Index = () => {
     else if (numberOfTicketsAhead === 0) {
       return <NextInQueue
         waitingTime={waitingTime}
-        leaveQueue={leaveQueue}
+        openLeaveModal={onOpen}
         queueId={queueId}
         ticketId={ticketId}
         numberOfTicketsAhead={numberOfTicketsAhead}
@@ -157,7 +163,7 @@ const Index = () => {
     else if (numberOfTicketsAhead > 0) {
       return <InQueue
         waitingTime={waitingTime}
-        leaveQueue={leaveQueue}
+        openLeaveModal={onOpen}
         queueId={queueId}
         ticketId={ticketId}
         numberOfTicketsAhead={numberOfTicketsAhead}
@@ -172,6 +178,7 @@ const Index = () => {
 
   return (
     <Container>
+      <LeaveModal isOpen={isOpen} onOpen={onOpen} onClose={onClose} leaveQueue={leaveQueue} />
       <NavBar />
       <Main>
         <Flex direction="column" alignItems="center">

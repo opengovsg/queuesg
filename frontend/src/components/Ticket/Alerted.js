@@ -11,7 +11,7 @@ import useTranslation from 'next-translate/useTranslation'
 import AlarmBell from '../../assets/svg/alarm-bell.svg'
 
 export const Alerted = ({
-  leaveQueue,
+  openLeaveModal,
   ticketId,
   queueId,
   waitingTime = 3,
@@ -64,7 +64,7 @@ export const Alerted = ({
       size="lg"
       variant="solid"
       marginTop="2rem"
-      onClick={leaveQueue}
+      onClick={openLeaveModal}
       disabled={!queueId || !ticketId}
     >
       {t('leave-the-queue')}

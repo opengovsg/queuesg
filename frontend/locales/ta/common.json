@@ -20,5 +20,9 @@
   "thanks-for-coming": "Thanks for coming!",
   "variable-example": "Using a variable {{count}}",
   "built-by": "Built by",
-  "copyright": "Open Government Products, Government Technology Agency of Singapore"
+  "copyright": "Open Government Products, Government Technology Agency of Singapore",
+  "are-you-sure-you-want-to-leave": "Are you sure you want to leave the queue?",
+  "you-will-need-to-scan-again": "You will need to scan the QR code again to rejoin it.",
+  "yes-leave-the-queue": "Yes, leave the queue",
+  "no-dont-leave": "No, don't leave"
 }
