@@ -30,7 +30,7 @@ exports.handler = async function (event, context) {
     } else if (httpMethod === 'PUT') {
       const { id, queue } = queryStringParameters
       if (id && queue) {
-        await axios.put(`https://api.trello.com/1/cards/${id}?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}&idList=${queue}`)
+        await axios.put(`https://api.trello.com/1/cards/${id}?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}&idList=${queue}&pos=bottom`)
       }
       return {
         statusCode: 200,
