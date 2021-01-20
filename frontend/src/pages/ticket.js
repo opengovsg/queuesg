@@ -7,7 +7,7 @@ import {
 import { Container } from '../components/Container'
 import { Main } from '../components/Main'
 import { Footer } from '../components/Footer'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useInterval } from 'react'
 import { useRouter } from 'next/router'
 import queryString from 'query-string';
 import axios from 'axios'
@@ -49,10 +49,10 @@ const Index = () => {
     }
   }, [])
 
-  // const refreshInterval = process.env.NEXT_PUBLIC_REFRESH_INTERVAL || 5000
-  // useInterval(() => {
-  //   if (refreshEnabled) getTicketStatus(ticketId)
-  // }, refreshInterval);
+  const refreshInterval = process.env.NEXT_PUBLIC_REFRESH_INTERVAL || 5000
+  useInterval(() => {
+    if (refreshEnabled) getTicketStatus(ticketId)
+  }, refreshInterval);
 
 
   const getTicketStatus = async (ticket) => {
