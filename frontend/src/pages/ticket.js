@@ -208,7 +208,7 @@ const Index = () => {
           </Flex>
           <Flex
             direction="column"
-            py="15px"
+            py={4}
             w="360px"
           >
             <Text
