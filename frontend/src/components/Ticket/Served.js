@@ -23,15 +23,17 @@ export const Served = ({ }) => {
       </Flex>
 
     </Center>
-    <Box>
+    <Box
+      layerStyle="card"
+      textAlign="center"
+      mt={3}
+    >
       <Text
-        mt={8}
         textStyle="display3"
+        mb={4}
       >
         {t('thanks-for-coming')}
       </Text>
-    </Box>
-    <Box>
       <Text
         textStyle="body1"
       >
