@@ -212,6 +212,7 @@ const Index = () => {
             w="360px"
           >
             <Text
+              textAlign="center"
               textStyle="body2"
               color="gray.500"
             >

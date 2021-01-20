@@ -29,8 +29,9 @@ export const Skipped = ({
       layerStyle="card"
     >
       <Text
-        marginY="24px"
+        my={6}
         textStyle="body1"
+        textAlign="center"
       >
         {t('your-queue-number-was')}
       </Text>
