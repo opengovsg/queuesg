@@ -27,6 +27,14 @@ exports.handler = async function (event, context) {
         };
       }
 
+    } else if (httpMethod === 'PUT') {
+      const { id, queue } = queryStringParameters
+      if (id && queue) {
+        await axios.put(`https://api.trello.com/1/cards/${id}?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}&idList=${queue}`)
+      }
+      return {
+        statusCode: 200,
+      };
     } else if (httpMethod === 'DELETE') {
       const id = queryStringParameters.id
       if (id) {

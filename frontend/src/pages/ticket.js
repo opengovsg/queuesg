@@ -123,10 +123,12 @@ const Index = () => {
     }
   }
 
-  const rejoinQueue = () => {
+  const rejoinQueue = async () => {
     const query = queryString.parse(location.search);
     if (query.queue) {
-      router.push(`/queue?id=${query.queue}`)
+      // NOTE: Using query string queue as that is the initial queue not the current queue
+      await axios.put(`/.netlify/functions/ticket?id=${ticketId}&queue=${query.queue}`)
+      getTicketStatus(query.ticket)
     }
   }
 
