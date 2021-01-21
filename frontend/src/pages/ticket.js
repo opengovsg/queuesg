@@ -46,21 +46,20 @@ const Index = () => {
   useEffect(() => {
     const query = queryString.parse(location.search);
     if (query.ticket && query.queue && query.ticketNumber) {
-      getTicketStatus(query.ticket)
+      getTicketStatus(query.ticket, query.queue)
       setTicketNumber(query.ticketNumber)
     }
   }, [])
 
   const refreshInterval = process.env.NEXT_PUBLIC_REFRESH_INTERVAL || 5000
   useInterval(() => {
-    if (refreshEnabled) getTicketStatus(ticketId)
+    if (refreshEnabled) getTicketStatus(ticketId, queueId)
   }, refreshInterval);
 
 
-  const getTicketStatus = async (ticket) => {
-    console.log('getTicketStatus');
+  const getTicketStatus = async (ticket, currentQueue) => {
     try {
-      const getTicket = await axios.get(`/.netlify/functions/ticket?id=${ticket}`)
+      const getTicket = await axios.get(`/.netlify/functions/ticket?id=${ticket}&queue=${currentQueue}`)
       const { queueId, queueName, ticketDesc, numberOfTicketsAhead } = getTicket.data
       setQueueId(queueId)
       setTicketId(ticket)
@@ -104,12 +103,11 @@ const Index = () => {
     if (query.queue) {
       // NOTE: Using query string queue as that is the initial queue not the current queue
       await axios.put(`/.netlify/functions/ticket?id=${ticketId}&queue=${query.queue}`)
-      getTicketStatus(query.ticket)
+      getTicketStatus(query.ticket, query.queue)
     }
   }
 
   const renderTicket = () => {
-    console.log(ticketState);
     // There are 4 possible ticket states
     // 1. Alerted - Ticket is called by admin
     if (ticketState === TICKET_STATUS.ALERTED) {
