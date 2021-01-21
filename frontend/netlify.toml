@@ -1,4 +1,4 @@
-[build]
+[template.build]
   base = "frontend"
   command = "npm install && npm run build"
   publish = "frontend/frontend"
