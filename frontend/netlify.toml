@@ -1,0 +1,10 @@
+[build]
+  base = "frontend"
+  command = "npm install && npm run build"
+  publish = "frontend/frontend"
+
+[template.environment]
+  IS_PUBLIC_BOARD = false
+  NEXT_PUBLIC_REFRESH_INTERVAL = 5000
+  TRELLO_KEY = ""
+  TRELLO_TOKEN = ""
