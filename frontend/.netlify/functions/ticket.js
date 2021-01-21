@@ -8,7 +8,7 @@ exports.handler = async function (event, context) {
 
     if (httpMethod === 'GET') {
       // params: ticketId
-      const { id } = queryStringParameters
+      const { id, queue: queueId } = queryStringParameters
 
       // return object
       let res = {
@@ -18,22 +18,32 @@ exports.handler = async function (event, context) {
         ticketDesc: '',
         numberOfTicketsAhead: -1
       }
-      const getListofCard = await axios.get(`https://api.trello.com/1/cards/${id}/list?fields=name&${tokenAndKeyParams}`)
-      const { id: queueId, name: queueName } = getListofCard.data
-      res.queueId = queueId
-      res.queueName = queueName
-      const getCardDesc = await axios.get(`https://api.trello.com/1/cards/${id}?fields=desc,idShort&${tokenAndKeyParams}`)
-      const { desc } = getCardDesc.data
-      if (desc !== '') {
-        res.ticketDesc = JSON.parse(desc)
+
+      const batchUrls = [
+        `/cards/${id}/list?fields=name`,
+        `/cards/${id}`,
+        `/lists/${queueId}/cards`]
+        .join(',')
+      const batchAPICall = await axios.get(`https://api.trello.com/1/batch?urls=${batchUrls}&${tokenAndKeyParams}`)
+
+      const [getListofCard, getCardDesc, getCardsOnList] = batchAPICall.data
+
+      //Check that all Batch apis returned 200
+      if (!getListofCard['200'] || !getCardDesc['200'] || !getCardsOnList['200']) {
+        return { statusCode: 400, message: "Batch error" };
       }
+
+      const { id: newQueueId, name: queueName } = getListofCard['200']
+      res.queueId = newQueueId
+      res.queueName = queueName
+
+      const { desc } = getCardDesc['200']
+      if (desc !== '') res.ticketDesc = JSON.parse(desc)
+
       //If list isn't any of the special markers, check for position
       if (!(queueName.includes('[ALERT]') || queueName.includes('[DONE]') || queueName.includes('[MISSED]'))) {
         // To check position in queue
-        // Get list and all the cards in it to determind queue position
-        const getCardsOnList = await axios.get(`https://api.trello.com/1/lists/${queueId}/cards?${tokenAndKeyParams}`)
-        const ticketsInQueue = getCardsOnList.data
-
+        const ticketsInQueue = getCardsOnList['200']
         res.numberOfTicketsAhead = ticketsInQueue.findIndex(val => val.id === id)
       }
 

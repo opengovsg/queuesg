@@ -33,7 +33,7 @@ const Index = () => {
     await getQueues()
   }, [queueAlertedId, queueMissedId])
 
-  const refreshInterval = process.env.NEXT_PUBLIC_REFRESH_INTERVAL || 3000
+  const refreshInterval = process.env.NEXT_PUBLIC_REFRESH_INTERVAL || 5000
   useInterval(() => {
     getQueues()
   }, refreshInterval)
@@ -79,13 +79,10 @@ const Index = () => {
    * Gets Queues
    */
   const getQueues = async () => {
-    if (queueAlertedId) {
-      const tickets = await axios.get(`/.netlify/functions/view?type=queues&queue=${queueAlertedId}`)
-      setTicketsAlerted(tickets.data)
-    }
-    if (queueMissedId) {
-      const tickets = await axios.get(`/.netlify/functions/view?type=queues&queue=${queueMissedId}`)
-      setTicketsMissed(tickets.data)
+    if (queueAlertedId && queueMissedId) {
+      const tickets = await axios.get(`/.netlify/functions/view?type=queues&queueAlertId=${queueAlertedId}&queueMissedId=${queueMissedId}`)
+      setTicketsAlerted(tickets.data[0])
+      setTicketsMissed(tickets.data[1])
     }
   }
 
