@@ -7,4 +7,7 @@
   NEXT_PUBLIC_REFRESH_INTERVAL = "5000"
   TRELLO_KEY = ""
   TRELLO_TOKEN = ""
-  IS_PUBLIC_BOARD = false
+  IS_PUBLIC_BOARD = "false"
+
+[[plugins]]
+  package = "netlify-plugin-nextjs"
