@@ -29,7 +29,9 @@ exports.handler = async function (event, context) {
       const [getListofCard, getCardDesc, getCardsOnList] = batchAPICall.data
 
       //Check that all Batch apis returned 200
-      if (!getListofCard['200'] || !getCardDesc['200'] || !getCardsOnList['200']) return { statusCode: 400 };
+      if (!getListofCard['200'] || !getCardDesc['200'] || !getCardsOnList['200']) {
+        return { statusCode: 400, message: "Batch error" };
+      }
 
       const { id: newQueueId, name: queueName } = getListofCard['200']
       res.queueId = newQueueId
