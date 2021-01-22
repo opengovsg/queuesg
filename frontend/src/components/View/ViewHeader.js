@@ -1,4 +1,6 @@
-import { Box, Center, Grid, GridItem, Text, Flex, Stack, IconButton, Button } from '@chakra-ui/react'
+import { Center, Grid, GridItem, Text, Flex } from '@chakra-ui/react'
+
+import LogoQueue from '../../assets/svg/logo-queue.svg'
 
 export const ViewHeader = ({ board }) => {
   return (
@@ -17,7 +19,9 @@ export const ViewHeader = ({ board }) => {
           mx="6"
         >
           <Center>
-            <Text fontSize="lg" fontWeight="bold" color="primary.500">QueueSG</Text>
+            <LogoQueue
+              height="60px"
+            />
           </Center>
         </Flex>
       </GridItem>
