@@ -156,6 +156,14 @@ const theme = extendTheme({
   },
   textStyles,
   layerStyles,
+  styles: {
+    global: {
+      ".featured-image": {
+        height: "160px",
+        maxWidth: "100%",
+      },
+    }
+  },
 })
 
 export default theme

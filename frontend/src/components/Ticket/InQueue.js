@@ -22,7 +22,7 @@ export const InQueue = ({
   return <>
     <Center>
       <PeopleOnPhones
-        style={{ width: '360px', maxWidth: '100%' }}
+        className="featured-image"
       />
     </Center>
     <Box

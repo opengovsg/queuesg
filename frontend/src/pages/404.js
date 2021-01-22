@@ -14,7 +14,7 @@ import { Main } from '../components/Main'
 import { Footer } from '../components/Footer'
 import NotFound from '../assets/svg/not-found.svg'
 
-export default () => {
+const error404 = () => {
   const { t } = useTranslation('common')
   const goBack = () => {
     window.history.back()
@@ -26,7 +26,7 @@ export default () => {
       <Center>
         <Flex direction="column" >
           <NotFound
-            style={{ width: '360px', maxWidth: '100%' }}
+            className="featured-image"
           />
         </Flex>
       </Center>
@@ -47,3 +47,5 @@ export default () => {
     <Footer/>
   </Container>
 }
+
+export default error404

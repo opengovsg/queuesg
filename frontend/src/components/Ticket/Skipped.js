@@ -20,7 +20,7 @@ export const Skipped = ({
     <Center>
       <Flex direction="column" >
         <AlarmClock
-          style={{ width: '360px', maxWidth: '100%' }}
+          className="featured-image"
         />
       </Flex>
 

@@ -25,7 +25,9 @@ export const Footer = (props) => {
       >
         {t('built-by')}
       </Text>
-      <LogoOgp />
+      <LogoOgp
+        width="180px"
+        />
       <Text
         color="gray.500"
         textStyle="body2"

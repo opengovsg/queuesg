@@ -84,7 +84,7 @@ const Index = () => {
         <Flex direction="column" alignItems="center">
           <Flex direction="column" alignItems="center">
             <ManWithHourglass
-              style={{ width: '200px', maxWidth: '100%' }}
+              className="featured-image"
             />
           </Flex>
           <Box
