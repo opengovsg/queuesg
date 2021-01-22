@@ -36,6 +36,7 @@ export const NavBar = (props) => {
       align="center"
       justify="space-between"
       w="360px"
+      maxW="100%"
       pt={4}
       pb={8}
       px={4}

@@ -24,10 +24,16 @@ export function LeaveModal({ isOpen, onOpen, onClose, leaveQueue }) {
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="full">
       <ModalOverlay />
-      <ModalContent marginY={0} borderRadius={0} alignItems="center">
-
+      <ModalContent
+        marginY={0}
+        borderRadius={0}
+        alignItems="center"
+      >
         <ModalCloseButton />
-        <ModalBody width="360px">
+        <ModalBody
+          width="360px"
+          maxW="100%"
+          >
           <Heading textStyle="display3" marginTop="3rem" marginBottom="0.75rem">
             {t('are-you-sure-you-want-to-leave')}
           </Heading>

@@ -175,13 +175,16 @@ const Index = () => {
           <Flex
             direction="column"
             alignItems="center"
-            w="360px">
+            w="360px"
+            maxW="100%"
+            >
             {renderTicket()}
           </Flex>
           <Flex
             direction="column"
             py={4}
             w="360px"
+            maxW="100%"
           >
             <Text
               textAlign="center"
