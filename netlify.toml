@@ -8,6 +8,4 @@
   TRELLO_KEY = ""
   TRELLO_TOKEN = ""
   IS_PUBLIC_BOARD = "false"
-
-[[plugins]]
-  package = "netlify-plugin-nextjs"
+  
