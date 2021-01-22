@@ -22,28 +22,35 @@ const error404 = () => {
 
   return <Container>
     <NavBar />
-    <Main>
-      <Center>
-        <Flex direction="column" >
+    <Flex
+      h="calc(100vh - 72px - 215px)"
+      flexDirection="column"
+      justifyContent="center"
+      px={4}
+      >
+      <Center
+        flexDirection="column"
+      >
+        <Center>
           <NotFound
             className="featured-image"
           />
-        </Flex>
+        </Center>
+        <Box textAlign="center">
+          <Heading textStyle="display3" my={4}>
+            {t("we-cant-seem-to-find-the-page-you-are-looking-for")}
+          </Heading>
+          <Button
+            bgColor="primary.500"
+            color="white"
+            leftIcon={<ArrowBackIcon />}
+            onClick={goBack}
+          >
+            {t('go-back')}
+          </Button>
+        </Box>
       </Center>
-      <Box textAlign="center">
-        <Heading textStyle="display3" my={4}>
-          {t("we-cant-seem-to-find-the-page-you-are-looking-for")}
-        </Heading>
-        <Button
-          bgColor="primary.500"
-          color="white"
-          leftIcon={<ArrowBackIcon />}
-          onClick={goBack}
-        >
-          {t('go-back')}
-        </Button>
-      </Box>
-    </Main>
+    </Flex>
     <Footer/>
   </Container>
 }
