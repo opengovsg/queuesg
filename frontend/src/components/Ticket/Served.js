@@ -18,7 +18,7 @@ export const Served = ({ }) => {
     <Center>
       <Flex direction="column" >
         <LadyHoldingPhone
-          style={{ width: '360px', maxWidth: '100%' }}
+          className="featured-image"
         />
       </Flex>
 

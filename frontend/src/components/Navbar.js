@@ -11,12 +11,32 @@ export const NavBar = (props) => {
 
   const [menuVisible, setMenuVisible] = useState(false)
 
+  const languages = [
+    {
+      name: 'English',
+      locale: 'en'
+    },
+    {
+      name: '中文',
+      locale: 'cn'
+    },
+    {
+      name: 'Bahasa Melayu',
+      locale: 'ms'
+    },
+    {
+      name: 'தமிழ்',
+      locale: 'ta'
+    },
+  ]
+
   return (
     <Flex
       as="nav"
       align="center"
       justify="space-between"
       w="360px"
+      maxW="100%"
       pt={4}
       pb={8}
       px={4}
@@ -38,7 +58,8 @@ export const NavBar = (props) => {
       >
         <Button
           rightIcon={<ChevronDownIcon />}
-          textColor="#636467" variant="link"
+          textColor="#636467"
+          variant="link"
           onClick={() => setMenuVisible(!menuVisible)}
         >
           {t('lang')}
@@ -54,16 +75,28 @@ export const NavBar = (props) => {
           borderRadius="5px"
           width="160px"
         >
-          <Link href={`${router.asPath}`} locale={'en'} >
-            <Text margin="16px" fontSize="16px" lineHeight="24px">English</Text>
-          </Link>
-          <Link href={`${router.asPath}`} locale={'cn'} >
-            <Text margin="16px" fontSize="16px" lineHeight="24px">中文</Text></Link>
-          <Link href={`${router.asPath}`} locale={'ms'} >
-            <Text margin="16px" fontSize="16px" lineHeight="24px"> Bahasa Melayu</Text></Link>
-          <Link href={`${router.asPath}`} locale={'ta'} >
-            <Text margin="16px" fontSize="16px" lineHeight="24px"> தமிழ்</Text></Link>
-
+          {
+            languages.map(language => (
+              <Link
+                key={language.name}
+                href={`${router.asPath}`}
+                locale={language.locale}
+              >
+                <Box
+                  m={4}
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => setMenuVisible(false)}
+                  >
+                  <Text
+                    fontSize="16px"
+                    lineHeight="24px"
+                  >
+                    { language.name }
+                  </Text>
+                </Box>
+              </Link>
+            ))
+          }
         </Box>}
       </Box>
 

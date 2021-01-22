@@ -21,7 +21,7 @@ export const Alerted = ({
   return <>
     <Center>
       <AlarmBell
-        style={{ width: '360px', maxWidth: '100%' }}
+        className="featured-image"
       />
     </Center>
     <Box

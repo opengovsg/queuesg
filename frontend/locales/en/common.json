@@ -26,6 +26,8 @@
   "you-will-need-to-scan-again": "You will need to scan the QR code again to rejoin it.",
   "yes-leave-the-queue": "Yes, leave the queue",
   "no-dont-leave": "No, don't leave",
-  "the-queue-you-are-trying-does-not-exist": "The queue you are trying to join does not exist. ",
-  "please-check-link": "Please check the link or approach the staff for help."
+  "the-queue-you-are-trying-does-not-exist": "The queue you are trying to join does not exist.",
+  "please-check-link": "Please check the link or approach the staff for help.",
+  "we-cant-seem-to-find-the-page-you-are-looking-for": "We can't seem to find the page you are looking for.",
+  "go-back": "Go Back"
 }
