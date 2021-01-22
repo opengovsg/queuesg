@@ -24,6 +24,7 @@ const Index = () => {
   const [boardName, setBoardName] = useState('')
   const [message, setMessage] = useState('')
   const [registrationFields, setRegistrationFields] = useState([])
+  const [isSubmitting, setIsSubmitting] = useState(false)
   useEffect(() => {
     const query = queryString.parse(location.search);
     // Based on queue id, check if queue exists 
@@ -51,6 +52,11 @@ const Index = () => {
   const submit = async (e) => {
     try {
       e.preventDefault()
+
+      //  Don't submit if it is submitting
+      if(isSubmitting) return
+
+      setIsSubmitting(true)
       // THIS IS A HACK to dynamically get values of our generated inputs
       // We can't use ref / controlled components as we want to generate fields
       // on the fly from JSON
@@ -69,7 +75,8 @@ const Index = () => {
       const url = `/ticket?queue=${query.id}&ticket=${ticketId}&ticketNumber=${ticketNumber}`
       router.push(url, url, { locale: lang })
     } catch (err) {
-      console.log(err.response);
+      console.log(err.response)
+      setIsSubmitting(false)
     }
   }
 
@@ -114,15 +121,20 @@ const Index = () => {
                 </Text>
                 <Input
                   layerStyle="formInput"
+                  type="tel"
                   name="phone"
-                  pattern="^(8|9)(\d{7})$" required
-                  title="contact should be an 8 digit Singapore number i.e. 8xxxxxxx" />
+                  pattern="^(8|9)(\d{7})$"
+                  required
+                  title="Mobile should be an 8 digit Singapore number i.e. 8xxxxxxx"
+                  />
                 {/* For POC, fix the 2 fields to name and contact */}
                 {/* {registrationFields.map((val, index) => {
                   return <Input key={index} placeholder={val} size="lg" width="320px" fontSize="24px" my="10px" />
                 })} */}
                 <Button
-                  bgColor="primary.500"
+                  isLoading={isSubmitting}
+                  loadingText={t('joining')}
+                  colorScheme="primary"
                   borderRadius="3px"
                   isFullWidth={true}
                   color="white"
