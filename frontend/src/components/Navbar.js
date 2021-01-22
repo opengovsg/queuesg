@@ -5,6 +5,8 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { useState } from 'react'
 
+import LogoQueue from '../assets/svg/logo-queue.svg'
+
 export const NavBar = (props) => {
   const router = useRouter()
   const { t, lang } = useTranslation('common')
@@ -44,13 +46,9 @@ export const NavBar = (props) => {
       color={"white"}
       {...props}>
       <Box w="200px">
-        <Heading
-          textStyle="subtitle1"
-          fontWeight="bold"
-          color="accent.500"
-        >
-          queue.gov.sg
-        </Heading>
+        <LogoQueue
+          height="36px"
+          />
       </Box>
       <Box
         display={"block"}

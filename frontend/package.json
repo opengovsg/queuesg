@@ -25,5 +25,8 @@
     "react-dom": "17.0.1",
     "socket.io": "^2.3.0"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@netlify/plugin-nextjs": "^1.0.8"
+  }
 }
