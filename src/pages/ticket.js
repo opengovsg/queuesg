@@ -84,12 +84,12 @@ const Index = () => {
       // Hack: Check whether to alert the user based on if the 
       // queue name contains the word 'alert'
       // USING THE CONSTANT BREAKS I18N? IDK HOW
-      if (queueName.includes(QUEUE_TITLES.ALERTED)) setTicketState('alerted')
-      else if (queueName.includes(QUEUE_TITLES.DONE)) {
+      if (queueName.includes('[ALERT]')) setTicketState('alerted')
+      else if (queueName.includes('[DONE]')) {
         setTicketState('served')
         removeCookie('ticket') // Remove cookie so they can join the queue again
       }
-      else if (queueName.includes(QUEUE_TITLES.MISSED)) setTicketState('missed')
+      else if (queueName.includes('[MISSED]')) setTicketState('missed')
       else {
         setTicketState('pending')
       }
