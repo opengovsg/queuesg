@@ -4,17 +4,46 @@ import {
   Box,
   Button
 } from '@chakra-ui/react'
+import axios from 'axios'
+import { useEffect, useState } from 'react'
+import Link from 'next/link'
+import useTranslation from 'next-translate/useTranslation'
+
+import { QUEUE_TITLES, BOARD_ID } from '../constants'
 import { Container } from '../components/Container'
 import { Main } from '../components/Main'
 import { Footer } from '../components/Footer'
-import useTranslation from 'next-translate/useTranslation'
 import { NavBar } from '../components/Navbar'
-import Link from 'next/link'
 
 import PeopleOnPhones from '../assets/svg/people-on-phones.svg'
 
 const Index = () => {
   const { t, lang } = useTranslation('common')
+  const [queuePendingUrl, setQueuePendingUrl] = useState('') 
+
+  useEffect(async () => {
+    console.log(BOARD_ID)
+    await getBoardLists(BOARD_ID)
+  }, [])
+
+  /**
+   *  Gets a board with lists
+   */
+  const getBoardLists = async (boardId) => {
+    if(boardId) {
+      try {
+        const boardLists = await axios.get(`/.netlify/functions/view?type=boardlists&board=${boardId}`)
+        boardLists.data.forEach(list => {
+          if(list.name.indexOf(QUEUE_TITLES.PENDING) > -1) {
+            setQueuePendingUrl(location.origin + `/queue?id=${list.id}`)
+          }
+        })
+      } catch (error) {
+        console.error(error)
+      }
+    }
+  }
+
   return (
     <Container>
       <NavBar />
@@ -36,7 +65,7 @@ const Index = () => {
             mt="4rem"
             >
             <Link
-              href="/queue?id=5ffe9b5ed74ec20e4e4f8dc3"
+              href={`${queuePendingUrl}`}
               >
               <Button
                 bgColor="primary.500"
