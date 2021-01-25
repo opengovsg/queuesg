@@ -1,3 +1,5 @@
+export const BOARD_ID = process.env.NEXT_PUBLIC_TRELLO_BOARD_ID || ''
+
 export const TICKET_STATUS = {
   PENDING: 'pending',
   REMOVED: 'removed',
