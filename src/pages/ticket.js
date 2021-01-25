@@ -12,7 +12,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import queryString from 'query-string';
 import axios from 'axios'
-import { TICKET_STATUS } from '../constants'
+import { TICKET_STATUS, QUEUE_TITLES } from '../constants'
 import { NavBar } from '../components/Navbar'
 import useTranslation from 'next-translate/useTranslation'
 import { InQueue } from '../components/Ticket/InQueue'
@@ -75,9 +75,9 @@ const Index = () => {
       // Hack: Check whether to alert the user based on if the 
       // queue name contains the word 'alert'
       // USING THE CONSTANT BREAKS I18N? IDK HOW
-      if (queueName.includes('[ALERT]')) setTicketState('alerted')
-      else if (queueName.includes('[DONE]')) setTicketState('served')
-      else if (queueName.includes('[MISSED]')) setTicketState('missed')
+      if (queueName.includes(QUEUE_TITLES.ALERTED)) setTicketState('alerted')
+      else if (queueName.includes(QUEUE_TITLES.DONE)) setTicketState('served')
+      else if (queueName.includes(QUEUE_TITLES.MISSED)) setTicketState('missed')
       else {
         setTicketState('pending')
         setDisplayQueueInfo(queueName)
