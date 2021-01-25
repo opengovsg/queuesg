@@ -11,6 +11,8 @@ import useTranslation from 'next-translate/useTranslation'
 import { NavBar } from '../components/Navbar'
 import Link from 'next/link'
 
+import PeopleOnPhones from '../assets/svg/people-on-phones.svg'
+
 const Index = () => {
   const { t, lang } = useTranslation('common')
   return (
@@ -19,36 +21,35 @@ const Index = () => {
       <Main>
         <Box>
           <Heading
-            textStyle="display2"
+            textStyle="heading3"
             textAlign="center"
+            mb={8}
             >
             {t('demo-title')}
           </Heading>
-          <Heading
-            textStyle="display2"
-            textAlign="center"
-            mt="2rem"
-            color="accent.500"
-            >
-            queue.gov.sg
-          </Heading>
+          <Center>
+            <PeopleOnPhones
+              className="featured-image"
+            />
+          </Center>
           <Center
             mt="4rem"
             >
-            <Button
-              bgColor="primary.500"
-              borderRadius="3px"
-              color="white"
-              size="lg"
-              variant="solid"
-              type="submit"
-            >
-              <Link
-                href="/queue?id=5ffe9b5ed74ec20e4e4f8dc3"
-                >
+            <Link
+              href="/queue?id=5ffe9b5ed74ec20e4e4f8dc3"
+              >
+              <Button
+                bgColor="primary.500"
+                borderRadius="3px"
+                isFullWidth={true}
+                color="white"
+                size="lg"
+                variant="solid"
+                type="submit"
+              >
                 {t('try-the-demo')}
-              </Link>
-            </Button>
+              </Button>
+            </Link>
           </Center>
         </Box>
       </Main>
