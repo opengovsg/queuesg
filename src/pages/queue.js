@@ -16,10 +16,12 @@ import {
   Button,
   Input,
 } from '@chakra-ui/react'
+import { useCookies } from 'react-cookie';
 import useTranslation from 'next-translate/useTranslation'
 const Index = () => {
   const { t, lang } = useTranslation('common')
   const router = useRouter()
+  const [cookies, setCookie] = useCookies(['ticket']);
 
   const [boardName, setBoardName] = useState('')
   const [message, setMessage] = useState('')
@@ -27,6 +29,16 @@ const Index = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   useEffect(() => {
     const query = queryString.parse(location.search);
+
+    // First check if user already has cookie for this queue id
+    const ticketCookie = cookies['ticket']
+    if (ticketCookie && ticketCookie.queue) {
+      if (ticketCookie.queue === query.id && ticketCookie.ticket && ticketCookie.ticketNumber) {
+        const url = `/ticket?queue=${ticketCookie.queue}&ticket=${ticketCookie.ticket}&ticketNumber=${ticketCookie.ticketNumber}`
+        router.push(url, url, { locale: lang })
+      }
+      return
+    }
     // Based on queue id, check if queue exists 
     if (query.id) {
       getQueue(query.id)
@@ -54,7 +66,7 @@ const Index = () => {
       e.preventDefault()
 
       //  Don't submit if it is submitting
-      if(isSubmitting) return
+      if (isSubmitting) return
 
       setIsSubmitting(true)
       // THIS IS A HACK to dynamically get values of our generated inputs
@@ -126,7 +138,7 @@ const Index = () => {
                   pattern="^(8|9)(\d{7})$"
                   required
                   title="Mobile should be an 8 digit Singapore number i.e. 8xxxxxxx"
-                  />
+                />
                 {/* For POC, fix the 2 fields to name and contact */}
                 {/* {registrationFields.map((val, index) => {
                   return <Input key={index} placeholder={val} size="lg" width="320px" fontSize="24px" my="10px" />

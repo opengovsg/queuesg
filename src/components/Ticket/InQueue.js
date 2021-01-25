@@ -37,7 +37,7 @@ export const InQueue = ({
         textStyle="display3"
         mb="2rem"
       >
-        {numberOfTicketsAhead} {numberOfTicketsAhead === 1 ? 'person' : 'people'} {t('ahead-of-you')}
+        {numberOfTicketsAhead} {t('ahead-of-you')}
       </Heading>
 
       <Text

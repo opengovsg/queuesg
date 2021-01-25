@@ -22,16 +22,16 @@ import { Skipped } from '../components/Ticket/Skipped'
 import { Served } from '../components/Ticket/Served'
 import { NotFound } from '../components/Ticket/NotFound'
 import { LeaveModal } from '../components/Ticket/LeaveModal'
+import { useCookies } from 'react-cookie';
 
 const Index = () => {
   const { t, lang } = useTranslation('common')
   const router = useRouter()
   const [refreshEnabled, setRefreshEnabled] = useState(true)
 
-  const [waitingTime, setWaitingTime] = useState(3)
+  const waitTimePerTicket = process.env.NEXT_PUBLIC_WAIT_TIME_MINS || 3
 
   const [numberOfTicketsAhead, setNumberOfTicketsAhead] = useState()
-  const [displayQueueInfo, setDisplayQueueInfo] = useState('')
 
   const [ticketState, setTicketState] = useState()
   const [ticketId, setTicketId] = useState()
@@ -39,6 +39,8 @@ const Index = () => {
   const [ticketNumber, setTicketNumber] = useState()
   const [displayTicketInfo, setDisplayTicketInfo] = useState('')
   const [lastUpdated, setLastUpdated] = useState('')
+
+  const [cookies, setCookie, removeCookie] = useCookies(['ticket']);
 
   // Leave queue modal
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -48,6 +50,13 @@ const Index = () => {
     if (query.ticket && query.queue && query.ticketNumber) {
       getTicketStatus(query.ticket, query.queue)
       setTicketNumber(query.ticketNumber)
+
+      // Save ticket info to cookie
+      setCookie('ticket', {
+        queue: query.queue,
+        ticket: query.ticket,
+        ticketNumber: query.ticketNumber
+      })
     }
   }, [])
 
@@ -75,16 +84,19 @@ const Index = () => {
       // Hack: Check whether to alert the user based on if the 
       // queue name contains the word 'alert'
       // USING THE CONSTANT BREAKS I18N? IDK HOW
-      if (queueName.includes(QUEUE_TITLES.ALERTED)) setTicketState('alerted')
-      else if (queueName.includes(QUEUE_TITLES.DONE)) setTicketState('served')
-      else if (queueName.includes(QUEUE_TITLES.MISSED)) setTicketState('missed')
+      if (queueName.includes('[ALERT]')) setTicketState('alerted')
+      else if (queueName.includes('[DONE]')) {
+        setTicketState('served')
+        removeCookie('ticket') // Remove cookie so they can join the queue again
+      }
+      else if (queueName.includes('[MISSED]')) setTicketState('missed')
       else {
         setTicketState('pending')
-        setDisplayQueueInfo(queueName)
       }
 
     } catch (err) {
       console.log(err);
+      removeCookie('ticket') // Remove cookie so they can join the queue again
       setTicketState('error')
     }
   }
@@ -92,6 +104,7 @@ const Index = () => {
   const leaveQueue = async () => {
     try {
       axios.delete(`/.netlify/functions/ticket?id=${ticketId}`)
+      removeCookie('ticket')
       router.push(`/`)
     } catch (error) {
       console.log(error)
@@ -112,7 +125,7 @@ const Index = () => {
     // 1. Alerted - Ticket is called by admin
     if (ticketState === TICKET_STATUS.ALERTED) {
       return <Alerted
-        waitingTime={waitingTime}
+        waitingTime={waitTimePerTicket}
         openLeaveModal={onOpen}
         queueId={queueId}
         ticketId={ticketId}
@@ -124,7 +137,7 @@ const Index = () => {
     }
     // 3. Missed - Ticket is in [MISSED] / not in the queue / queue doesnt exist
     else if (ticketState === TICKET_STATUS.MISSED || numberOfTicketsAhead === -1) {
-      return <Skipped rejoinQueue={rejoinQueue} displayTicketInfo={displayTicketInfo} />
+      return <Skipped rejoinQueue={rejoinQueue} />
     }
     else if (ticketState === TICKET_STATUS.ERROR) {
       return <NotFound />
@@ -132,7 +145,7 @@ const Index = () => {
     // 4. Next - Ticket 1st in line
     else if (numberOfTicketsAhead === 0) {
       return <NextInQueue
-        waitingTime={waitingTime}
+        waitingTime={waitTimePerTicket}
         openLeaveModal={onOpen}
         queueId={queueId}
         ticketId={ticketId}
@@ -142,7 +155,7 @@ const Index = () => {
     // 5. Line - Ticket is behind at least 1 person
     else if (numberOfTicketsAhead > 0) {
       return <InQueue
-        waitingTime={waitingTime}
+        waitingTime={waitTimePerTicket}
         openLeaveModal={onOpen}
         queueId={queueId}
         ticketId={ticketId}
@@ -177,7 +190,7 @@ const Index = () => {
             alignItems="center"
             w="360px"
             maxW="100%"
-            >
+          >
             {renderTicket()}
           </Flex>
           <Flex
