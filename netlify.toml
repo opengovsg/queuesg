@@ -3,7 +3,8 @@
   command = "npm install && npm run build"
   publish = "/.next"
 
-[build.environment]
+[template.environment]
+  NEXT_PUBLIC_TRELLO_BOARD_ID = ""
   NEXT_PUBLIC_REFRESH_INTERVAL = "5000"
   NEXT_PUBLIC_WAIT_TIME_MINS = "3"
   TRELLO_KEY = ""
