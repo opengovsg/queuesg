@@ -1,5 +1,5 @@
 import { ChakraProvider, ColorModeProvider } from '@chakra-ui/react'
-
+import { CookiesProvider } from 'react-cookie';
 import theme from '../theme'
 
 function MyApp({ Component, pageProps }) {
@@ -11,7 +11,9 @@ function MyApp({ Component, pageProps }) {
           useSystemColorMode: false,
         }}
       >
-        <Component {...pageProps} />
+        <CookiesProvider>
+          <Component {...pageProps} />
+        </CookiesProvider>
       </ColorModeProvider>
     </ChakraProvider>
   )
