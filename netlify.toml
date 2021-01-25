@@ -4,10 +4,10 @@
   publish = "/.next"
 
 [template.environment]
-  NEXT_PUBLIC_TRELLO_BOARD_ID=""
-  NEXT_PUBLIC_REFRESH_INTERVAL=""
-  NEXT_PUBLIC_WAIT_TIME_MINS=""
-  TRELLO_KEY=""
-  TRELLO_TOKEN=""
-  IS_PUBLIC_BOARD=""
+  NEXT_PUBLIC_TRELLO_BOARD_ID="Trello Board ID"
+  NEXT_PUBLIC_REFRESH_INTERVAL="Refresh Interval (in milliseconds)"
+  NEXT_PUBLIC_WAIT_TIME_MINS="Waiting Time (in minutes)"
+  TRELLO_KEY="Trello API Key"
+  TRELLO_TOKEN="Trello API Token"
+  IS_PUBLIC_BOARD="Public Board (True/False)"
   
