@@ -1,7 +1,6 @@
 [build]
   base = "/"
   command = "npm install && npm run build"
-  publish = "/.next"
 
 [template.environment]
   NEXT_PUBLIC_TRELLO_BOARD_ID="Trello Board ID"
@@ -11,3 +10,5 @@
   TRELLO_TOKEN="Trello API Token"
   IS_PUBLIC_BOARD="Public Board (True/False)"
   
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
