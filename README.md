@@ -14,13 +14,13 @@ Queue is an open source project for creating a simple queue management system. T
 
 There are two ways to get started.
 
-If you are interested to deploy and run your own Queue Management System as an end user, visit our [Getting Started Guide](https://github.com/datagovsg/hackathon-queue/wiki/Home)
+If you are interested to deploy and run your own Queue Management System as an end user, visit our [Getting Started Guide](https://github.com/datagovsg/hackathon-queue/wiki/Getting-Started)
 
 If you are interested to modify and/or contribute to Queue as a developer, visit our [Contributing Guide](#contributing)
 
 ### Reporting Bugs and Issues
 
-We are using (GitHub Issues)[https://github.com/datagovsg/hackathon-queue/issues] for our public bugs. We keep an eye on this and try to make it clear when we have an internal fix in progress. Before filing a new task, try to make sure your problem doesn’t already exist as a GitHub issue.
+We are using [GitHub Issues](https://github.com/datagovsg/hackathon-queue/issues) for our public bugs. We keep an eye on this and try to make it clear when we have an internal fix in progress. Before filing a new task, try to make sure your problem doesn’t already exist as a GitHub issue.
 
 Please note that we currently provide the software as is, and will only be able to provide intermittent patches and support.
 
