@@ -32,7 +32,6 @@ const Index = () => {
   const [waitingTime, setWaitingTime] = useState(3)
 
   const [numberOfTicketsAhead, setNumberOfTicketsAhead] = useState()
-  const [displayQueueInfo, setDisplayQueueInfo] = useState('')
 
   const [ticketState, setTicketState] = useState()
   const [ticketId, setTicketId] = useState()
@@ -93,7 +92,6 @@ const Index = () => {
       else if (queueName.includes('[MISSED]')) setTicketState('missed')
       else {
         setTicketState('pending')
-        setDisplayQueueInfo(queueName)
       }
 
     } catch (err) {
@@ -139,7 +137,7 @@ const Index = () => {
     }
     // 3. Missed - Ticket is in [MISSED] / not in the queue / queue doesnt exist
     else if (ticketState === TICKET_STATUS.MISSED || numberOfTicketsAhead === -1) {
-      return <Skipped rejoinQueue={rejoinQueue} displayTicketInfo={displayTicketInfo} />
+      return <Skipped rejoinQueue={rejoinQueue} />
     }
     else if (ticketState === TICKET_STATUS.ERROR) {
       return <NotFound />
