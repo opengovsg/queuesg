@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import queryString from 'query-string'
 import axios from 'axios'
+import { validate } from 'nric'
 import { NavBar } from '../components/Navbar'
 
 import ManWithHourglass from "../../src/assets/svg/man-with-hourglass.svg"
@@ -15,6 +16,7 @@ import {
   Box,
   Button,
   Input,
+  Textarea
 } from '@chakra-ui/react'
 import { useCookies } from 'react-cookie';
 import useTranslation from 'next-translate/useTranslation'
@@ -27,6 +29,8 @@ const Index = () => {
   const [message, setMessage] = useState('')
   const [registrationFields, setRegistrationFields] = useState([])
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const [invalidNRIC, setInvalidNRIC] = useState(false)
   useEffect(() => {
     const query = queryString.parse(location.search);
 
@@ -65,17 +69,24 @@ const Index = () => {
     try {
       e.preventDefault()
 
+      // Check if NRIC is valid
+      if (registrationFields.includes('nric')) {
+        if (validate(e.target['nric'].value) === false) {
+          setInvalidNRIC(true)
+          return
+        } else {
+          setInvalidNRIC(false)
+        }
+      }
+
       //  Don't submit if it is submitting
       if (isSubmitting) return
-
       setIsSubmitting(true)
-      // THIS IS A HACK to dynamically get values of our generated inputs
-      // We can't use ref / controlled components as we want to generate fields
-      // on the fly from JSON
+
       let desc = {}
-      registrationFields.forEach((key, index) => {
-        if (e.target[index].value !== '') {
-          desc[key] = e.target[index].value
+      registrationFields.forEach((key) => {
+        if (e.target[key].value !== '') {
+          desc[key] = e.target[key].value
         }
       });
       // call netlify function to create a ticket
@@ -83,7 +94,6 @@ const Index = () => {
       const query = queryString.parse(location.search);
       const postJoinQueue = await axios.post(`/.netlify/functions/ticket?queue=${query.id}`, { desc: desc })
       const { ticketId, ticketNumber } = postJoinQueue.data
-      console.log(ticketId);
       const url = `/ticket?queue=${query.id}&ticket=${ticketId}&ticketNumber=${ticketNumber}`
       router.push(url, url, { locale: lang })
     } catch (err) {
@@ -91,7 +101,6 @@ const Index = () => {
       setIsSubmitting(false)
     }
   }
-
   return (
     <Container>
       <NavBar />
@@ -113,36 +122,96 @@ const Index = () => {
               onSubmit={submit}
             >
               <Flex direction="column">
-                <Text
-                  pb="0.5rem"
-                  textStyle="subtitle1"
-                >
-                  {t('your-name')}
-                </Text>
-                <Input
-                  layerStyle="formInput"
-                  name="name"
-                  required
-                />
-                <Text
-                  pt="0.5rem"
-                  pb="0.5rem"
-                  textStyle="subtitle1"
-                >
-                  {t('mobile-number')}
-                </Text>
-                <Input
-                  layerStyle="formInput"
-                  type="tel"
-                  name="phone"
-                  pattern="^(8|9)(\d{7})$"
-                  required
-                  title="Mobile should be an 8 digit Singapore number i.e. 8xxxxxxx"
-                />
-                {/* For POC, fix the 2 fields to name and contact */}
-                {/* {registrationFields.map((val, index) => {
-                  return <Input key={index} placeholder={val} size="lg" width="320px" fontSize="24px" my="10px" />
-                })} */}
+                {registrationFields.includes('name') && <>
+                  <Text
+                    pb="0.5rem"
+                    textStyle="subtitle1"
+                  >
+                    {t('your-name')}
+                  </Text>
+                  <Input
+                    layerStyle="formInput"
+                    name="name"
+                    required
+                  />
+                </>}
+                {registrationFields.includes('contact') && <>
+                  <Text
+                    pt="0.5rem"
+                    pb="0.5rem"
+                    textStyle="subtitle1"
+                  >
+                    {t('mobile-number')}
+                  </Text>
+                  <Input
+                    layerStyle="formInput"
+                    type="tel"
+                    name="contact"
+                    pattern="^(8|9)(\d{7})$"
+                    maxLength="8"
+                    minLength="8"
+                    required
+                    title="Mobile number should be an 8 digit Singapore number i.e. 8xxxxxxx"
+                  />
+                </>}
+                {registrationFields.includes('postalcode') && <>
+                  <Text
+                    pt="0.5rem"
+                    pb="0.5rem"
+                    textStyle="subtitle1"
+                  >
+                    {t('postal-code')}
+                  </Text>
+                  <Input
+                    layerStyle="formInput"
+                    type="tel"
+                    name="postalcode"
+                    pattern="^(\d{6})$"
+                    maxLength="6"
+                    minLength="6"
+                    placeholder="123456"
+                    required
+                    title="Postal code should be an 6 digit number"
+                  />
+                </>}
+
+                {registrationFields.includes('nric') && <>
+                  <Text
+                    pt="0.5rem"
+                    pb="0.5rem"
+                    textStyle="subtitle1"
+                  >
+                    NRIC
+                  </Text>
+                  <Input
+                    layerStyle="formInput"
+                    isInvalid={invalidNRIC && "error.500"}
+                    onChange={() => setInvalidNRIC(false)}
+                    name="nric"
+                    maxLength="9"
+                    minLength="9"
+                    placeholder="SxxxxxxxA"
+                    required
+                  />
+                  {invalidNRIC && <Text color="error.500" mt="-10px"> {t('invalid')} NRIC</Text>}
+                </>}
+                {registrationFields.includes('description') && <>
+                  <Text
+                    pb="0.5rem"
+                    textStyle="subtitle1"
+                  >
+                    {t('description')}
+                  </Text>
+                  <Textarea
+                    layerStyle="formInput"
+                    maxLength="280"
+                    name="description"
+                    placeholder="Description"
+                    size="sm"
+                    resize={'none'}
+                  />
+                </>}
+
                 <Button
                   isLoading={isSubmitting}
                   loadingText={t('joining')}
