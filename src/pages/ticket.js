@@ -29,7 +29,7 @@ const Index = () => {
   const router = useRouter()
   const [refreshEnabled, setRefreshEnabled] = useState(true)
 
-  const [waitingTime, setWaitingTime] = useState(3)
+  const waitTimePerTicket = process.env.NEXT_PUBLIC_WAIT_TIME_MINS || 3
 
   const [numberOfTicketsAhead, setNumberOfTicketsAhead] = useState()
 
@@ -125,7 +125,7 @@ const Index = () => {
     // 1. Alerted - Ticket is called by admin
     if (ticketState === TICKET_STATUS.ALERTED) {
       return <Alerted
-        waitingTime={waitingTime}
+        waitingTime={waitTimePerTicket}
         openLeaveModal={onOpen}
         queueId={queueId}
         ticketId={ticketId}
@@ -145,7 +145,7 @@ const Index = () => {
     // 4. Next - Ticket 1st in line
     else if (numberOfTicketsAhead === 0) {
       return <NextInQueue
-        waitingTime={waitingTime}
+        waitingTime={waitTimePerTicket}
         openLeaveModal={onOpen}
         queueId={queueId}
         ticketId={ticketId}
@@ -155,7 +155,7 @@ const Index = () => {
     // 5. Line - Ticket is behind at least 1 person
     else if (numberOfTicketsAhead > 0) {
       return <InQueue
-        waitingTime={waitingTime}
+        waitingTime={waitTimePerTicket}
         openLeaveModal={onOpen}
         queueId={queueId}
         ticketId={ticketId}
