@@ -22,6 +22,7 @@ import { Skipped } from '../components/Ticket/Skipped'
 import { Served } from '../components/Ticket/Served'
 import { NotFound } from '../components/Ticket/NotFound'
 import { LeaveModal } from '../components/Ticket/LeaveModal'
+import { useCookies } from 'react-cookie';
 
 const Index = () => {
   const { t, lang } = useTranslation('common')
@@ -40,6 +41,8 @@ const Index = () => {
   const [displayTicketInfo, setDisplayTicketInfo] = useState('')
   const [lastUpdated, setLastUpdated] = useState('')
 
+  const [cookies, setCookie, removeCookie] = useCookies(['ticket']);
+
   // Leave queue modal
   const { isOpen, onOpen, onClose } = useDisclosure()
 
@@ -48,6 +51,13 @@ const Index = () => {
     if (query.ticket && query.queue && query.ticketNumber) {
       getTicketStatus(query.ticket, query.queue)
       setTicketNumber(query.ticketNumber)
+
+      // Save ticket info to cookie
+      setCookie('ticket', {
+        queue: query.queue,
+        ticket: query.ticket,
+        ticketNumber: query.ticketNumber
+      })
     }
   }, [])
 
@@ -76,7 +86,10 @@ const Index = () => {
       // queue name contains the word 'alert'
       // USING THE CONSTANT BREAKS I18N? IDK HOW
       if (queueName.includes('[ALERT]')) setTicketState('alerted')
-      else if (queueName.includes('[DONE]')) setTicketState('served')
+      else if (queueName.includes('[DONE]')) {
+        setTicketState('served')
+        removeCookie('ticket') // Remove cookie so they can join the queue again
+      }
       else if (queueName.includes('[MISSED]')) setTicketState('missed')
       else {
         setTicketState('pending')
@@ -85,6 +98,7 @@ const Index = () => {
 
     } catch (err) {
       console.log(err);
+      removeCookie('ticket') // Remove cookie so they can join the queue again
       setTicketState('error')
     }
   }
@@ -92,6 +106,7 @@ const Index = () => {
   const leaveQueue = async () => {
     try {
       axios.delete(`/.netlify/functions/ticket?id=${ticketId}`)
+      removeCookie('ticket')
       router.push(`/`)
     } catch (error) {
       console.log(error)
@@ -177,7 +192,7 @@ const Index = () => {
             alignItems="center"
             w="360px"
             maxW="100%"
-            >
+          >
             {renderTicket()}
           </Flex>
           <Flex
