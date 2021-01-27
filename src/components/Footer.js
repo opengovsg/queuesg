@@ -12,6 +12,7 @@ export const Footer = (props) => {
     maxW="100%"
     as="footer"
     justifyContent="center"
+    {...props}
   >
     <Box
       color="white"
