@@ -28,7 +28,7 @@ const Index = () => {
       // Get the board queue belongs to this
       // 1. Verifies that queue actually exists
       // 2. Gets info stored as JSON in board description
-      const getBoardQueueBelongsTo = await axios.get(`https://api.trello.com/1/lists/${queue}/board?fields=name`)
+      const getBoardQueueBelongsTo = await axios.get(`/.netlify/functions/queue?id=${queue}`)
       const { name } = getBoardQueueBelongsTo.data
       setBoardName(name)
     } catch (err) {
