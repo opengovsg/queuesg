@@ -8,6 +8,7 @@ import axios from 'axios'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import useTranslation from 'next-translate/useTranslation'
+import queryString from 'query-string'
 
 import { QUEUE_TITLES, BOARD_ID } from '../constants'
 import { Container } from '../components/Container'
@@ -22,8 +23,14 @@ const Index = () => {
   const [queuePendingUrl, setQueuePendingUrl] = useState('') 
 
   useEffect(async () => {
-    console.log(BOARD_ID)
-    await getBoardLists(BOARD_ID)
+    const query = queryString.parse(location.search)
+
+    if(query.board_id) {
+      await getBoardLists(query.board_id)
+    } else {
+      //  Defaults to board id in the netlify env
+      await getBoardLists(BOARD_ID)
+    }
   }, [])
 
   /**
