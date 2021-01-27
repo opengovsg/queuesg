@@ -10,7 +10,7 @@ export const TICKET_STATUS = {
 }
 
 export const QUEUE_TITLES = {
-  PENDING: 'Queue',
+  PENDING: '[PENDING]',
   ALERTED: '[ALERT]',
   DONE: '[DONE]',
   MISSED: '[MISSED]'
