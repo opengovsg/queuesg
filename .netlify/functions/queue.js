@@ -10,7 +10,7 @@ exports.handler = async function (event, context) {
     const tokenAndKeyParams = IS_PUBLIC_BOARD === 'true' ? '' : `key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`
 
     /**
-     * GET ./netlify/functions/queue
+     * GET /queue
      * @param  {string} id The id of the queue
      * @return {body: {name: string, desc: object}} 
      *  Returns the name and description of the Trello board that queue belongs to.

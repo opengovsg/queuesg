@@ -10,7 +10,7 @@ exports.handler = async function (event, context) {
     const tokenAndKeyParams = IS_PUBLIC_BOARD === 'true' ? '' : `key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`
 
     /**
-     * GET ./netlify/functions/view
+     * GET /view
      * - Retrieves info about a ticket and its position in queue
      * @param  {string} type The type of board data to retrieve
      * There are 3 types of api calls:

@@ -10,7 +10,7 @@ exports.handler = async function (event, context) {
     const tokenAndKeyParams = IS_PUBLIC_BOARD === 'true' ? '' : `key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`
 
     /**
-     * GET ./netlify/functions/ticket
+     * GET /ticket
      * - Retrieves info about a ticket and its position in queue
      * @param  {string} id The id of the ticket
      * @param  {string} queue The id of the queue
@@ -63,7 +63,7 @@ exports.handler = async function (event, context) {
       };
     }
     /**
-     * POST ./netlify/functions/ticket
+     * POST /ticket
      * - Creates a new ticket/card in queue with provided description
      * @param  {string} desc JSON string of user submitted info
      * @return {ticketId: string, ticketNumber: string}
@@ -92,7 +92,7 @@ exports.handler = async function (event, context) {
       }
     }
     /**
-     * PUT ./netlify/functions/ticket
+     * PUT /ticket
      * - Moves ticket to the bottom of the queue. Used for rejoining the queue
      * @param  {string} id The id of the ticket
      * @param  {string} queue The id of the queue
@@ -108,7 +108,7 @@ exports.handler = async function (event, context) {
       };
     }
     /**
-     * DELETE ./netlify/functions/ticket
+     * DELETE /ticket
      * - Moves ticket to the bottom of the queue. Used for rejoining the queue
      * @param  {string} id The id of the ticket
      * @return {statusCode: Number } Returns 200 if successful
