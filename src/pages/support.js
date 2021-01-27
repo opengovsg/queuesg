@@ -20,38 +20,6 @@ import { GenerateUrls } from '../components/Support/GenerateUrls'
 import PeopleOnPhones from '../assets/svg/people-on-phones.svg'
 
 const Index = () => {
-  const { t, lang } = useTranslation('common')
-  const [queuePendingUrl, setQueuePendingUrl] = useState('') 
-
-  useEffect(async () => {
-    const query = queryString.parse(location.search)
-
-    if(query.board_id) {
-      await getBoardLists(query.board_id)
-    } else {
-      //  Defaults to board id in the netlify env
-      await getBoardLists(BOARD_ID)
-    }
-  }, [])
-
-  /**
-   *  Gets a board with lists
-   */
-  const getBoardLists = async (boardId) => {
-    if(boardId) {
-      try {
-        const boardLists = await axios.get(`/.netlify/functions/view?type=boardlists&board=${boardId}`)
-        boardLists.data.forEach(list => {
-          if(list.name.indexOf(QUEUE_TITLES.PENDING) > -1) {
-            setQueuePendingUrl(location.origin + `/queue?id=${list.id}`)
-          }
-        })
-      } catch (error) {
-        console.error(error)
-      }
-    }
-  }
-
   return (
     <Container>
       <NavBar
