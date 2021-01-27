@@ -1,13 +1,23 @@
 const axios = require('axios');
 
+/**
+ * Netlify function for Ticket / Card Trello API calls
+ */
 exports.handler = async function (event, context) {
   try {
     const { httpMethod, queryStringParameters, body } = event
     const { TRELLO_KEY, TRELLO_TOKEN, IS_PUBLIC_BOARD } = process.env
     const tokenAndKeyParams = IS_PUBLIC_BOARD === 'true' ? '' : `key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`
 
+    /**
+     * GET /ticket
+     * - Retrieves info about a ticket and its position in queue
+     * @param  {string} id The id of the ticket
+     * @param  {string} queue The id of the queue
+     * @return {queueId: string, queueName: string, ticketId: string, ticketDesc: string, numberOfTicketsAhead: Number}
+     *  Returns the name and description of the Trello board that queue belongs to.
+     */
     if (httpMethod === 'GET') {
-      // params: ticketId
       const { id, queue: queueId } = queryStringParameters
 
       // return object
@@ -51,7 +61,15 @@ exports.handler = async function (event, context) {
         statusCode: 200,
         body: JSON.stringify(res)
       };
-    } else if (httpMethod === 'POST') {
+    }
+    /**
+     * POST /ticket
+     * - Creates a new ticket/card in queue with provided description
+     * @param  {string} desc JSON string of user submitted info
+     * @return {ticketId: string, ticketNumber: string}
+     *  Returns the id and number of the created ticket
+     */
+    else if (httpMethod === 'POST') {
       const { desc } = JSON.parse(body)
 
       const name = desc.name || 'unknown user'
@@ -72,7 +90,15 @@ exports.handler = async function (event, context) {
           body: JSON.stringify({ ticketId: id, ticketNumber: idShort })
         };
       }
-    } else if (httpMethod === 'PUT') {
+    }
+    /**
+     * PUT /ticket
+     * - Moves ticket to the bottom of the queue. Used for rejoining the queue
+     * @param  {string} id The id of the ticket
+     * @param  {string} queue The id of the queue
+     * @return {statusCode: Number } Returns 200 if successful
+     */
+    else if (httpMethod === 'PUT') {
       const { id, queue } = queryStringParameters
       if (id && queue) {
         await axios.put(`https://api.trello.com/1/cards/${id}?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}&idList=${queue}&pos=bottom`)
@@ -80,7 +106,14 @@ exports.handler = async function (event, context) {
       return {
         statusCode: 200,
       };
-    } else if (httpMethod === 'DELETE') {
+    }
+    /**
+     * DELETE /ticket
+     * - Moves ticket to the bottom of the queue. Used for rejoining the queue
+     * @param  {string} id The id of the ticket
+     * @return {statusCode: Number } Returns 200 if successful
+     */
+    else if (httpMethod === 'DELETE') {
       const id = queryStringParameters.id
       if (id) {
         await axios.delete(`https://api.trello.com/1/cards/${id}?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`)
@@ -89,7 +122,7 @@ exports.handler = async function (event, context) {
         statusCode: 200,
       };
     }
-
+    return { statusCode: 404 }
   } catch (err) {
     console.log(err.response)
     return { statusCode: 400 };
