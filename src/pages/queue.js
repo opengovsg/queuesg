@@ -29,32 +29,58 @@ const Index = () => {
   const [message, setMessage] = useState('')
   const [registrationFields, setRegistrationFields] = useState([])
   const [isSubmitting, setIsSubmitting] = useState(false)
-
   const [invalidNRIC, setInvalidNRIC] = useState(false)
+
   useEffect(() => {
-    const query = queryString.parse(location.search);
+    const query = queryString.parse(location.search)
+    const currentQueueId = query.id
+    const redirectUrl = isUserPartOfQueue(currentQueueId)
 
     // First check if user already has cookie for this queue id
-    const ticketCookie = cookies['ticket']
-    if (ticketCookie && ticketCookie.queue) {
-      if (ticketCookie.queue === query.id && ticketCookie.ticket && ticketCookie.ticketNumber) {
-        const url = `/ticket?queue=${ticketCookie.queue}&ticket=${ticketCookie.ticket}&ticketNumber=${ticketCookie.ticketNumber}`
-        router.push(url, url, { locale: lang })
-      }
-      return
+    if (redirectUrl) {
+      router.push(redirectUrl, redirectUrl, { locale: lang })
     }
     // Based on queue id, check if queue exists 
-    if (query.id) {
-      getQueue(query.id)
+    else if (currentQueueId) {
+      getQueue(currentQueueId)
+    } 
+    //  Queue Id does not exist
+    else {
+      //  @TODO: handle if queue id is not present
     }
   }, [])
 
-  const getQueue = async (queue) => {
+  /**
+   * Checks if the user is part of the queue
+   * 
+   * @param {string} currentQueueId the id of the queue that the user is currently on
+   * @returns {string|boolean} url to redirect the user to or FALSE if the user is not part of the current queue
+   */
+  const isUserPartOfQueue = (currentQueueId) => {
+    // First check if user already has cookie for this queue id
+    const ticketCookie = cookies['ticket']
+    if (ticketCookie &&
+        ticketCookie.queue &&
+        ticketCookie.queue === currentQueueId &&
+        ticketCookie.ticket && ticketCookie.ticketNumber
+        ) {
+      return `/ticket?queue=${ticketCookie.queue}&ticket=${ticketCookie.ticket}&ticketNumber=${ticketCookie.ticketNumber}`
+    }
+
+    return false
+  }
+
+  /**
+   * Gets the queue Id
+   * 
+   * @param {string} queueId 
+   */
+  const getQueue = async (queueId) => {
     try {
       // Get the board queue belongs to this
       // 1. Verifies that queue actually exists
       // 2. Gets info stored as JSON in board description
-      const getBoardQueueBelongsTo = await axios.get(`/.netlify/functions/queue?id=${queue}`)
+      const getBoardQueueBelongsTo = await axios.get(`/.netlify/functions/queue?id=${queueId}`)
       const { name, desc } = getBoardQueueBelongsTo.data
       setBoardName(name)
       const boardInfo = JSON.parse(desc)
