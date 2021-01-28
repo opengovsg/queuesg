@@ -37,7 +37,7 @@ export const NavBar = (props) => {
       as="nav"
       align="center"
       justify="space-between"
-      w="360px"
+      w="400px"
       maxW="100%"
       pt={4}
       pb={8}
@@ -47,8 +47,9 @@ export const NavBar = (props) => {
       {...props}>
       <Box w="200px">
         <LogoQueue
-          height="36px"
-          />
+          height="40px"
+          width="40px"
+        />
       </Box>
       <Box
         display={"block"}
@@ -84,12 +85,12 @@ export const NavBar = (props) => {
                   m={4}
                   style={{ cursor: 'pointer' }}
                   onClick={() => setMenuVisible(false)}
-                  >
+                >
                   <Text
                     fontSize="16px"
                     lineHeight="24px"
                   >
-                    { language.name }
+                    {language.name}
                   </Text>
                 </Box>
               </Link>

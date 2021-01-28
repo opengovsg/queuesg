@@ -43,7 +43,7 @@ const Index = () => {
     // Based on queue id, check if queue exists 
     else if (currentQueueId) {
       getQueue(currentQueueId)
-    } 
+    }
     //  Queue Id does not exist
     else {
       //  @TODO: handle if queue id is not present
@@ -60,10 +60,10 @@ const Index = () => {
     // First check if user already has cookie for this queue id
     const ticketCookie = cookies['ticket']
     if (ticketCookie &&
-        ticketCookie.queue &&
-        ticketCookie.queue === currentQueueId &&
-        ticketCookie.ticket && ticketCookie.ticketNumber
-        ) {
+      ticketCookie.queue &&
+      ticketCookie.queue === currentQueueId &&
+      ticketCookie.ticket && ticketCookie.ticketNumber
+    ) {
       return `/ticket?queue=${ticketCookie.queue}&ticket=${ticketCookie.ticket}&ticketNumber=${ticketCookie.ticketNumber}`
     }
 
@@ -132,8 +132,8 @@ const Index = () => {
       <NavBar />
       <Main>
         <Flex direction="column" alignItems="center">
-          <Text textStyle="display3" color="primary.500" fontWeight="400" textAlign="center">{t('queue-welcome-message')}</Text>
-          <Text textStyle="display3" textAlign="center">{boardName}</Text>
+          <Text textStyle="body2" fontSize="1.25rem" color="primary.500" textAlign="center">{t('queue-welcome-message')}</Text>
+          <Text mt="6px" textStyle="heading1" fontSize="1.5rem" textAlign="center">{boardName}</Text>
         </Flex>
         <Flex direction="column" alignItems="center">
           <Flex direction="column" alignItems="center">

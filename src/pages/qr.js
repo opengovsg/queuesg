@@ -19,8 +19,10 @@ const Index = () => {
 
   useEffect(async () => {
     const query = queryString.parse(location.search)
-    setUrl(`${location.origin}/queue?id=${query.queue}`)
-    await getQueue(query.queue)
+    if (query.queue) {
+      setUrl(`${location.origin}/queue?id=${query.queue}`)
+      await getQueue(query.queue)
+    }
   }, [])
 
   const getQueue = async (queue) => {
@@ -38,45 +40,52 @@ const Index = () => {
 
   return (
     <Container>
-      <NavBar />
-      <Main>
-        <Heading
-          textAlign="center"
-          textStyle="display3"
-          color="primary.500"
+      <NavBar width="100%" maxWidth="600px" />
+      <Main justifyContent="start" minHeight="auto" zIndex="1">
+        <Box marginBottom="32px">
+
+
+          <Heading
+            textAlign="center"
+            textStyle="display3"
+            color="primary.500"
           >
-          {boardName}
-        </Heading>
-        <Heading
-          textAlign="center"
-          textStyle="display2"
+            {boardName}
+          </Heading>
+          <Heading
+            mt="24px"
+            textAlign="center"
+            textStyle="display2"
           >
-          Scan QR Code to join the queue
+            Scan QR Code to join the queue
         </Heading>
+        </Box>
         <Box
           layerStyle="card"
           textAlign="center"
           py={10}
-          >
+        >
           <Center>
-            <QRCode value={url} size={220} />
+            {url !== '' ? <QRCode value={url} size={220} /> : <Text>Invalid Queue Id</Text>}
           </Center>
 
           <Text
             textStyle="subtitle1"
             color="primary.500"
             mt={6}
-            >
+          >
             {url}
           </Text>
         </Box>
 
-        <Center>
-          <PeopleOnPhones
-            className="featured-image"
-          />
-        </Center>
+
+
       </Main>
+      <Center marginTop="-40px" zIndex="0">
+        <PeopleOnPhones
+          width="500px"
+        />
+      </Center>
     </Container>
   )
 }

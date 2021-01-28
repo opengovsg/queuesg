@@ -8,15 +8,14 @@ export const Footer = (props) => {
 
   return <Flex
     bgColor="primary.600"
-    w="400px"
-    maxW="100%"
+    w="100%"
     as="footer"
     justifyContent="center"
     {...props}
   >
     <Box
       color="white"
-      w="100%"
+      w="360px"
       px={4}
       py={8}>
       <Text
@@ -28,7 +27,7 @@ export const Footer = (props) => {
       </Text>
       <LogoOgp
         width="180px"
-        />
+      />
       <Text
         color="gray.500"
         textStyle="body2"

@@ -175,8 +175,8 @@ const Index = () => {
       <NavBar />
       <Main>
         {ticketState != TICKET_STATUS.ERROR && <Flex direction="column" alignItems="center">
-          <Heading textStyle="display2">#{ticketNumber}</Heading>
-          <Text textStyle="display3" fontWeight="400">
+          <Heading textStyle="heading1" fontSize="1.5rem" letterSpacing="0.2rem">#{ticketNumber}</Heading>
+          <Text mt="16px" textStyle="body2" fontSize="1.25rem" letterSpacing="0.1rem">
             {displayTicketInfo}
           </Text>
         </Flex>}
