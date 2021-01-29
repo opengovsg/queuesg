@@ -46,10 +46,12 @@ export const NavBar = (props) => {
       color={"white"}
       {...props}>
       <Box w="200px">
-        <LogoQueue
-          height="40px"
-          width="40px"
-        />
+        <Link href={`/`} >
+          <LogoQueue
+            height="40px"
+            width="40px"
+          />
+        </Link>
       </Box>
       <Box
         display={"block"}
