@@ -76,7 +76,6 @@ const Index = () => {
         setDisplayTicketInfo(`${ticketDesc.name}, ${ticketDesc.contact}`)
       }
       setNumberOfTicketsAhead(numberOfTicketsAhead)
-
       // // Update timestamp
       const timestamp = new Date().toLocaleString('en-UK', { hour: 'numeric', minute: 'numeric', hour12: true })
       setLastUpdated(timestamp)
@@ -87,17 +86,23 @@ const Index = () => {
       if (queueName.includes('[ALERT]')) setTicketState('alerted')
       else if (queueName.includes('[DONE]')) {
         setTicketState('served')
+        setRefreshEnabled(false)
         removeCookie('ticket') // Remove cookie so they can join the queue again
       }
-      else if (queueName.includes('[MISSED]')) setTicketState('missed')
+      else if (queueName.includes('[MISSED]')) {
+        setTicketState('missed')
+      }
+      else if (numberOfTicketsAhead === -1) {
+        throw new Error('Ticket not found')
+      }
       else {
         setTicketState('pending')
       }
-
     } catch (err) {
       console.log(err);
-      removeCookie('ticket') // Remove cookie so they can join the queue again
       setTicketState('error')
+      setRefreshEnabled(false)
+      removeCookie('ticket') // Remove cookie so they can join the queue again
     }
   }
 
@@ -136,10 +141,10 @@ const Index = () => {
       return <Served />
     }
     // 3. Missed - Ticket is in [MISSED] / not in the queue / queue doesnt exist
-    else if (ticketState === TICKET_STATUS.MISSED || numberOfTicketsAhead === -1) {
+    else if (ticketState === TICKET_STATUS.MISSED) {
       return <Skipped rejoinQueue={rejoinQueue} />
     }
-    else if (ticketState === TICKET_STATUS.ERROR) {
+    else if (ticketState === TICKET_STATUS.ERROR || numberOfTicketsAhead === -1) {
       return <NotFound />
     }
     // 4. Next - Ticket 1st in line
