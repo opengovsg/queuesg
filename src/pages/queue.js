@@ -249,6 +249,7 @@ const Index = () => {
                   variant="solid"
                   marginTop="10px"
                   type="submit"
+                  isDisabled={registrationFields.length === 0}
                 >
                   {t('join-queue')}
                 </Button>
