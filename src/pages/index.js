@@ -10,7 +10,6 @@ import Link from 'next/link'
 import useTranslation from 'next-translate/useTranslation'
 import queryString from 'query-string'
 
-import { QUEUE_TITLES, BOARD_ID } from '../constants'
 import { Container } from '../components/Container'
 import { Main } from '../components/Main'
 import { Footer } from '../components/Footer'
@@ -20,16 +19,16 @@ import PeopleOnPhones from '../assets/svg/people-on-phones.svg'
 
 const Index = () => {
   const { t, lang } = useTranslation('common')
-  const [queuePendingUrl, setQueuePendingUrl] = useState('') 
+  const [queuePendingUrl, setQueuePendingUrl] = useState('')
 
   useEffect(async () => {
     const query = queryString.parse(location.search)
 
-    if(query.board_id) {
+    if (query.board_id) {
       await getBoardLists(query.board_id)
     } else {
       //  Defaults to board id in the netlify env
-      await getBoardLists(BOARD_ID)
+      await getBoardLists(process.env.NEXT_PUBLIC_TRELLO_BOARD_ID || '')
     }
   }, [])
 
@@ -37,11 +36,11 @@ const Index = () => {
    *  Gets a board with lists
    */
   const getBoardLists = async (boardId) => {
-    if(boardId) {
+    if (boardId) {
       try {
         const boardLists = await axios.get(`/.netlify/functions/view?type=boardlists&board=${boardId}`)
         boardLists.data.forEach(list => {
-          if(list.name.indexOf(QUEUE_TITLES.PENDING) > -1) {
+          if (list.name.indexOf('[PENDING]') > -1) {
             setQueuePendingUrl(location.origin + `/queue?id=${list.id}`)
           }
         })
@@ -60,7 +59,7 @@ const Index = () => {
             textStyle="heading3"
             textAlign="center"
             mb={8}
-            >
+          >
             {t('demo-title')}
           </Heading>
           <Center>
@@ -70,10 +69,10 @@ const Index = () => {
           </Center>
           <Center
             mt="4rem"
-            >
+          >
             <Link
               href={`${queuePendingUrl}`}
-              >
+            >
               <Button
                 bgColor="primary.500"
                 borderRadius="3px"

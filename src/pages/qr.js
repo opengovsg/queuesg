@@ -66,7 +66,7 @@ const Index = () => {
           py={10}
         >
           <Center>
-            {url !== '' ? <QRCode value={url} size={220} /> : <Text>Invalid Queue Id</Text>}
+            {url !== '' && <QRCode value={url} size={220} />}
           </Center>
 
           <Text
