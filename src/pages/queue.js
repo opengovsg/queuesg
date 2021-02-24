@@ -87,7 +87,7 @@ const Index = () => {
       setRegistrationFields(boardInfo.registrationFields)
       setFeedbackLink(boardInfo.feedbackLink)
     } catch (err) {
-      console.log(err.response.status);
+      console.log(err);
     }
   }
 
