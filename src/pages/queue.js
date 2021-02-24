@@ -87,7 +87,7 @@ const Index = () => {
       setMessage(boardInfo.message)
       setRegistrationFields(boardInfo.registrationFields)
     } catch (err) {
-      console.log(err.response);
+      console.log(err.response.status);
     }
   }
 
@@ -123,7 +123,7 @@ const Index = () => {
       const url = `/ticket?queue=${query.id}&ticket=${ticketId}&ticketNumber=${ticketNumber}`
       router.push(url, url, { locale: lang })
     } catch (err) {
-      console.log(err.response)
+      console.log(err.response.status);
       setIsSubmitting(false)
     }
   }
