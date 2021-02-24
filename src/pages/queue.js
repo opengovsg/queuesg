@@ -26,7 +26,7 @@ const Index = () => {
   const [cookies, setCookie] = useCookies(['ticket']);
 
   const [boardName, setBoardName] = useState('')
-  const [message, setMessage] = useState('')
+  const [feedbackLink, setFeedbackLink] = useState()
   const [registrationFields, setRegistrationFields] = useState([])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [invalidNRIC, setInvalidNRIC] = useState(false)
@@ -84,8 +84,8 @@ const Index = () => {
       const { name, desc } = getBoardQueueBelongsTo.data
       setBoardName(name)
       const boardInfo = JSON.parse(desc)
-      setMessage(boardInfo.message)
       setRegistrationFields(boardInfo.registrationFields)
+      setFeedbackLink(boardInfo.feedbackLink)
     } catch (err) {
       console.log(err.response.status);
     }
@@ -120,7 +120,8 @@ const Index = () => {
       const query = queryString.parse(location.search);
       const postJoinQueue = await axios.post(`/.netlify/functions/ticket?queue=${query.id}`, { desc: desc })
       const { ticketId, ticketNumber } = postJoinQueue.data
-      const url = `/ticket?queue=${query.id}&ticket=${ticketId}&ticketNumber=${ticketNumber}`
+      const feedback = feedbackLink ? `&feedback=${encodeURIComponent(feedbackLink)}` : ''
+      const url = `/ticket?queue=${query.id}&ticket=${ticketId}&ticketNumber=${ticketNumber}${feedback}`
       router.push(url, url, { locale: lang })
     } catch (err) {
       console.log(err.response.status);

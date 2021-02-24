@@ -1,17 +1,14 @@
 import {
   Box,
-  Button,
   Center,
-  Heading,
   Text,
-  theme,
-  Flex
+  Flex,
 } from '@chakra-ui/react'
 import useTranslation from 'next-translate/useTranslation'
 
 import LadyHoldingPhone from '../../assets/svg/lady-holding-phone.svg'
 
-export const Served = ({ }) => {
+export const Served = ({ feedbackLink }) => {
   const { t } = useTranslation('common')
 
   return <>
@@ -39,6 +36,13 @@ export const Served = ({ }) => {
       >
         {t('wish-you-good-day-ahead')}
       </Text>
+
+      {feedbackLink && <Text
+        textStyle="body1"
+        mt={4}
+        textDecoration="underline"
+      ><a href={feedbackLink}>Give us some feedback</a>
+      </Text>}
     </Box>
   </>
 }

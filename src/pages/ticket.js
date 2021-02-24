@@ -39,6 +39,7 @@ const Index = () => {
   const [ticketNumber, setTicketNumber] = useState()
   const [displayTicketInfo, setDisplayTicketInfo] = useState('')
   const [lastUpdated, setLastUpdated] = useState('')
+  const [feedbackLink, setFeedbackLink] = useState()
 
   const [cookies, setCookie, removeCookie] = useCookies(['ticket']);
 
@@ -58,6 +59,8 @@ const Index = () => {
         ticket: query.ticket,
         ticketNumber: query.ticketNumber
       })
+      //Save feedback link
+      if (query.feedback) setFeedbackLink(query.feedback)
     }
   }, [])
 
@@ -145,7 +148,7 @@ const Index = () => {
     }
     // 2. Served - Ticket is complete
     else if (ticketState === TICKET_STATUS.SERVED) {
-      return <Served />
+      return <Served feedbackLink={feedbackLink} />
     }
     // 3. Missed - Ticket is in [MISSED] / not in the queue / queue doesnt exist
     else if (ticketState === TICKET_STATUS.MISSED) {
