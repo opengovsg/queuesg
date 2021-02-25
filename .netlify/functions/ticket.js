@@ -18,7 +18,7 @@ exports.handler = async function (event, context) {
      *  Returns the name and description of the Trello board that queue belongs to.
      */
     if (httpMethod === 'GET') {
-      const { id, queue: queueId } = queryStringParameters
+      const { id } = queryStringParameters
 
       // return object
       let res = {
@@ -31,16 +31,20 @@ exports.handler = async function (event, context) {
 
       const batchUrls = [
         `/cards/${id}/list?fields=name`,
-        `/cards/${id}`,
-        `/lists/${queueId}/cards`]
+        `/cards/${id}`]
         .join(',')
       const batchAPICall = await axios.get(`https://api.trello.com/1/batch?urls=${batchUrls}&${tokenAndKeyParams}`)
+      //Check if rate limit hit
+      if (batchAPICall.status === 429) { return { statusCode: 429, message: "Trello API rate limit" }; }
+      if (batchAPICall.status !== 200) {
+        return { statusCode: batchAPICall.status, message: "BatchAPICall error" };
+      }
 
-      const [getListofCard, getCardDesc, getCardsOnList] = batchAPICall.data
+      const [getListofCard, getCardDesc] = batchAPICall.data
 
       //Check that all Batch apis returned 200
-      if (!getListofCard['200'] || !getCardDesc['200'] || !getCardsOnList['200']) {
-        return { statusCode: 400, message: "Batch error" };
+      if (!getListofCard['200'] || !getCardDesc['200']) {
+        return { statusCode: 400, message: "BatchAPICall subrequest error" };
       }
 
       const { id: newQueueId, name: queueName } = getListofCard['200']
@@ -50,10 +54,18 @@ exports.handler = async function (event, context) {
       const { desc } = getCardDesc['200']
       if (desc !== '') res.ticketDesc = JSON.parse(desc)
 
+      // Get the card's position in the current queue
+      const getCardsOnList = await axios.get(
+        `https://api.trello.com/1/lists/${newQueueId}/cards?${tokenAndKeyParams}`)
+
+      if (getCardsOnList.status === 429) { return { statusCode: 429, message: "Trello API rate limit" } }
+      if (getCardsOnList.status !== 200) { return { statusCode: getCardsOnList.status, message: "getCardsOnList error" } }
+
+
       //If list isn't any of the special markers, check for position
       if (!(queueName.includes('[ALERT]') || queueName.includes('[DONE]') || queueName.includes('[MISSED]'))) {
         // To check position in queue
-        const ticketsInQueue = getCardsOnList['200']
+        const ticketsInQueue = getCardsOnList.data
         res.numberOfTicketsAhead = ticketsInQueue.findIndex(val => val.id === id)
       }
 

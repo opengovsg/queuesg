@@ -39,6 +39,7 @@ const Index = () => {
   const [ticketNumber, setTicketNumber] = useState()
   const [displayTicketInfo, setDisplayTicketInfo] = useState('')
   const [lastUpdated, setLastUpdated] = useState('')
+  const [feedbackLink, setFeedbackLink] = useState()
 
   const [cookies, setCookie, removeCookie] = useCookies(['ticket']);
 
@@ -48,6 +49,7 @@ const Index = () => {
   useEffect(() => {
     const query = queryString.parse(location.search);
     if (query.ticket && query.queue && query.ticketNumber) {
+      setTicketId(query.ticket)
       getTicketStatus(query.ticket, query.queue)
       setTicketNumber(query.ticketNumber)
 
@@ -57,21 +59,24 @@ const Index = () => {
         ticket: query.ticket,
         ticketNumber: query.ticketNumber
       })
+      //Save feedback link
+      if (query.feedback) setFeedbackLink(query.feedback)
     }
   }, [])
 
   const refreshInterval = process.env.NEXT_PUBLIC_REFRESH_INTERVAL || 5000
   useInterval(() => {
-    if (refreshEnabled) getTicketStatus(ticketId, queueId)
+    if (refreshEnabled) getTicketStatus(ticketId)
   }, refreshInterval);
 
 
-  const getTicketStatus = async (ticket, currentQueue) => {
+  const getTicketStatus = async (ticket) => {
     try {
-      const getTicket = await axios.get(`/.netlify/functions/ticket?id=${ticket}&queue=${currentQueue}`)
+      const getTicket = await axios.get(`/.netlify/functions/ticket?id=${ticket}`)
       const { queueId, queueName, ticketDesc, numberOfTicketsAhead } = getTicket.data
+      //Update queueId in case ticket has been shifted
       setQueueId(queueId)
-      setTicketId(ticket)
+
       if (ticketDesc !== '') {
         setDisplayTicketInfo(`${ticketDesc.name}, ${ticketDesc.contact}`)
       }
@@ -99,7 +104,12 @@ const Index = () => {
         setTicketState('pending')
       }
     } catch (err) {
-      console.log(err);
+      // Check if err is status 429 i.e. Trello rate limit
+      // if so do nothing, will retry on the next interval
+      if (err.response && err.response.status === 429) {
+        console.log('429 detected');
+        return
+      }
       setTicketState('error')
       setRefreshEnabled(false)
       removeCookie('ticket') // Remove cookie so they can join the queue again
@@ -138,7 +148,7 @@ const Index = () => {
     }
     // 2. Served - Ticket is complete
     else if (ticketState === TICKET_STATUS.SERVED) {
-      return <Served />
+      return <Served feedbackLink={feedbackLink} />
     }
     // 3. Missed - Ticket is in [MISSED] / not in the queue / queue doesnt exist
     else if (ticketState === TICKET_STATUS.MISSED) {
