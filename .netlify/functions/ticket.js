@@ -56,7 +56,7 @@ exports.handler = async function (event, context) {
 
       // Get the card's position in the current queue
       const getCardsOnList = await axios.get(
-        `https://api.trello.com/1/lists/${newQueueId}/cards?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`)
+        `https://api.trello.com/1/lists/${newQueueId}/cards?${tokenAndKeyParams}`)
 
       if (getCardsOnList.status === 429) { return { statusCode: 429, message: "Trello API rate limit" } }
       if (getCardsOnList.status !== 200) { return { statusCode: getCardsOnList.status, message: "getCardsOnList error" } }
