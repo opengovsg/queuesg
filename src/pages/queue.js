@@ -26,6 +26,7 @@ const Index = () => {
   const [cookies, setCookie] = useCookies(['ticket']);
 
   const [boardName, setBoardName] = useState('')
+  const [isQueueInactive, setIsQueueInactive] = useState(true)
   const [feedbackLink, setFeedbackLink] = useState()
   const [registrationFields, setRegistrationFields] = useState([])
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -82,7 +83,9 @@ const Index = () => {
       // 2. Gets info stored as JSON in board description
       const getBoardQueueBelongsTo = await axios.get(`/.netlify/functions/queue?id=${queueId}`)
       const { name, desc } = getBoardQueueBelongsTo.data
-      setBoardName(name)
+      setIsQueueInactive(name.includes('[DISABLED]'))
+      const cleanedName = name.replace('[DISABLED]', '').trim()
+      setBoardName(cleanedName)
       const boardInfo = JSON.parse(desc)
       setRegistrationFields(boardInfo.registrationFields)
       setFeedbackLink(boardInfo.feedbackLink)
@@ -145,117 +148,123 @@ const Index = () => {
           <Box
             layerStyle="card"
           >
-            <form
-              onSubmit={submit}
-            >
-              <Flex direction="column">
-                {registrationFields.includes('name') && <>
-                  <Text
-                    pb="0.5rem"
-                    textStyle="subtitle1"
-                  >
-                    {t('your-name')}
-                  </Text>
-                  <Input
-                    layerStyle="formInput"
-                    name="name"
-                    required
-                  />
-                </>}
-                {registrationFields.includes('contact') && <>
-                  <Text
-                    pt="0.5rem"
-                    pb="0.5rem"
-                    textStyle="subtitle1"
-                  >
-                    {t('mobile-number')}
-                  </Text>
-                  <Input
-                    layerStyle="formInput"
-                    type="tel"
-                    name="contact"
-                    pattern="^(8|9)(\d{7})$"
-                    maxLength="8"
-                    minLength="8"
-                    required
-                    title="Mobile number should be an 8 digit Singapore number i.e. 8xxxxxxx"
-                  />
-                </>}
-                {registrationFields.includes('postalcode') && <>
-                  <Text
-                    pt="0.5rem"
-                    pb="0.5rem"
-                    textStyle="subtitle1"
-                  >
-                    {t('postal-code')}
-                  </Text>
-                  <Input
-                    layerStyle="formInput"
-                    type="tel"
-                    name="postalcode"
-                    pattern="^(\d{6})$"
-                    maxLength="6"
-                    minLength="6"
-                    placeholder="123456"
-                    required
-                    title="Postal code should be an 6 digit number"
-                  />
-                </>}
-
-                {registrationFields.includes('nric') && <>
-                  <Text
-                    pt="0.5rem"
-                    pb="0.5rem"
-                    textStyle="subtitle1"
-                  >
-                    NRIC
-                  </Text>
-                  <Input
-                    layerStyle="formInput"
-                    isInvalid={invalidNRIC && "error.500"}
-                    onChange={() => setInvalidNRIC(false)}
-                    name="nric"
-                    maxLength="9"
-                    minLength="9"
-                    placeholder="SxxxxxxxA"
-                    required
-                  />
-                  {invalidNRIC && <Text color="error.500" mt="-10px"> {t('invalid')} NRIC</Text>}
-                </>}
-                {registrationFields.includes('description') && <>
-                  <Text
-                    pb="0.5rem"
-                    textStyle="subtitle1"
-                  >
-                    {t('description')}
-                  </Text>
-                  <Textarea
-                    layerStyle="formInput"
-                    maxLength="280"
-                    name="description"
-                    placeholder="Description"
-                    size="sm"
-                    resize={'none'}
-                  />
-                </>}
-
-                <Button
-                  isLoading={isSubmitting}
-                  loadingText={t('joining')}
-                  colorScheme="primary"
-                  borderRadius="3px"
-                  isFullWidth={true}
-                  color="white"
-                  size="lg"
-                  variant="solid"
-                  marginTop="10px"
-                  type="submit"
-                  isDisabled={registrationFields.length === 0}
-                >
-                  {t('join-queue')}
-                </Button>
+            {isQueueInactive ?
+              <Flex direction="column" alignItems="center">
+                <Text textStyle="body1" fontSize="1.5rem" color="primary.500" textAlign="center" lineHeight="2.5rem">{t('queue-currently-inactive')}</Text>
               </Flex>
-            </form>
+              :
+              <form
+                onSubmit={submit}
+              >
+                <Flex direction="column">
+                  {registrationFields.includes('name') && <>
+                    <Text
+                      pb="0.5rem"
+                      textStyle="subtitle1"
+                    >
+                      {t('your-name')}
+                    </Text>
+                    <Input
+                      layerStyle="formInput"
+                      name="name"
+                      required
+                    />
+                  </>}
+                  {registrationFields.includes('contact') && <>
+                    <Text
+                      pt="0.5rem"
+                      pb="0.5rem"
+                      textStyle="subtitle1"
+                    >
+                      {t('mobile-number')}
+                    </Text>
+                    <Input
+                      layerStyle="formInput"
+                      type="tel"
+                      name="contact"
+                      pattern="^(8|9)(\d{7})$"
+                      maxLength="8"
+                      minLength="8"
+                      required
+                      title="Mobile number should be an 8 digit Singapore number i.e. 8xxxxxxx"
+                    />
+                  </>}
+                  {registrationFields.includes('postalcode') && <>
+                    <Text
+                      pt="0.5rem"
+                      pb="0.5rem"
+                      textStyle="subtitle1"
+                    >
+                      {t('postal-code')}
+                    </Text>
+                    <Input
+                      layerStyle="formInput"
+                      type="tel"
+                      name="postalcode"
+                      pattern="^(\d{6})$"
+                      maxLength="6"
+                      minLength="6"
+                      placeholder="123456"
+                      required
+                      title="Postal code should be an 6 digit number"
+                    />
+                  </>}
+
+                  {registrationFields.includes('nric') && <>
+                    <Text
+                      pt="0.5rem"
+                      pb="0.5rem"
+                      textStyle="subtitle1"
+                    >
+                      NRIC
+                  </Text>
+                    <Input
+                      layerStyle="formInput"
+                      isInvalid={invalidNRIC && "error.500"}
+                      onChange={() => setInvalidNRIC(false)}
+                      name="nric"
+                      maxLength="9"
+                      minLength="9"
+                      placeholder="SxxxxxxxA"
+                      required
+                    />
+                    {invalidNRIC && <Text color="error.500" mt="-10px"> {t('invalid')} NRIC</Text>}
+                  </>}
+                  {registrationFields.includes('description') && <>
+                    <Text
+                      pb="0.5rem"
+                      textStyle="subtitle1"
+                    >
+                      {t('description')}
+                    </Text>
+                    <Textarea
+                      layerStyle="formInput"
+                      maxLength="280"
+                      name="description"
+                      placeholder="Description"
+                      size="sm"
+                      resize={'none'}
+                    />
+                  </>}
+
+                  <Button
+                    isLoading={isSubmitting}
+                    loadingText={t('joining')}
+                    colorScheme="primary"
+                    borderRadius="3px"
+                    isFullWidth={true}
+                    color="white"
+                    size="lg"
+                    variant="solid"
+                    marginTop="10px"
+                    type="submit"
+                    isDisabled={registrationFields.length === 0}
+                  >
+                    {t('join-queue')}
+                  </Button>
+                </Flex>
+              </form>
+            }
           </Box>
         </Flex>
       </Main>
