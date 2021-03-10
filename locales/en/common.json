@@ -4,6 +4,7 @@
   "queue-welcome-message": "You are joining the queue at",
   "joining": "Joining...",
   "try-the-demo": "Try the demo",
+  "queue-currently-inactive": "Queue is closed",
   "your-name": "Your name",
   "mobile-number": "Mobile number",
   "postal-code": "Postal code",
