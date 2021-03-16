@@ -13,6 +13,7 @@
     "@emotion/styled": "^11.0.0",
     "axios": "^0.21.1",
     "framer-motion": "^2.9.4",
+    "is-url": "^1.2.4",
     "jimp": "^0.16.1",
     "next": "10.0.3",
     "next-compose-plugins": "^2.2.1",
