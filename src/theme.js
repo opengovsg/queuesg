@@ -94,6 +94,10 @@ const textStyles = extendTheme({
     letterSpacing: ['-0.025rem'],
     color: 'primary.600',
   },
+  link: {
+    textDecoration: 'underline',
+    color: 'blue.600',
+  },
 })
 
 const theme = extendTheme({

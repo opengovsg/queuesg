@@ -1,11 +1,14 @@
-import { Container } from '../components/Container'
-import { Main } from '../components/Main'
-import { Footer } from '../components/Footer'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import queryString from 'query-string'
 import axios from 'axios'
+import url from 'is-url'
 import { validate } from 'nric'
+
+import Link from 'next/link'
+import { Container } from '../components/Container'
+import { Main } from '../components/Main'
+import { Footer } from '../components/Footer'
 import { NavBar } from '../components/Navbar'
 
 import ManWithHourglass from "../../src/assets/svg/man-with-hourglass.svg"
@@ -28,6 +31,7 @@ const Index = () => {
   const [boardName, setBoardName] = useState('')
   const [isQueueInactive, setIsQueueInactive] = useState(true)
   const [feedbackLink, setFeedbackLink] = useState()
+  const [privacyPolicyLink, setPrivacyPolicyLink] = useState()
   const [registrationFields, setRegistrationFields] = useState([])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [invalidNRIC, setInvalidNRIC] = useState(false)
@@ -86,9 +90,20 @@ const Index = () => {
       setIsQueueInactive(name.includes('[DISABLED]'))
       const cleanedName = name.replace('[DISABLED]', '').trim()
       setBoardName(cleanedName)
+
       const boardInfo = JSON.parse(desc)
+      //  Set Registration Fields
       setRegistrationFields(boardInfo.registrationFields)
-      setFeedbackLink(boardInfo.feedbackLink)
+      
+      //  Feedback Link
+      if (boardInfo.feedbackLink && url(boardInfo.feedbackLink)) {
+        setFeedbackLink(boardInfo.feedbackLink)
+      }
+
+      //  Privacy Policy
+      if (boardInfo.privacyPolicyLink && url(boardInfo.privacyPolicyLink)) {
+        setPrivacyPolicyLink(boardInfo.privacyPolicyLink)
+      }
     } catch (err) {
       console.log(err);
     }
@@ -246,7 +261,6 @@ const Index = () => {
                       resize={'none'}
                     />
                   </>}
-
                   <Button
                     isLoading={isSubmitting}
                     loadingText={t('joining')}
@@ -262,6 +276,15 @@ const Index = () => {
                   >
                     {t('join-queue')}
                   </Button>
+
+                  {privacyPolicyLink && <>
+                    <Text pt="1rem" textStyle="body3">
+                      <Text display="inline-block">{t('by-joining-this-queue-you-agree-to-our')}&nbsp;</Text>
+                      <Text display="inline-block" textStyle="link">
+                        <a href={privacyPolicyLink} target="_blank">{t('privacy-policy')}</a>
+                      </Text>
+                    </Text>
+                  </>}
                 </Flex>
               </form>
             }
