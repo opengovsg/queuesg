@@ -19,6 +19,7 @@
 	"minutes": "minutes",
 	"mobile-number": "Mobile number",
 	"no-dont-leave": "No, don't leave",
+	"no-such-queue": "No Such Queue",
 	"NRIC": "NRIC",
 	"please-check-link": "Please check the link or approach the staff for help.",
 	"postal-code": "Postal code",
@@ -38,6 +39,7 @@
 	"you-will-need-to-scan-again": "You will need to scan the QR code again to rejoin it.",
 	"your-name": "Your name",
 	"your-queue-number-was": " Your queue number was already called and has since expired.",
+	"your-queue-number-may-not-be-called-in-sequence": "Your queue number may not be called in sequence",
 	"your-queue-number-will-be-held-for": "Your queue number will be held for",
 	"youre-next": "You're next!"
 }
