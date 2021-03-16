@@ -5,7 +5,6 @@ import axios from 'axios'
 import url from 'is-url'
 import { validate } from 'nric'
 
-import Link from 'next/link'
 import { Container } from '../components/Container'
 import { Main } from '../components/Main'
 import { Footer } from '../components/Footer'
@@ -14,12 +13,13 @@ import { NavBar } from '../components/Navbar'
 import ManWithHourglass from "../../src/assets/svg/man-with-hourglass.svg"
 
 import {
-  Text,
-  Flex,
   Box,
   Button,
+  Flex,
   Input,
-  Textarea
+  Text,
+  Textarea,
+  Select
 } from '@chakra-ui/react'
 import { useCookies } from 'react-cookie';
 import useTranslation from 'next-translate/useTranslation'
@@ -33,6 +33,7 @@ const Index = () => {
   const [feedbackLink, setFeedbackLink] = useState()
   const [privacyPolicyLink, setPrivacyPolicyLink] = useState()
   const [registrationFields, setRegistrationFields] = useState([])
+  const [categories, setCategories] = useState([])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [invalidNRIC, setInvalidNRIC] = useState(false)
 
@@ -104,6 +105,11 @@ const Index = () => {
       if (boardInfo.privacyPolicyLink && url(boardInfo.privacyPolicyLink)) {
         setPrivacyPolicyLink(boardInfo.privacyPolicyLink)
       }
+
+      //  Categories
+      if (boardInfo.categories && Array.isArray(boardInfo.categories)) {
+        setCategories(boardInfo.categories)
+      }
     } catch (err) {
       console.log(err);
     }
@@ -112,6 +118,10 @@ const Index = () => {
   const submit = async (e) => {
     try {
       e.preventDefault()
+
+      //  Don't submit if it is submitting
+      if (isSubmitting) return
+      setIsSubmitting(true)
 
       // Check if NRIC is valid
       if (registrationFields.includes('nric')) {
@@ -123,20 +133,20 @@ const Index = () => {
         }
       }
 
-      //  Don't submit if it is submitting
-      if (isSubmitting) return
-      setIsSubmitting(true)
-
       let desc = {}
       registrationFields.forEach((key) => {
         if (e.target[key].value !== '') {
           desc[key] = e.target[key].value
         }
       });
+      if (Array.isArray(categories) && categories.length > 0) {
+        desc.category = e.target.category.value
+      }
+
       // call netlify function to create a ticket
       // for that queue, return the ticket id and redirect to ticket page
       const query = queryString.parse(location.search);
-      const postJoinQueue = await axios.post(`/.netlify/functions/ticket?queue=${query.id}`, { desc: desc })
+      const postJoinQueue = await axios.post(`/.netlify/functions/ticket?queue=${query.id}`, { desc })
       const { ticketId, ticketNumber } = postJoinQueue.data
       const feedback = feedbackLink ? `&feedback=${encodeURIComponent(feedbackLink)}` : ''
       const url = `/ticket?queue=${query.id}&ticket=${ticketId}&ticketNumber=${ticketNumber}${feedback}`
@@ -245,6 +255,26 @@ const Index = () => {
                     />
                     {invalidNRIC && <Text color="error.500" mt="-10px"> {t('invalid')} NRIC</Text>}
                   </>}
+
+                  {Array.isArray(categories) && categories.length > 0 && <>
+                    <Text
+                        pb="0.5rem"
+                        textStyle="subtitle1"
+                      >
+                        {t('category')}
+                      </Text>
+                    <Select
+                      name="category"
+                      layerStyle="formSelect"
+                      placeholder={t('select-category')}
+                      required
+                      >
+                      {categories.map(category => 
+                        <option value={category}>{category}</option>
+                      )}
+                    </Select>
+                  </>}
+
                   {registrationFields.includes('description') && <>
                     <Text
                       pb="0.5rem"
@@ -270,7 +300,7 @@ const Index = () => {
                     color="white"
                     size="lg"
                     variant="solid"
-                    marginTop="10px"
+                    marginTop="1.5rem"
                     type="submit"
                     isDisabled={registrationFields.length === 0}
                   >
