@@ -36,6 +36,7 @@ const Index = () => {
   const [ticketState, setTicketState] = useState()
   const [ticketId, setTicketId] = useState()
   const [queueId, setQueueId] = useState()
+  const [queueName, setQueueName] = useState()
   const [ticketNumber, setTicketNumber] = useState()
   const [displayTicketInfo, setDisplayTicketInfo] = useState('')
   const [lastUpdated, setLastUpdated] = useState('')
@@ -91,7 +92,10 @@ const Index = () => {
       // Hack: Check whether to alert the user based on if the 
       // queue name contains the word 'alert'
       // USING THE CONSTANT BREAKS I18N? IDK HOW
-      if (queueName.includes('[ALERT]')) setTicketState('alerted')
+      if (queueName.includes('[ALERT]')) {
+        setQueueName(queueName.replace('[ALERT]', '').trim())
+        setTicketState('alerted')
+      }
       else if (queueName.includes('[DONE]')) {
         setTicketState('served')
         setRefreshEnabled(false)
@@ -146,6 +150,7 @@ const Index = () => {
         waitingTime={waitTimePerTicket}
         openLeaveModal={onOpen}
         queueId={queueId}
+        queueName={queueName}
         ticketId={ticketId}
       />
     }
