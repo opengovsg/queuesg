@@ -1,6 +1,11 @@
-import { Center, Heading } from '@chakra-ui/react'
+import {
+  Center,
+  Heading
+} from '@chakra-ui/react'
+import useTranslation from 'next-translate/useTranslation'
 
 export const ViewFooter = (props) => {
+  const { t, lang } = useTranslation('common')
   return (
     <Center
       h="100%"
@@ -8,7 +13,7 @@ export const ViewFooter = (props) => {
       <Heading
         textStyle="display2"
         >
-        Your queue number may not be called in sequence
+        {t('your-queue-number-may-not-be-called-in-sequence')}
       </Heading>
     </Center>
   )

@@ -30,6 +30,11 @@ const layerStyles = extendTheme({
     borderRadius: '3px',
     border: '1px solid #D2D3D6',
     marginBottom: '1rem',
+  },
+  formSelect: {
+    width: '100%',
+    borderRadius: '3px',
+    border: '1px solid #D2D3D6',
   }
 })
 
@@ -93,6 +98,10 @@ const textStyles = extendTheme({
     lineHeight: ['1rem'],
     letterSpacing: ['-0.025rem'],
     color: 'primary.600',
+  },
+  link: {
+    textDecoration: 'underline',
+    color: 'blue.600',
   },
 })
 
