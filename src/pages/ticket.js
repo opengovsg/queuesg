@@ -29,7 +29,7 @@ const Index = () => {
   const router = useRouter()
   const [refreshEnabled, setRefreshEnabled] = useState(true)
 
-  const waitTimePerTicket = process.env.NEXT_PUBLIC_WAIT_TIME_MINS || 3
+  const [waitTimePerTicket, setWaitTimePerTicket] = useState(3)
 
   const [numberOfTicketsAhead, setNumberOfTicketsAhead] = useState()
 
@@ -61,6 +61,9 @@ const Index = () => {
       })
       //Save feedback link
       if (query.feedback) setFeedbackLink(query.feedback)
+
+      //Save wait time per ticket
+      if (query.waitTimePerTicket && !isNaN(Number(query.waitTimePerTicket))) setWaitTimePerTicket(query.waitTimePerTicket)
     }
   }, [])
 
