@@ -42,19 +42,22 @@ export const Alerted = ({
       >
         {t('its-your-turn')}
       </Heading>
-      <Text
-        textStyle="subtitle2"
-        color="white"
-      >
-        {t('proceed-to')}
-      </Text>
-      <Heading
-        textStyle="display3"
-        color="white"
-        mb="2rem"
-      >
-        {queueName}
-      </Heading>
+      {queueName.length > 0 &&
+        <>
+          <Text
+            textStyle="subtitle2"
+            color="white"
+          >
+            {t('proceed-to')}
+          </Text>
+          <Heading
+            textStyle="display3"
+            color="white"
+            mb="2rem"
+          >
+            {queueName}
+          </Heading>
+        </>}
       <Text
         textStyle="subtitle2"
         color="white"
