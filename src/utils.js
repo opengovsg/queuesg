@@ -45,3 +45,20 @@ export const getQueueNumber = (name) => {
 export const getCustomerName = (name) => {
   return name.split('-')[1]
 }
+
+/**
+ * Authentication
+ */
+export const authentication = {
+  login: (key, token) => {
+    localStorage.setItem('key', key)
+    localStorage.setItem('token', token)
+  },
+  logout: () => {
+    localStorage.removeItem('token')
+    localStorage.removeItem('key')
+  },
+  getToken: () => localStorage.getItem('token'),
+  setKey: (key) => localStorage.setItem('key', key),
+  getKey: () => localStorage.getItem('key'),
+}
