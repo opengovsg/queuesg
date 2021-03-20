@@ -21,6 +21,7 @@ import { Main } from '../../components/Main'
 import { NavBar } from '../../components/Navbar'
 import { authentication } from '../../utils'
 import { useRouter } from 'next/router'
+import { route } from 'next/dist/next-server/server/router'
 
 const Index = () => {
   const router = useRouter()
@@ -50,7 +51,6 @@ const Index = () => {
     if (apiConfig && apiConfig.key && apiConfig.token && apiConfig.queueId) { 
       try { 
         const response = await axios.get(`https://api.trello.com/1/boards/${apiConfig.queueId}?key=${apiConfig.key}&token=${apiConfig.token}`)
-        console.log(response.data)
         
         setBoardSettings(JSON.parse(response.data.desc))
         setBoardData(response.data)
@@ -87,11 +87,23 @@ const Index = () => {
    */
   useEffect(() => {
     const query = queryString.parse(location.search)
-    setApiConfig({
-      token: authentication.getToken(),
-      key: authentication.getKey(),
-      queueId: query.queueId,
-    })
+    let queueId = query.queueId
+
+    if (queueId) {
+      setApiConfig({
+        token: authentication.getToken(),
+        key: authentication.getKey(),
+        queueId,
+      })
+    } else {
+      queueId = prompt("Please enter your queue id", "E.g. Yg9jAKfn")
+      router.push({
+       pathname: `/admin`,
+       query: {
+         queueId
+       }
+      })
+    }
   }, [])
 
   useEffect(() => {

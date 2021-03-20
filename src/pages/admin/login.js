@@ -28,16 +28,13 @@ const Index = () => {
 
   useEffect(() => {
     const query = queryString.parse(location.search)
-    if (query.queueId) {
-      getAuthorisationUrl(query.queueId)
+    let queueId = query.queueId
+
+    if (queueId) {
+      getAuthorisationUrl(queueId)
     } else {
-      const queueId = prompt("Please enter your queue id", "E.g. Yg9jAKfn");
-      if (queueId) {
-        getAuthorisationUrl(queueId)
-      } else{
-        alert('Invalid Queue Id')
-        router.push('/')
-      }
+      queueId = prompt("Please enter your queue id", "E.g. Yg9jAKfn")
+      window.location.href = `/admin/login?queueId=${queueId}`
     }
   },[])
 
