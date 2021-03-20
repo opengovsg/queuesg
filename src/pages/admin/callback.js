@@ -28,8 +28,8 @@ const Index = () => {
 
   return (
     <Container>
-      <NavBar width="100%" maxWidth="600px" />
-      <Main justifyContent="start" minHeight="90vh" zIndex="1">
+      <NavBar width="100%" />
+      <Main justifyContent="start" minHeight="90vh" width="100%">
         <Center>
           <Spinner />
         </Center>
