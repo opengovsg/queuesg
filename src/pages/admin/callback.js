@@ -8,7 +8,7 @@ import {
 
 import { Container } from '../../components/Container'
 import { Main } from '../../components/Main'
-import { NavBar } from '../../components/Navbar'
+import { NavBar } from '../../components/Admin/Navbar'
 import { authentication } from '../../utils'
 
 const Index = () => {
@@ -19,7 +19,7 @@ const Index = () => {
     const hash = queryString.parse(location.hash)
 
     authentication.login(query.key, hash.token)
-    router.push(`/admin?queueId=${query.queue}`)
+    router.push(`/admin?boardId=${query.boardId}`)
   }
 
   useEffect(() => {

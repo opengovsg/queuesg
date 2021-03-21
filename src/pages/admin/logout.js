@@ -12,7 +12,7 @@ import { useRouter } from 'next/router'
 
 import { Container } from '../../components/Container'
 import { Main } from '../../components/Main'
-import { NavBar } from '../../components/Navbar'
+import { NavBar } from '../../components/Admin/Navbar'
 
 import { authentication } from '../../utils'
 

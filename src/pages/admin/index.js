@@ -5,23 +5,18 @@ import {
   Box,
   Button,
   Center,
-  Checkbox,
-  CheckboxGroup,
   Flex,
-  FormControl,
-  FormLabel,
-  Input,
   Spinner,
   Text,
-  VStack,
 } from '@chakra-ui/react'
 
 import { Container } from '../../components/Container'
 import { Main } from '../../components/Main'
-import { NavBar } from '../../components/Navbar'
+import { NavBar } from '../../components/Admin/Navbar'
+import InputText from '../../components/Admin/InputText'
+import InputCheckbox from '../../components/Admin/InputCheckbox'
 import { authentication } from '../../utils'
 import { useRouter } from 'next/router'
-import { route } from 'next/dist/next-server/server/router'
 
 const Index = () => {
   const router = useRouter()
@@ -38,7 +33,7 @@ const Index = () => {
 
     if (error.response.status === 401) {
       alert(`Your login token is expired. Please login again`)
-      router.push(`/admin/login?queueId=${query.queueId}`)
+      router.push(`/admin/login?boardId=${query.boardId}`)
     } else {
       alert(`Error ${error.response.status} : ${error.response.data}`)
     }
@@ -48,9 +43,9 @@ const Index = () => {
    * Gets the board description from trello directly
    */
   const getBoardDescription = async () => {
-    if (apiConfig && apiConfig.key && apiConfig.token && apiConfig.queueId) { 
+    if (apiConfig && apiConfig.key && apiConfig.token && apiConfig.boardId) { 
       try { 
-        const response = await axios.get(`https://api.trello.com/1/boards/${apiConfig.queueId}?key=${apiConfig.key}&token=${apiConfig.token}`)
+        const response = await axios.get(`https://api.trello.com/1/boards/${apiConfig.boardId}?key=${apiConfig.key}&token=${apiConfig.token}`)
         
         setBoardSettings(JSON.parse(response.data.desc))
         setBoardData(response.data)
@@ -67,10 +62,10 @@ const Index = () => {
   const updateBoardDescription = async () => {
     if (isSubmitting === true) return
 
-    if (apiConfig && apiConfig.key && apiConfig.token && apiConfig.queueId) { 
+    if (apiConfig && apiConfig.key && apiConfig.token && apiConfig.boardId) { 
       try { 
         setIsSubmitting(true)
-        const response = await axios.put(`https://api.trello.com/1/boards/${apiConfig.queueId}?key=${apiConfig.key}&token=${apiConfig.token}`, {
+        const response = await axios.put(`https://api.trello.com/1/boards/${apiConfig.boardId}?key=${apiConfig.key}&token=${apiConfig.token}`, {
           desc: JSON.stringify(boardSettings)
         })
         console.log(response.data)
@@ -87,21 +82,26 @@ const Index = () => {
    */
   useEffect(() => {
     const query = queryString.parse(location.search)
-    let queueId = query.queueId
+    let boardId = query.boardId
 
-    if (queueId) {
+    if (boardId) {
       setApiConfig({
         token: authentication.getToken(),
         key: authentication.getKey(),
-        queueId,
+        boardId,
       })
     } else {
-      queueId = prompt("Please enter your queue id", "E.g. Yg9jAKfn")
+      boardId = prompt("Please enter your queue id", "E.g. Yg9jAKfn")
       router.push({
        pathname: `/admin`,
        query: {
-         queueId
+         boardId
        }
+      })
+      setApiConfig({
+        token: authentication.getToken(),
+        key: authentication.getKey(),
+        boardId,
       })
     }
   }, [])
@@ -177,7 +177,7 @@ const Index = () => {
             <Flex width="100%" maxW="1200px" flexDir="column">
               <Flex width="100%" flexDir="row" justifyContent="space-between" alignItems="center" pb="10">
                 <Text textStyle="heading1" color="primary.600" textAlign="center">
-                  Admin For {boardData.name}
+                  {boardData.name}
                 </Text>
 
                 <Button
@@ -200,58 +200,44 @@ const Index = () => {
                   onSubmit={submit}
                   >
                   {/* registration fields */}
-                  <Flex
-                    pt="0.5rem"
-                    pb="0.5rem"
-                    >
-                    <FormControl id="registrationFields">
-                      <FormLabel>Registration Fields</FormLabel>
-                      <CheckboxGroup
-                        colorScheme="primary"
-                        value={boardSettings.registrationFields}
-                        onChange={(value) => onCheckboxInputChange('registrationFields', value)}
-                        >
-                        <VStack>
-                          <Checkbox value="name">Full Name</Checkbox>
-                          <Checkbox value="contact">Phone Number</Checkbox>
-                          <Checkbox value="nric">NRIC</Checkbox>
-                        </VStack>
-                      </CheckboxGroup>
-                    </FormControl>
-                  </Flex>
+                  <InputCheckbox
+                    id="registrationFields"
+                    label="Registration Fields"
+                    value={boardSettings.registrationFields}
+                    onChange={(value) => onCheckboxInputChange('registrationFields', value)}
+                    options={{
+                      name: "Full Name",
+                      contact: "Phone Number",
+                      nric: "NRIC"
+                    }}
+                   />
 
                   {/* categories */}
-                  <Flex
-                    pt="0.5rem"
-                    pb="0.5rem"
-                    >
-                    <FormControl id="categories">
-                      <FormLabel>Categories</FormLabel>
-                      <Input type="text" value={boardSettings.categories} onChange={onCategoriesChange} />
-                    </FormControl>
-                  </Flex>
+                  <InputText
+                    id="categories"
+                    label="Categories"
+                    type="text"
+                    value={boardSettings.categories}
+                    onChange={onCategoriesChange} 
+                    />
 
                   {/* feedback link */}
-                  <Flex
-                    pt="0.5rem"
-                    pb="0.5rem"
-                    >
-                    <FormControl id="feedbackLink">
-                      <FormLabel>Feedback Link</FormLabel>
-                      <Input type="url" value={boardSettings.feedbackLink} onChange={onTextInputChange} />
-                    </FormControl>
-                  </Flex>
+                  <InputText
+                    id="feedbackLink"
+                    label="Feedback Link"
+                    type="url"
+                    value={boardSettings.feedbackLink}
+                    onChange={onTextInputChange} 
+                    />
 
                   {/* privacy link */}
-                  <Flex
-                    pt="0.5rem"
-                    pb="0.5rem"
-                    >
-                    <FormControl id="privacyPolicyLink">
-                      <FormLabel>Privacy Policy Link</FormLabel>
-                      <Input type="url" value={boardSettings.privacyPolicyLink} onChange={onTextInputChange} />
-                    </FormControl>
-                  </Flex>
+                  <InputText
+                    id="privacyPolicyLink"
+                    label="Privacy Policy Link"
+                    type="url"
+                    value={boardSettings.privacyPolicyLink}
+                    onChange={onTextInputChange} 
+                    />
 
                   {/* Submit */}
                   <Button
