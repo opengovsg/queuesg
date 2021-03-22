@@ -31,5 +31,10 @@
   "the-queue-you-are-trying-does-not-exist": "您要加入的队列不存在. ",
   "please-check-link": "请检查链接或向工作人员寻求帮助.",
   "we-cant-seem-to-find-the-page-you-are-looking-for": "我们找不到您要查找的页面.",
-  "go-back": "返回"
+  "go-back": "返回",
+	"by-joining-this-queue-you-agree-to-our": "加入此队列，即表示您同意我们的",
+	"select-category": "选择类别",
+	"privacy-policy": "隐私政策",
+	"category": "类别",
+	"description": "描述"
 }

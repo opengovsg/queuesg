@@ -308,7 +308,7 @@ const Index = () => {
                             layerStyle="formInput"
                             maxLength="280"
                             name="description"
-                            placeholder="Description"
+                            placeholder={t('description')}
                             size="sm"
                             resize={'none'}
                           />
