@@ -1,6 +1,7 @@
-import { Box, Text, Flex, Button, Heading } from '@chakra-ui/react'
+import { Box, Icon, Text, Flex, Button, Heading } from '@chakra-ui/react'
 import useTranslation from 'next-translate/useTranslation'
 import { ChevronDownIcon } from '@chakra-ui/icons'
+import { IoGlobeOutline } from "react-icons/io5";
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { useState } from 'react'
@@ -63,7 +64,7 @@ export const NavBar = (props) => {
           variant="link"
           onClick={() => setMenuVisible(!menuVisible)}
         >
-          {t('lang')}
+          <Icon as={IoGlobeOutline} mr="2" />{t('lang')}
         </Button>
         {menuVisible && <Box
           position="absolute"
