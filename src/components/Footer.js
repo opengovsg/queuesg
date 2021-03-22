@@ -25,9 +25,14 @@ export const Footer = (props) => {
       >
         {t('built-by')}
       </Text>
-      <LogoOgp
-        width="180px"
-      />
+      <a
+        href="https://open.gov.sg"
+        target="_blank"
+        >
+        <LogoOgp
+          width="180px"
+        />
+      </a>
       <Text
         color="gray.500"
         textStyle="body2"
