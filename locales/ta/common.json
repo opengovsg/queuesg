@@ -31,5 +31,10 @@
   "the-queue-you-are-trying-does-not-exist": "நீங்கள் சேர முயற்சிக்கும் வரிசை இல்லை. ",
   "please-check-link": "தயவுசெய்து இணைப்பைச் சரிபார்க்கவும் அல்லது உதவிக்கு ஊழியர்களை அணுகவும்.",
   "we-cant-seem-to-find-the-page-you-are-looking-for": "நீங்கள் தேடும் பக்கத்தை எங்களால் கண்டுபிடிக்க முடியவில்லை.",
-  "go-back": "திரும்பிச் செல்லுங்கள்"
+  "go-back": "திரும்பிச் செல்லுங்கள்",
+	"by-joining-this-queue-you-agree-to-our": "By joining this queue, you agree to our",
+	"select-category": "பிரிவை தேர்வு செய்க",
+	"privacy-policy": "தனியுரிமைக் கொள்கை",
+	"category": "வகை",
+	"description": "விளக்கம்"
 }

@@ -39,7 +39,6 @@ export const Served = ({ feedbackLink }) => {
 
       {feedbackLink && <Text
         textStyle="body1"
-        mt={4}
         textDecoration="underline"
       ><a href={feedbackLink}>Give us some feedback</a>
       </Text>}

@@ -23,7 +23,7 @@ const layerStyles = extendTheme({
     width: "360px",
     maxWidth: '100%',
     backgroundColor: 'white',
-    marginBottom: '1em',
+    marginBottom: '2em',
   },
   formInput: {
     width: '100%',
