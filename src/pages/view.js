@@ -1,9 +1,8 @@
 import {
-  Center,
   Grid,
   GridItem,
-  Heading,
 } from '@chakra-ui/react'
+import Head from 'next/head'
 import { useEffect, useState } from 'react'
 import queryString from 'query-string'
 import axios from 'axios'
@@ -87,48 +86,53 @@ const Index = () => {
   }
 
   return (
-    <Grid
-      h="100vh"
-      templateColumns="repeat(6, 1fr)"
-      templateRows="repeat(18, 1fr)"
-    >
-      <GridItem
-        colSpan={6}
-        rowSpan={2}
-        bg="secondary.300"
-        height="120px"
+    <>
+      <Head>
+        <title>{board.name}</title>
+      </Head>
+      <Grid
+        h="100vh"
+        templateColumns="repeat(6, 1fr)"
+        templateRows="repeat(18, 1fr)"
       >
-        <ViewHeader
-          board={board}
-        />
-      </GridItem>
-      <GridItem
-        colSpan={3}
-        rowSpan={14}
-        bg="secondary.300"
-      >
-        <CurrentlyServingQueue
-          tickets={ticketsAlerted}
-        />
-      </GridItem>
-      <GridItem
-        colSpan={3}
-        rowSpan={14}
-        bg="error.300"
-      >
-        <MissedQueue
-          tickets={ticketsMissed}
-          queuePendingUrl={queuePendingUrl}
-        />
-      </GridItem>
-      <GridItem
-        colSpan={6}
-        rowSpan={2}
-        bg="base"
-      >
-        <ViewFooter />
-      </GridItem>
-    </Grid>
+        <GridItem
+          colSpan={6}
+          rowSpan={2}
+          bg="secondary.300"
+          height="120px"
+        >
+          <ViewHeader
+            board={board}
+          />
+        </GridItem>
+        <GridItem
+          colSpan={3}
+          rowSpan={14}
+          bg="secondary.300"
+        >
+          <CurrentlyServingQueue
+            tickets={ticketsAlerted}
+          />
+        </GridItem>
+        <GridItem
+          colSpan={3}
+          rowSpan={14}
+          bg="error.300"
+        >
+          <MissedQueue
+            tickets={ticketsMissed}
+            queuePendingUrl={queuePendingUrl}
+          />
+        </GridItem>
+        <GridItem
+          colSpan={6}
+          rowSpan={2}
+          bg="base"
+        >
+          <ViewFooter />
+        </GridItem>
+      </Grid>
+    </>
   )
 }
 

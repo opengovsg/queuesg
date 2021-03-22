@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
+import Head from 'next/head'
 import queryString from 'query-string'
 import axios from 'axios'
 import url from 'is-url'
@@ -175,9 +176,17 @@ const Index = () => {
         {
           !isQueueValid
             ?
-            <NoSuchQueue />
+            <>
+              <Head>
+                <title>Queue Not Found - 404</title>
+              </Head>
+              <NoSuchQueue />
+            </>
             :
             <>
+              <Head>
+                <title>{boardName}</title>
+              </Head>
               <Flex direction="column" alignItems="center">
                 <Text textStyle="body2" fontSize="1.25rem" color="primary.500" textAlign="center">{t('queue-welcome-message')}</Text>
                 <Text mt="6px" textStyle="heading1" fontSize="1.5rem" textAlign="center">{boardName}</Text>

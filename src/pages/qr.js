@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { useEffect, useState } from 'react'
+import Head from 'next/head'
 import {
   Heading,
   Box,
@@ -39,54 +40,57 @@ const Index = () => {
   }
 
   return (
-    <Container>
-      <NavBar width="100%" maxWidth="600px" />
-      <Main justifyContent="start" minHeight="auto" zIndex="1">
-        <Box marginBottom="32px">
-
-
-          <Heading
-            textAlign="center"
-            textStyle="display3"
-            color="primary.500"
-          >
-            {boardName}
+    <>
+      <Head>
+        <title>{ boardName }</title>
+      </Head>
+      <Container>
+        <NavBar width="100%" maxWidth="600px" />
+        <Main justifyContent="start" minHeight="auto" zIndex="1">
+          <Box marginBottom="32px">
+            <Heading
+              textAlign="center"
+              textStyle="display3"
+              color="primary.500"
+            >
+              {boardName}
+            </Heading>
+            <Heading
+              mt="24px"
+              textAlign="center"
+              textStyle="display2"
+            >
+              Scan QR Code to join the queue
           </Heading>
-          <Heading
-            mt="24px"
+          </Box>
+          <Box
+            layerStyle="card"
             textAlign="center"
-            textStyle="display2"
+            py={10}
           >
-            Scan QR Code to join the queue
-        </Heading>
-        </Box>
-        <Box
-          layerStyle="card"
-          textAlign="center"
-          py={10}
-        >
-          <Center>
-            {url !== '' && <QRCode value={url} size={220} />}
-          </Center>
+            <Center>
+              {url !== '' && <QRCode value={url} size={220} />}
+            </Center>
 
-          <Text
-            textStyle="subtitle1"
-            color="primary.500"
-            mt={6}
-          >
-            {url}
-          </Text>
-        </Box>
+            <Text
+              textStyle="subtitle1"
+              color="primary.500"
+              mt={6}
+            >
+              {url}
+            </Text>
+          </Box>
 
 
 
-      </Main>
-      <Center marginTop="-40px" zIndex="0">
-        <PeopleOnPhones
-          width="500px"
-        />
-      </Center>
-    </Container>
+        </Main>
+        <Center marginTop="-40px" zIndex="0">
+          <PeopleOnPhones
+            width="500px"
+          />
+        </Center>
+      </Container>
+    </>
   )
 }
 

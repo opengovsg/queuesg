@@ -31,19 +31,21 @@ exports.handler = async function (event, context) {
 
       const batchUrls = [
         `/cards/${id}/list?fields=name`,
-        `/cards/${id}`]
-        .join(',')
+        `/cards/${id}`,
+        `/cards/${id}/board`
+      ].join(',')
       const batchAPICall = await axios.get(`https://api.trello.com/1/batch?urls=${batchUrls}&${tokenAndKeyParams}`)
+
       //Check if rate limit hit
       if (batchAPICall.status === 429) { return { statusCode: 429, message: "Trello API rate limit" }; }
       if (batchAPICall.status !== 200) {
         return { statusCode: batchAPICall.status, message: "BatchAPICall error" };
       }
 
-      const [getListofCard, getCardDesc] = batchAPICall.data
+      const [getListofCard, getCardDesc, getCardBoard] = batchAPICall.data
 
       //Check that all Batch apis returned 200
-      if (!getListofCard['200'] || !getCardDesc['200']) {
+      if (!getListofCard['200'] || !getCardDesc['200'] || !getCardBoard['200']) {
         return { statusCode: 400, message: "BatchAPICall subrequest error" };
       }
 
@@ -67,6 +69,13 @@ exports.handler = async function (event, context) {
         // To check position in queue
         const ticketsInQueue = getCardsOnList.data
         res.numberOfTicketsAhead = ticketsInQueue.findIndex(val => val.id === id)
+      }
+
+      //  Board information
+      console.log(getCardBoard['200'])
+      res.board = {
+        id: getCardBoard['200'].id,
+        name: getCardBoard['200'].name,
       }
 
       return {
