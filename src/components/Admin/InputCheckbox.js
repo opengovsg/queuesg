@@ -27,7 +27,9 @@ import {
           value={value}
           onChange={onChange}
           >
-          <VStack>
+          <VStack
+            alignItems="flex-start"
+            >
             {
               Object.entries(options).map((option, index) => {
                 console.log(option)
