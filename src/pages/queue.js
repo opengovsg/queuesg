@@ -276,25 +276,29 @@ const Index = () => {
 
                         {Array.isArray(categories) && categories.length > 0 && <>
                           <Text
+                            pt="0.5rem"
                             pb="0.5rem"
                             textStyle="subtitle1"
                           >
                             {t('category')}
                           </Text>
-                          <Select
-                            name="category"
-                            layerStyle="formSelect"
-                            placeholder={t('select-category')}
-                            required
-                          >
-                            {categories.map(category =>
-                              <option value={category}>{category}</option>
-                            )}
-                          </Select>
+                          <Flex mb="1rem">
+                            <Select
+                              name="category"
+                              layerStyle="formSelect"
+                              placeholder={t('select-category')}
+                              required
+                            >
+                              {categories.map(category =>
+                                <option value={category}>{category}</option>
+                              )}
+                            </Select>
+                          </Flex>
                         </>}
 
                         {registrationFields.includes('description') && <>
                           <Text
+                            pt="0.5rem"
                             pb="0.5rem"
                             textStyle="subtitle1"
                           >
