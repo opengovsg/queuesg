@@ -1,20 +1,23 @@
+import { useEffect, useState } from 'react'
 import {
   Text,
   Flex,
   Heading,
   useDisclosure,
 } from '@chakra-ui/react'
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+import useTranslation from 'next-translate/useTranslation'
+import queryString from 'query-string'
+import axios from 'axios'
+import { useCookies } from 'react-cookie'
+
+import { useInterval } from '../utils'
+import { TICKET_STATUS } from '../constants'
 import { Container } from '../components/Container'
 import { Main } from '../components/Main'
 import { Footer } from '../components/Footer'
-import { useInterval } from '../utils'
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/router'
-import queryString from 'query-string';
-import axios from 'axios'
-import { TICKET_STATUS, QUEUE_TITLES } from '../constants'
 import { NavBar } from '../components/Navbar'
-import useTranslation from 'next-translate/useTranslation'
 import { InQueue } from '../components/Ticket/InQueue'
 import { NextInQueue } from '../components/Ticket/NextInQueue'
 import { Alerted } from '../components/Ticket/Alerted'
@@ -22,20 +25,20 @@ import { Skipped } from '../components/Ticket/Skipped'
 import { Served } from '../components/Ticket/Served'
 import { NotFound } from '../components/Ticket/NotFound'
 import { LeaveModal } from '../components/Ticket/LeaveModal'
-import { useCookies } from 'react-cookie';
 
 const Index = () => {
   const { t, lang } = useTranslation('common')
   const router = useRouter()
   const [refreshEnabled, setRefreshEnabled] = useState(true)
 
-  const waitTimePerTicket = process.env.NEXT_PUBLIC_WAIT_TIME_MINS || 3
-
+  const [waitTimePerTicket, setWaitTimePerTicket] = useState(3)
   const [numberOfTicketsAhead, setNumberOfTicketsAhead] = useState()
 
   const [ticketState, setTicketState] = useState()
   const [ticketId, setTicketId] = useState()
   const [queueId, setQueueId] = useState()
+  const [queueName, setQueueName] = useState()
+  const [board, setBoard] = useState()
   const [ticketNumber, setTicketNumber] = useState()
   const [displayTicketInfo, setDisplayTicketInfo] = useState('')
   const [lastUpdated, setLastUpdated] = useState('')
@@ -61,6 +64,9 @@ const Index = () => {
       })
       //Save feedback link
       if (query.feedback) setFeedbackLink(query.feedback)
+
+      //Save wait time per ticket
+      if (query.waitTimePerTicket && !isNaN(Number(query.waitTimePerTicket))) setWaitTimePerTicket(query.waitTimePerTicket)
     }
   }, [])
 
@@ -73,7 +79,8 @@ const Index = () => {
   const getTicketStatus = async (ticket) => {
     try {
       const getTicket = await axios.get(`/.netlify/functions/ticket?id=${ticket}`)
-      const { queueId, queueName, ticketDesc, numberOfTicketsAhead } = getTicket.data
+      const { queueId, queueName, ticketDesc, numberOfTicketsAhead, board } = getTicket.data
+      setBoard(board)
       //Update queueId in case ticket has been shifted
       setQueueId(queueId)
 
@@ -88,7 +95,10 @@ const Index = () => {
       // Hack: Check whether to alert the user based on if the 
       // queue name contains the word 'alert'
       // USING THE CONSTANT BREAKS I18N? IDK HOW
-      if (queueName.includes('[ALERT]')) setTicketState('alerted')
+      if (queueName.includes('[ALERT]')) {
+        setQueueName(queueName.replace('[ALERT]', '').trim())
+        setTicketState('alerted')
+      }
       else if (queueName.includes('[DONE]')) {
         setTicketState('served')
         setRefreshEnabled(false)
@@ -143,6 +153,7 @@ const Index = () => {
         waitingTime={waitTimePerTicket}
         openLeaveModal={onOpen}
         queueId={queueId}
+        queueName={queueName}
         ticketId={ticketId}
       />
     }
@@ -185,47 +196,52 @@ const Index = () => {
   }
 
   return (
-    <Container>
-      <LeaveModal isOpen={isOpen} onOpen={onOpen} onClose={onClose} leaveQueue={leaveQueue} />
-      <NavBar />
-      <Main>
-        {ticketState != TICKET_STATUS.ERROR && <Flex direction="column" alignItems="center">
-          <Heading textStyle="heading1" fontSize="1.5rem" letterSpacing="0.2rem">#{ticketNumber}</Heading>
-          <Text mt="16px" textStyle="body2" fontSize="1.25rem" letterSpacing="0.1rem">
-            {displayTicketInfo}
-          </Text>
-        </Flex>}
+    <>
+      <Head>
+        <title>{board ? board.name : 'QueueUp SG'}</title>
+      </Head>
+      <Container>
+        <LeaveModal isOpen={isOpen} onOpen={onOpen} onClose={onClose} leaveQueue={leaveQueue} />
+        <NavBar />
+        <Main>
+          {ticketState != TICKET_STATUS.ERROR && <Flex direction="column" alignItems="center">
+            <Heading textStyle="heading1" fontSize="1.5rem" letterSpacing="0.2rem">#{ticketNumber}</Heading>
+            <Text mt="16px" textStyle="body2" fontSize="1.25rem" letterSpacing="0.1rem">
+              {displayTicketInfo}
+            </Text>
+          </Flex>}
 
-        <Flex
-          direction="column"
-          alignItems="center"
-        >
           <Flex
             direction="column"
             alignItems="center"
-            w="360px"
-            maxW="100%"
           >
-            {renderTicket()}
-          </Flex>
-          <Flex
-            direction="column"
-            py={4}
-            w="360px"
-            maxW="100%"
-          >
-            <Text
-              textAlign="center"
-              textStyle="body2"
-              color="gray.500"
+            <Flex
+              direction="column"
+              alignItems="center"
+              w="360px"
+              maxW="100%"
             >
-              {t("last-updated-automatically-at")} {lastUpdated}
-            </Text>
+              {renderTicket()}
+            </Flex>
+            <Flex
+              direction="column"
+              py={4}
+              w="360px"
+              maxW="100%"
+            >
+              <Text
+                textAlign="center"
+                textStyle="body2"
+                color="gray.500"
+              >
+                {t("last-updated-automatically-at")} {lastUpdated}
+              </Text>
+            </Flex>
           </Flex>
-        </Flex>
-      </Main>
-      <Footer />
-    </Container>
+        </Main>
+        <Footer />
+      </Container>
+    </>
   )
 }
 

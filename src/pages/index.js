@@ -7,6 +7,7 @@ import {
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import Head from 'next/head'
 import useTranslation from 'next-translate/useTranslation'
 import queryString from 'query-string'
 
