@@ -2,9 +2,8 @@ import {
   Flex,
   FormControl,
   FormLabel,
-  Input,
-  Text,
 } from '@chakra-ui/react'
+import DayOpeningHours from './DayOpeningHours'
 
 const Index = ({
   id,
@@ -13,14 +12,22 @@ const Index = ({
   onChange,
   style
 }) => {
-  const daysOfTheWeek = {
-    Monday: "1",
-    Tuesday: "2",
-    Wednesday: "3",
-    Thursday: "4",
-    Friday: "5",
-    Saturday: "6",
-    Sunday: "0",
+
+  const daysOfTheWeek = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday"
+  ]
+
+  const dayOpeningHoursChanged = (dayNumber, dayOpeningHours) => {
+    onChange({
+      ...value,
+      [dayNumber]: dayOpeningHours
+    })
   }
 
   return (
@@ -29,16 +36,16 @@ const Index = ({
       pb="0.5rem"
       {...style}
       >
-      <FormControl id={id}>
+      <FormControl>
         <FormLabel>{label}</FormLabel>
         {
-          Object.keys(daysOfTheWeek).map(day => {
-           return  <Flex alignItems="center" mb="3">
-              <Text width="250px" mr="5">{day}</Text>
-              <Input type="time" value={value} onChange={onChange} />
-              <Text>&nbsp;to&nbsp;</Text>
-              <Input type="time" value={value} onChange={onChange} />
-            </Flex>
+          daysOfTheWeek.map((day, dayNumber) => {
+           return <DayOpeningHours
+            key={dayNumber}
+            day={day}
+            value={value ? value[dayNumber] : ""}
+            onChange={(dayOpeningHours) => dayOpeningHoursChanged(dayNumber, dayOpeningHours)}
+           />
           })
         }
       </FormControl>

@@ -72,7 +72,6 @@ const Index = () => {
         const response = await axios.put(`https://api.trello.com/1/boards/${apiConfig.boardId}?key=${apiConfig.key}&token=${apiConfig.token}`, {
           desc: JSON.stringify(boardSettings)
         })
-        console.log(response.data)
       } catch (error) {
         errorHandler(error)
       } finally {
@@ -148,14 +147,12 @@ const Index = () => {
   /**
    * On Open Hours Input Change
    */
-   const onOpeningHoursInputChange = (e) => {
-     console.log(e.target)
-     /*
+  const onOpeningHoursInputChange = (openingHours) => {
+    console.log(openingHours)
     setBoardSettings({
       ...boardSettings,
-      [e.target.id]: e.target.value
+      openingHours
     })
-    */
   }
 
   /**
@@ -281,7 +278,7 @@ const Index = () => {
                       <OpeningHours
                         id="openingHours"
                         label="Opening Hours"
-                        value={boardSettings.openingHours}
+                        value={boardSettings.openingHours || {}}
                         onChange={onOpeningHoursInputChange} 
                         />
                     </Box>
