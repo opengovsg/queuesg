@@ -1,11 +1,14 @@
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import queryString from 'query-string'
+import { useRouter } from 'next/router'
+import Head from'next/head'
 import {
   Box,
   Button,
   Center,
   Flex,
+  Grid,
   Spinner,
   Text,
 } from '@chakra-ui/react'
@@ -13,10 +16,11 @@ import {
 import { Container } from '../../components/Container'
 import { Main } from '../../components/Main'
 import { NavBar } from '../../components/Admin/Navbar'
-import InputText from '../../components/Admin/InputText'
+import OpeningHours from '../../components/Admin/OpeningHours'
 import InputCheckbox from '../../components/Admin/InputCheckbox'
+import InputText from '../../components/Admin/InputText'
+import InputTextarea from '../../components/Admin/InputTextarea'
 import { authentication } from '../../utils'
-import { useRouter } from 'next/router'
 
 const Index = () => {
   const router = useRouter()
@@ -142,6 +146,19 @@ const Index = () => {
   }
 
   /**
+   * On Open Hours Input Change
+   */
+   const onOpeningHoursInputChange = (e) => {
+     console.log(e.target)
+     /*
+    setBoardSettings({
+      ...boardSettings,
+      [e.target.id]: e.target.value
+    })
+    */
+  }
+
+  /**
    * On Checkbox Input Change
    */
    const onCheckboxInputChange = (id, value) => {
@@ -165,7 +182,10 @@ const Index = () => {
     }
   }
 
-  return (
+  return <>
+    <Head>
+      <title>Admin - QueueUp Sg</title>
+    </Head>
     <Container>
       <NavBar width="100%" />
       <Main justifyContent="start" minHeight="90vh" width="100%">
@@ -199,60 +219,73 @@ const Index = () => {
                 <form
                   onSubmit={submit}
                   >
-                  {/* registration fields */}
-                  <InputCheckbox
-                    id="registrationFields"
-                    label="Registration Fields"
-                    value={boardSettings.registrationFields}
-                    onChange={(value) => onCheckboxInputChange('registrationFields', value)}
-                    options={{
-                      name: "Full Name",
-                      contact: "Phone Number",
-                      nric: "NRIC"
-                    }}
-                   />
+                  <Grid templateColumns="repeat(2, 1fr)" gap={6}>
+                    <Box w="100%">
+                      {/* registration fields */}
+                      <InputCheckbox
+                        id="registrationFields"
+                        label="Registration Fields"
+                        value={boardSettings.registrationFields}
+                        onChange={(value) => onCheckboxInputChange('registrationFields', value)}
+                        options={{
+                          name: "Full Name",
+                          contact: "Phone Number",
+                          nric: "NRIC"
+                        }}
+                      />
 
-                  {/* categories */}
-                  <InputText
-                    id="categories"
-                    label="Categories"
-                    type="text"
-                    value={boardSettings.categories}
-                    onChange={onCategoriesChange} 
-                    />
+                      {/* categories */}
+                      <InputTextarea
+                        id="categories"
+                        label="Categories"
+                        type="text"
+                        value={boardSettings.categories}
+                        onChange={onCategoriesChange} 
+                        />
 
-                  {/* feedback link */}
-                  <InputText
-                    id="feedbackLink"
-                    label="Feedback Link"
-                    type="url"
-                    value={boardSettings.feedbackLink}
-                    onChange={onTextInputChange} 
-                    />
+                      {/* feedback link */}
+                      <InputText
+                        id="feedbackLink"
+                        label="Feedback Link"
+                        type="url"
+                        value={boardSettings.feedbackLink}
+                        onChange={onTextInputChange} 
+                        />
 
-                  {/* privacy link */}
-                  <InputText
-                    id="privacyPolicyLink"
-                    label="Privacy Policy Link"
-                    type="url"
-                    value={boardSettings.privacyPolicyLink}
-                    onChange={onTextInputChange} 
-                    />
+                      {/* privacy link */}
+                      <InputText
+                        id="privacyPolicyLink"
+                        label="Privacy Policy Link"
+                        type="url"
+                        value={boardSettings.privacyPolicyLink}
+                        onChange={onTextInputChange} 
+                        />
 
-                  {/* Submit */}
-                  <Button
-                    isLoading={isSubmitting}
-                    loadingText="Updating..."
-                    colorScheme="primary"
-                    borderRadius="3px"
-                    color="white"
-                    size="lg"
-                    variant="solid"
-                    marginTop="1.5rem"
-                    type="submit"
-                  >
-                    Save Settings
-                  </Button>
+                      {/* Submit */}
+                      <Button
+                        isLoading={isSubmitting}
+                        loadingText="Updating..."
+                        colorScheme="primary"
+                        borderRadius="3px"
+                        color="white"
+                        size="lg"
+                        variant="solid"
+                        marginTop="1.5rem"
+                        type="submit"
+                      >
+                        Save Settings
+                      </Button>
+                    </Box>
+                    <Box w="100%">
+                      {/* Opening Hours */}
+                      <OpeningHours
+                        id="openingHours"
+                        label="Opening Hours"
+                        value={boardSettings.openingHours}
+                        onChange={onOpeningHoursInputChange} 
+                        />
+                    </Box>
+                  </Grid>
                 </form>
               </Box>
             </Flex>
@@ -262,7 +295,7 @@ const Index = () => {
         </Center>
       </Main>
     </Container>
-  )
+  </>
 }
 
 export default Index
