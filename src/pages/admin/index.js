@@ -34,12 +34,17 @@ const Index = () => {
    */
   const errorHandler = (error) => {
     const query = queryString.parse(location.search)
-
-    if (error.response.status === 401) {
-      alert(`Your login token is expired. Please login again`)
-      router.push(`/admin/login?boardId=${query.boardId}`)
+    
+    if (error.response) {
+      if (error.response.status === 401) {
+        alert(`Your login token is expired. Please login again`)
+        router.push(`/admin/login?boardId=${query.boardId}`)
+      } else {
+        alert(`Error ${error.response.status} : ${error.response.data}`)
+      }
     } else {
-      alert(`Error ${error.response.status} : ${error.response.data}`)
+      console.error(error)
+      alert(`Error: ${error.message}`)
     }
   }
   
@@ -69,7 +74,15 @@ const Index = () => {
     if (apiConfig && apiConfig.key && apiConfig.token && apiConfig.boardId) { 
       try { 
         setIsSubmitting(true)
-        const response = await axios.put(`https://api.trello.com/1/boards/${apiConfig.boardId}?key=${apiConfig.key}&token=${apiConfig.token}`, {
+        const desc = JSON.stringify(boardSettings)
+
+        //  Verify that the board desc does not exceed 16384 characters
+        //  https://developer.atlassian.com/cloud/trello/rest/api-group-boards/#api-boards-id-put
+        if (desc.length > 16384) {
+          throw Error("Could not save due to setting JSON length exceeding 16384")
+        }
+
+        await axios.put(`https://api.trello.com/1/boards/${apiConfig.boardId}?key=${apiConfig.key}&token=${apiConfig.token}`, {
           desc: JSON.stringify(boardSettings)
         })
       } catch (error) {
