@@ -32,7 +32,6 @@ import {
             >
             {
               Object.entries(options).map((option, index) => {
-                console.log(option)
                 return <Checkbox
                   key={index}
                   value={option[0]}
