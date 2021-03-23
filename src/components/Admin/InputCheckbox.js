@@ -4,12 +4,14 @@ import {
   Flex,
   FormControl,
   FormLabel,
+  FormHelperText,
   VStack,
 } from '@chakra-ui/react'
 
  const Index = ({
   id,
   label,
+  helperText,
   value,
   options = {},
   onChange,
@@ -42,6 +44,13 @@ import {
             }
           </VStack>
         </CheckboxGroup>
+        {
+          helperText
+          ?
+          <FormHelperText>{helperText}</FormHelperText>
+          :
+          null
+        }
       </FormControl>
     </Flex>
   )

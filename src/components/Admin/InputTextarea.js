@@ -2,12 +2,14 @@ import {
   Flex,
   FormControl,
   FormLabel,
+  FormHelperText,
   Textarea
 } from '@chakra-ui/react'
 
 const Index = ({
   id,
   label,
+  helperText,
   value,
   onChange,
   style
@@ -21,6 +23,13 @@ const Index = ({
       <FormControl id={id}>
         <FormLabel>{label}</FormLabel>
         <Textarea value={value} onChange={onChange} />
+        {
+          helperText
+          ?
+          <FormHelperText>{helperText}</FormHelperText>
+          :
+          null
+        }
       </FormControl>
     </Flex>
   )

@@ -36,7 +36,7 @@ const Index = () => {
     } catch (error) {
       console.error(error)
     } finally {
-      router.push("/")
+      router.push("/admin/login")
     }
   }
 
