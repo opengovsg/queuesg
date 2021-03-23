@@ -6,6 +6,8 @@ import axios from 'axios'
 import url from 'is-url'
 import { validate } from 'nric'
 
+import { isQueueClosed } from '../utils'
+
 import { Container } from '../components/Container'
 import { Main } from '../components/Main'
 import { Footer } from '../components/Footer'
@@ -27,10 +29,11 @@ import {
 } from '@chakra-ui/react'
 import { useCookies } from 'react-cookie';
 import useTranslation from 'next-translate/useTranslation'
+
 const Index = () => {
   const { t, lang } = useTranslation('common')
   const router = useRouter()
-  const [cookies, setCookie] = useCookies(['ticket']);
+  const [cookies] = useCookies(['ticket']);
 
   const [boardName, setBoardName] = useState('')
   const [isQueueValid, setIsQueueValid] = useState(true)
@@ -95,12 +98,15 @@ const Index = () => {
       // 2. Gets info stored as JSON in board description
       const getBoardQueueBelongsTo = await axios.get(`/.netlify/functions/queue?id=${queueId}`)
       const { name, desc } = getBoardQueueBelongsTo.data
-      setIsQueueInactive(name.includes('[DISABLED]'))
+
+      const boardInfo = JSON.parse(desc)
+
+      setIsQueueInactive(name.includes('[DISABLED]') || isQueueClosed(boardInfo.openingHours))
       setIsLoading(false)
+
       const cleanedName = name.replace('[DISABLED]', '').trim()
       setBoardName(cleanedName)
 
-      const boardInfo = JSON.parse(desc)
       //  Set Registration Fields
       setRegistrationFields(boardInfo.registrationFields)
 
