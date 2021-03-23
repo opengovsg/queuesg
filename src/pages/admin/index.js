@@ -98,26 +98,30 @@ const Index = () => {
    */
   useEffect(() => {
     const query = queryString.parse(location.search)
-    let boardId = query.boardId
+    const token = authentication.getToken()
+    const key = authentication.getKey()
 
-    if (boardId) {
+    let boardId = query.boardId || prompt("Please enter your queue id", "E.g. Yg9jAKfn")
+
+    if (token && key) {
+      router.push({
+        pathname: `/admin`,
+        query: {
+          boardId
+        }
+      })
       setApiConfig({
         token: authentication.getToken(),
         key: authentication.getKey(),
         boardId,
       })
     } else {
-      boardId = prompt("Please enter your queue id", "E.g. Yg9jAKfn")
+      //  redirects the user to the login page
       router.push({
-       pathname: `/admin`,
-       query: {
-         boardId
-       }
-      })
-      setApiConfig({
-        token: authentication.getToken(),
-        key: authentication.getKey(),
-        boardId,
+        pathname: `/admin/login`,
+        query: {
+          boardId
+        }
       })
     }
   }, [])
