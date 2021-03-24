@@ -5,8 +5,8 @@ import Head from 'next/head'
 import {
   Button,
   Box,
+  Center,
   Flex,
-  Image,
   Modal,
   ModalBody,
   ModalContent,
@@ -45,6 +45,7 @@ const Index = () => {
   const authoriseApp = async () => {
     if (boardId) {
       try {
+        setIsLoading(true)
         const response = await axios.post(`/.netlify/functions/authorize`, {
           boardId,
         })
@@ -56,6 +57,8 @@ const Index = () => {
       } catch (error) {
         console.error(error)
         alert(`Error: ${error.message}`)
+      } finally {
+        setIsLoading(false)
       }
     }
   }
@@ -66,8 +69,11 @@ const Index = () => {
     </Head>
     <Container>
       <NavBar width="100%" />
-      <Main justifyContent="start" minHeight="90vh" width="100%">
-        <Flex direction="column" alignItems="center">
+      <Main justifyContent="start" width="100%">
+        <Center flexDirection="column" alignItems="center" minHeight="75vh">
+          <Text textStyle="heading2" pb="10">
+            QueueUp SG - Admin
+          </Text>
           <Flex direction="column" alignItems="center">
             <ManWithHourglass
               className="featured-image"
@@ -108,7 +114,7 @@ const Index = () => {
               </Button>
             </form>
           </Box>
-        </Flex>
+        </Center>
       </Main>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
