@@ -80,6 +80,9 @@ exports.handler = async function (event, context) {
 
       return {
         statusCode: 200,
+        headers: {
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify(res)
       };
     }
@@ -127,6 +130,9 @@ exports.handler = async function (event, context) {
       }
       return {
         statusCode: 200,
+        headers: {
+          "Content-Type": "application/json"
+        },
       };
     }
     /**
@@ -142,6 +148,9 @@ exports.handler = async function (event, context) {
       }
       return {
         statusCode: 200,
+        headers: {
+          "Content-Type": "application/json"
+        },
       };
     }
     return { statusCode: 404 }

@@ -10,6 +10,10 @@
   TRELLO_KEY="Trello API Key"
   TRELLO_TOKEN="Trello API Token"
   IS_PUBLIC_BOARD="Public Board (True/False)"
+  REDIRECT_URL="https://example.com/admin/callback"
+  SCOPES="read,write"
+  EXPIRATION_DURATION="1hours"
+  APP_NAME="My QueueUp"
   
 [[plugins]]
   package = "@netlify/plugin-nextjs"
