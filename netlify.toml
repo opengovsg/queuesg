@@ -1,6 +1,6 @@
 [build]
   base = "/"
-  command = "npm install && npm run build"
+  command = "npm ci && npm run build"
   functions = ".netlify/functions"
 
 [template.environment]
