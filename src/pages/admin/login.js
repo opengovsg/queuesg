@@ -46,13 +46,13 @@ const Index = () => {
     if (boardId) {
       try {
         setIsLoading(true)
-        const response = await axios.post(`/.netlify/functions/authorize`, {
+        const response = await axios.post(`/.netlify/functions/login`, {
           boardId,
         })
         if (response.data.authorizeUrl) {
           window.location.href = response.data.authorizeUrl
         } else {
-          throw Error("Authorise URL was not defined.")
+          throw Error("Functions Login URL was not defined.")
         }
       } catch (error) {
         console.error(error)
