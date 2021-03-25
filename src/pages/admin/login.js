@@ -42,7 +42,8 @@ const Index = () => {
   /**
    * Go to Trello to authorise the app
    */
-  const authoriseApp = async () => {
+  const authoriseApp = async (e) => {
+    e.preventDefault()
     if (boardId) {
       try {
         setIsLoading(true)
