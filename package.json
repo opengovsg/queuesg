@@ -31,6 +31,6 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@netlify/plugin-nextjs": "^1.0.8"
+    "@netlify/plugin-nextjs": "3.0.3"
   }
 }
