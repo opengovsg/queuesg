@@ -81,6 +81,8 @@ export const isQueueClosed = (openingHours) => {
   const min = String(date.getMinutes())
   const currentTime = `${hour.padStart(2,'0')}:${min.padStart(2,'0')}`
 
+  if (typeof openingHours !== 'object' || !openingHours[day]) return false
+
   const currentDayOpeningHours = openingHours[day].split('-')
   
   if (Array.isArray(currentDayOpeningHours) && currentDayOpeningHours.length === 2) {
