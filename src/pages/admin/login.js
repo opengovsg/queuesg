@@ -46,7 +46,7 @@ const Index = () => {
     if (boardId) {
       try {
         setIsLoading(true)
-        const response = await axios.post(`/.netlify/functions/authorize`, {
+        const response = await axios.post(`/.netlify/functions/login`, {
           boardId,
         })
         if (response.data.authorizeUrl) {
