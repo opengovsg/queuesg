@@ -244,7 +244,9 @@ const Index = () => {
                         options={{
                           name: "Full Name",
                           contact: "Phone Number",
-                          nric: "NRIC"
+                          nric: "NRIC",
+                          postalcode: "Postal Code",
+                          description: "Description"
                         }}
                       />
 
