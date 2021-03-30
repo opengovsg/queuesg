@@ -1,10 +1,26 @@
-import { Box, Text, Flex, Button, Heading } from '@chakra-ui/react'
+import { useEffect, useState } from 'react'
+import { Box, Text, Flex, Button } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 
 import LogoQueue from '../../assets/svg/logo-queue.svg'
+import { authentication } from '../../utils'
 
-export const NavBar = (props) => {
+const Navbar = (props) => {
   const router = useRouter()
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+  useEffect(() => {
+    setIsLoggedIn(authentication.getKey() && authentication.getToken())
+  }, [])
+
+  /**
+   * Confirm with the user that she/he wants to logout
+   */
+   const confirmLogout = () => {
+    if(confirm('Please confirm that you would like to logout?')) {
+      router.push('/admin/logout')
+    }
+  }
 
   return (
     <Flex
@@ -31,11 +47,26 @@ export const NavBar = (props) => {
         display={"block"}
         flexBasis={"auto"}
       >
-        
+        {
+          isLoggedIn
+          ?
+          <Button
+            flex
+            colorScheme="red"
+            borderRadius="3px"
+            color="white"
+            variant="solid"
+            size="sm"
+            onClick={confirmLogout}
+          >
+            Logout
+          </Button>
+          :
+          null
+        }
       </Box>
-
     </Flex>
   )
 }
 
-
+export default Navbar

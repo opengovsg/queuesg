@@ -15,11 +15,14 @@ import {
 
 import { Container } from '../../components/Container'
 import { Main } from '../../components/Main'
-import { NavBar } from '../../components/Admin/Navbar'
-import OpeningHours from '../../components/Admin/OpeningHours'
-import InputCheckbox from '../../components/Admin/InputCheckbox'
-import InputText from '../../components/Admin/InputText'
-import InputTextarea from '../../components/Admin/InputTextarea'
+import  {
+  InputCheckbox,
+  InputEditable,
+  InputText,
+  InputTextarea,
+  Navbar,
+  OpeningHours,
+} from '../../components/Admin'
 import { authentication } from '../../utils'
 
 const Index = () => {
@@ -27,7 +30,7 @@ const Index = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [apiConfig, setApiConfig] = useState()
   const [boardData, setBoardData] = useState()
-  const [boardSettings, setBoardSettings] = useState()
+  const [editableSettings, setEditableSettings] = useState()
 
   /**
    * TODO: move into a separate middleware service
@@ -47,44 +50,63 @@ const Index = () => {
       alert(`Error: ${error.message}`)
     }
   }
-  
+
   /**
-   * Gets the board description from trello directly
+   * Gets the board data from trello directly
    */
-  const getBoardDescription = async () => {
+  const getBoard = async () => {
     if (apiConfig && apiConfig.key && apiConfig.token && apiConfig.boardId) { 
       try { 
         const response = await axios.get(`https://api.trello.com/1/boards/${apiConfig.boardId}?key=${apiConfig.key}&token=${apiConfig.token}`)
         
-        setBoardSettings(JSON.parse(response.data.desc))
+        console.log(response.data)
+        setEditableSettings(JSON.parse(response.data.desc))
         setBoardData(response.data)
       } catch (error) {
         errorHandler(error)
       }
     }
   }
+
   /**
    * Updates the board settings
    * 
    * Note that there is a 16384 character limit
    */
-  const updateBoardDescription = async () => {
+  const updateBoard = async (type = "settings", data = null) => {
     if (isSubmitting === true) return
 
     if (apiConfig && apiConfig.key && apiConfig.token && apiConfig.boardId) { 
       try { 
         setIsSubmitting(true)
-        const desc = JSON.stringify(boardSettings)
+        const settings = {}
 
-        //  Verify that the board desc does not exceed 16384 characters
-        //  https://developer.atlassian.com/cloud/trello/rest/api-group-boards/#api-boards-id-put
-        if (desc.length > 16384) {
-          throw Error("Could not save due to setting JSON length exceeding 16384")
+        switch(type) {
+          case "settings":
+            const desc = JSON.stringify(editableSettings)
+            //  Verify that the board desc does not exceed 16384 characters
+            //  https://developer.atlassian.com/cloud/trello/rest/api-group-boards/#api-boards-id-put
+            if (desc.length > 16384) throw Error("Could not save due to setting JSON length exceeding 16384")
+            settings.desc = JSON.stringify(editableSettings)
+            break
+          
+          case "name":
+            //  Return if the board name is not changed
+            if (boardData.name === data) return
+
+            //  Update the board name
+            if (data) {
+              settings.name = String(data)
+            } else {
+              throw Error(`Board name cannot be empty`)
+            }
+            break
+
+          default:
+            throw Error(`Wrong type: ${type} provided in updating board`)
         }
 
-        await axios.put(`https://api.trello.com/1/boards/${apiConfig.boardId}?key=${apiConfig.key}&token=${apiConfig.token}`, {
-          desc: JSON.stringify(boardSettings)
-        })
+        await axios.put(`https://api.trello.com/1/boards/${apiConfig.boardId}?key=${apiConfig.key}&token=${apiConfig.token}`, settings)
       } catch (error) {
         errorHandler(error)
       } finally {
@@ -127,17 +149,8 @@ const Index = () => {
   }, [])
 
   useEffect(() => {
-    getBoardDescription()
+    getBoard()
   }, [apiConfig])
-
-  /**
-   * Confirm with the user that she/he wants to logout
-   */
-  const confirmLogout = () => {
-    if(confirm('Please confirm that you would like to logout?')) {
-      router.push('/admin/logout')
-    }
-  }
 
   /**
    * On Categories Change
@@ -145,8 +158,8 @@ const Index = () => {
    const onCategoriesChange = (e) => {
     const categories = e.target.value.split(",")
 
-    setBoardSettings({
-      ...boardSettings,
+    setEditableSettings({
+      ...editableSettings,
       [e.target.id]: categories
     })
   }
@@ -155,8 +168,8 @@ const Index = () => {
    * On Text Input Change
    */
   const onTextInputChange = (e) => {
-    setBoardSettings({
-      ...boardSettings,
+    setEditableSettings({
+      ...editableSettings,
       [e.target.id]: e.target.value
     })
   }
@@ -165,9 +178,8 @@ const Index = () => {
    * On Open Hours Input Change
    */
   const onOpeningHoursInputChange = (openingHours) => {
-    console.log(openingHours)
-    setBoardSettings({
-      ...boardSettings,
+    setEditableSettings({
+      ...editableSettings,
       openingHours
     })
   }
@@ -176,8 +188,8 @@ const Index = () => {
    * On Checkbox Input Change
    */
    const onCheckboxInputChange = (id, value) => {
-    setBoardSettings({
-      ...boardSettings,
+    setEditableSettings({
+      ...editableSettings,
       [id]: value
     })
   }
@@ -190,7 +202,7 @@ const Index = () => {
   const submit = async (e) => {
     try {
       e.preventDefault()
-      await updateBoardDescription()
+      await updateBoard("settings")
     } catch (error) {
       console.error(error)
     }
@@ -201,7 +213,7 @@ const Index = () => {
       <title>Admin - QueueUp Sg</title>
     </Head>
     <Container>
-      <NavBar width="100%" />
+      <Navbar width="100%" />
       <Main justifyContent="start" minHeight="90vh" width="100%">
         <Center>
           {/* TODO: migrate to components for sanity */}
@@ -210,19 +222,24 @@ const Index = () => {
             ?
             <Flex width="100%" maxW="1200px" flexDir="column">
               <Flex width="100%" flexDir="row" justifyContent="space-between" alignItems="center" pb="10">
-                <Text textStyle="heading1" color="primary.600" textAlign="center">
-                  {boardData.name}
-                </Text>
+                <InputEditable
+                  color="primary.500"
+                  fontSize="xl"
+                  isLoading={isSubmitting}
+                  onSubmit={(boardName) => updateBoard("name", boardName)}
+                  textStyle="heading1"
+                  value={boardData.name}
+                  />
 
                 <Button
                   flex
-                  colorScheme="orange"
+                  colorScheme="blue"
                   borderRadius="3px"
                   color="white"
                   variant="solid"
-                  onClick={confirmLogout}
+                  onClick={() => window.open(boardData.shortUrl)}
                 >
-                  Logout
+                  Go To Trello
                 </Button>
               </Flex>
 
@@ -239,7 +256,7 @@ const Index = () => {
                       <InputCheckbox
                         id="registrationFields"
                         label="Registration Fields"
-                        value={boardSettings.registrationFields}
+                        value={editableSettings.registrationFields}
                         onChange={(value) => onCheckboxInputChange('registrationFields', value)}
                         options={{
                           name: "Full Name",
@@ -255,7 +272,7 @@ const Index = () => {
                         id="categories"
                         label="Categories"
                         type="text"
-                        value={boardSettings.categories}
+                        value={editableSettings.categories}
                         onChange={onCategoriesChange} 
                         />
 
@@ -264,7 +281,7 @@ const Index = () => {
                         id="feedbackLink"
                         label="Feedback Link"
                         type="url"
-                        value={boardSettings.feedbackLink}
+                        value={editableSettings.feedbackLink}
                         onChange={onTextInputChange} 
                         />
 
@@ -273,7 +290,7 @@ const Index = () => {
                         id="privacyPolicyLink"
                         label="Privacy Policy Link"
                         type="url"
-                        value={boardSettings.privacyPolicyLink}
+                        value={editableSettings.privacyPolicyLink}
                         onChange={onTextInputChange} 
                         />
 
@@ -297,7 +314,7 @@ const Index = () => {
                       <OpeningHours
                         id="openingHours"
                         label="Opening Hours"
-                        value={boardSettings.openingHours || {}}
+                        value={editableSettings.openingHours || {}}
                         onChange={onOpeningHoursInputChange} 
                         />
                     </Box>

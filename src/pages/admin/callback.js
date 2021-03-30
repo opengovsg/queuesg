@@ -8,7 +8,9 @@ import {
 
 import { Container } from '../../components/Container'
 import { Main } from '../../components/Main'
-import { NavBar } from '../../components/Admin/Navbar'
+import {
+  Navbar
+} from '../../components/Admin'
 import { authentication } from '../../utils'
 
 const Index = () => {
@@ -28,7 +30,7 @@ const Index = () => {
 
   return (
     <Container>
-      <NavBar width="100%" />
+      <Navbar width="100%" />
       <Main justifyContent="start" minHeight="90vh" width="100%">
         <Center>
           <Spinner />
