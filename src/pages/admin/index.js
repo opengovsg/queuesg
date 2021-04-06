@@ -156,8 +156,7 @@ const Index = () => {
    * On Categories Change
    */
    const onCategoriesChange = (e) => {
-    const categories = e.target.value.split(",")
-
+    const categories = e.target.value.trim() === '' ? [] : e.target.value.split(",")
     setEditableSettings({
       ...editableSettings,
       [e.target.id]: categories
