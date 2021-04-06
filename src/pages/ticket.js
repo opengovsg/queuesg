@@ -85,7 +85,7 @@ const Index = () => {
       setQueueId(queueId)
 
       if (ticketDesc !== '') {
-        setDisplayTicketInfo(`${ticketDesc.name}, ${ticketDesc.contact}`)
+        setDisplayTicketInfo(`${ticketDesc.name ? ticketDesc.name : ''} ${ticketDesc.contact ? ticketDesc.contact : ''}`)
       }
       setNumberOfTicketsAhead(numberOfTicketsAhead)
       // // Update timestamp
