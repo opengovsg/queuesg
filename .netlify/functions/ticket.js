@@ -72,7 +72,7 @@ exports.handler = async function (event, context) {
       }
 
       //  Board information
-      console.log(getCardBoard['200'])
+      // console.log(getCardBoard['200'])
       res.board = {
         id: getCardBoard['200'].id,
         name: getCardBoard['200'].name,
