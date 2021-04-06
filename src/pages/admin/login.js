@@ -20,8 +20,10 @@ import {
 
 import { Container } from '../../components/Container'
 import { Main } from '../../components/Main'
-import { NavBar } from '../../components/Admin/Navbar'
-import InputText from '../../components/Admin/InputText'
+import {
+  InputText,
+  Navbar,
+} from '../../components/Admin'
 
 import ManWithHourglass from "../../assets/svg/man-with-hourglass.svg"
 
@@ -69,7 +71,7 @@ const Index = () => {
       <title>Login to Admin - QueueUp SG</title>
     </Head>
     <Container>
-      <NavBar width="100%" />
+      <Navbar width="100%" />
       <Main justifyContent="start" width="100%">
         <Center flexDirection="column" alignItems="center" minHeight="75vh">
           <Text textStyle="heading2" pb="10">

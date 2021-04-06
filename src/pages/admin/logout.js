@@ -12,7 +12,9 @@ import { useRouter } from 'next/router'
 
 import { Container } from '../../components/Container'
 import { Main } from '../../components/Main'
-import { NavBar } from '../../components/Admin/Navbar'
+import {
+  Navbar
+} from '../../components/Admin'
 
 import { authentication } from '../../utils'
 
@@ -46,7 +48,7 @@ const Index = () => {
 
   return (
     <Container>
-      <NavBar width="100%" />
+      <Navbar width="100%" />
       <Main minHeight="90vh" width="100%">
         <Center flexDir="column">
           <Spinner size="xl" mb="10" />
