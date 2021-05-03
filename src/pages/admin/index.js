@@ -2,10 +2,12 @@ import axios from 'axios'
 import { useEffect, useState } from 'react'
 import queryString from 'query-string'
 import { useRouter } from 'next/router'
+import { ExportToCsv } from 'export-to-csv'
 import Head from'next/head'
 import {
   Box,
   Button,
+  ButtonGroup,
   Center,
   Flex,
   Grid,
@@ -193,6 +195,122 @@ const Index = () => {
     })
   }
 
+  
+  /**
+   * Generates a report on the Queue
+   */
+  const assembleCSVData = (batchCardActions,cardDescriptions) =>{
+    const extractDataFromCardActions = (cardActions) => {
+      let JOINED;
+      let ALERTED;
+      let DONE;
+      let name;
+      let ticketNumber;
+      let cardId;
+      let description;
+  
+      cardActions.forEach((action) => {
+        const { type, data } = action;
+        const date = new Date(action.date);
+        if (type === 'createCard') {
+          JOINED = date;
+          cardId = data.card.id
+          description = cardDescriptions.get(data.card.id)
+        } else if (type === 'updateCard') {
+          // Only process events with listAfter, this filters out other changes like editing card title
+          if (data.listAfter) {
+            // This logic takes the LAST time a card is moved to given state [ALERT] / [DONE]
+            // For simplicity ignores dragging cards back and forth
+            if (data.listAfter.name.includes('[ALERT]')) {
+              ALERTED = date;
+            } else if (data.listAfter.name.includes('[DONE]')) {
+              DONE = date;
+              ticketNumber = data.card.idShort
+              name = data.card.name.replace(`${ticketNumber}-`,'');
+            }
+          }
+        }
+      });
+      return {
+        name,
+        ticketNumber,
+        description,
+        JOINED,
+        ALERTED,
+        DONE
+      }
+    };
+  
+    let dataForExport = []
+  
+    batchCardActions.forEach((card) => {
+      if (card['200']) {
+        const cardActions = card['200'];
+        dataForExport.push(extractDataFromCardActions(cardActions))
+      }
+    });
+    return dataForExport
+  }
+  const exportToCSV = (data) => {
+    if (data.length === 0) {
+      console.log('No logs found');
+    } else {
+      const csvExportOptions = {
+        fieldSeparator: ',',
+        quoteStrings: '"',
+        decimalSeparator: '.',
+        showLabels: true,
+        showTitle: true,
+        title: `Queue Report ${new Date().toString()}`,
+        filename: `Queue Report ${new Date().toString()}`,
+        useTextFile: false,
+        useBom: true,
+        useKeysAsHeaders: true,
+      };
+      const csvExporter = new ExportToCsv(csvExportOptions);
+      csvExporter.generateCsv(data);
+    }
+  };
+  const generateReport = async () => {
+    try {
+      setIsSubmitting(true)
+      if (apiConfig && apiConfig.key && apiConfig.token && apiConfig.boardId) {
+         // Get list of board to find 'DONE' list id
+         const listsOnBoard = (await axios.get(`https://api.trello.com/1/boards/${apiConfig.boardId}/lists?key=${apiConfig.key}&token=${apiConfig.token}`)).data
+
+         const finalBoard = listsOnBoard.find(list=>list.name.includes('[DONE]'))
+         if(!finalBoard) throw new Error('No [DONE] list found')
+
+         const listId = finalBoard.id
+
+         // Get all the card ids on our '[DONE]' list
+         const cardsOnList =  (await axios.get(`https://api.trello.com/1/lists/${listId}/cards?key=${apiConfig.key}&token=${apiConfig.token}`)).data
+
+         const doneCardIds = cardsOnList.map(card=>card.id)
+         if(doneCardIds.length===0) throw new Error('[DONE] list is empty')
+         let doneCardDescriptions = new Map()
+         cardsOnList.forEach(card=>{
+          doneCardDescriptions.set(card.id,card.desc)
+         })
+
+         // Batched API call to get histories of all the cards
+         const batchUrls = doneCardIds.map(id=>`/cards/${id}/actions?filter=createCard%26filter=updateCard`).join(',')
+
+        const batchAPICall = (await axios.get(`https://api.trello.com/1/batch?urls=${batchUrls}&key=${apiConfig.key}&token=${apiConfig.token}`))
+
+        const data = assembleCSVData(batchAPICall.data,doneCardDescriptions)
+
+        await exportToCSV(data)
+        
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsSubmitting(false)
+    }
+  };
+
+
   /**
    * Submits the  form
    * 
@@ -230,16 +348,29 @@ const Index = () => {
                   value={boardData.name}
                   />
 
-                <Button
-                  flex
-                  colorScheme="blue"
-                  borderRadius="3px"
-                  color="white"
-                  variant="solid"
-                  onClick={() => window.open(boardData.shortUrl)}
-                >
-                  Go To Trello
-                </Button>
+                <ButtonGroup>
+                  <Button
+                    isLoading={isSubmitting}
+                    flex
+                    colorScheme="blue"
+                    borderRadius="3px"
+                    color="white"
+                    variant="solid"
+                    onClick={generateReport}
+                  >
+                    Generate Report
+                  </Button>
+                  <Button
+                    flex
+                    colorScheme="blue"
+                    borderRadius="3px"
+                    color="white"
+                    variant="solid"
+                    onClick={() => window.open(boardData.shortUrl)}
+                  >
+                    Go To Trello
+                  </Button>
+                </ButtonGroup>
               </Flex>
 
               <Box
