@@ -140,10 +140,6 @@ const Index = () => {
     try {
       e.preventDefault()
 
-      //  Don't submit if it is submitting
-      if (isSubmitting) return
-      setIsSubmitting(true)
-
       // Check if NRIC is valid
       if (registrationFields.includes('nric')) {
         if (validate(e.target['nric'].value) === false) {
@@ -153,6 +149,10 @@ const Index = () => {
           setInvalidNRIC(false)
         }
       }
+
+      //  Don't submit if it is submitting
+      if (isSubmitting) return
+      setIsSubmitting(true)
 
       let desc = {}
       registrationFields.forEach((key) => {
