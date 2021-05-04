@@ -202,8 +202,9 @@ const Index = () => {
   const assembleCSVData = (batchCardActions,cardDescriptions) =>{
     const extractDataFromCardActions = (cardActions) => {
       let JOINED;
-      let ALERTED;
-      let DONE;
+      let ALERTED = null;
+      let MISSED = null;
+      let DONE = null;
       let name;
       let ticketNumber;
       let cardId;
@@ -223,7 +224,9 @@ const Index = () => {
             // For simplicity ignores dragging cards back and forth
             if (data.listAfter.name.includes('[ALERT]')) {
               ALERTED = date;
-            } else if (data.listAfter.name.includes('[DONE]')) {
+            } else if (data.listAfter.name.includes('[MISSED]')) {
+              MISSED = date;
+            }else if (data.listAfter.name.includes('[DONE]')) {
               DONE = date;
               ticketNumber = data.card.idShort
               name = data.card.name.replace(`${ticketNumber}-`,'');
@@ -237,6 +240,7 @@ const Index = () => {
         description,
         JOINED,
         ALERTED,
+        MISSED,
         DONE
       }
     };
