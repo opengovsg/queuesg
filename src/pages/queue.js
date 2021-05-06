@@ -355,10 +355,7 @@ const Index = () => {
 
                 {privacyPolicyLink && <>
                   <Text pt="1rem" textStyle="body3">
-                    <Text display="inline-block">{t('by-joining-this-queue-you-agree-to-our')}&nbsp;</Text>
-                    <Text display="inline-block" textStyle="link">
-                      <a href={privacyPolicyLink} target="_blank">{t('privacy-policy')}</a>
-                    </Text>
+                    <Text display="inline-block">{t('by-joining-this-queue-you-agree-to-our')}</Text>
                   </Text>
                 </>}
               </Flex>
