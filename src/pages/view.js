@@ -88,7 +88,7 @@ const Index = () => {
   return (
     <>
       <Head>
-        <title>{board.name}</title>
+        <title>Queue Status</title>
       </Head>
       <Grid
         h="100vh"
