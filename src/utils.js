@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { QUEUE_TITLES } from './constants'
 
 /**
  * React setInterval Equivalent
@@ -24,6 +25,19 @@ export const useInterval = (callback, delay) => {
       return () => clearInterval(id);
     }
   }, [delay]);
+}
+
+/**
+ * Gets the queue name from the list name
+ * 
+ * @param {string} name 
+ * @param {string} queueNumber 
+ */
+ export const getQueueName = (name) => {
+  Object.values(QUEUE_TITLES).forEach(TITLE => {
+    name = name.replace(TITLE, '')
+  })
+  return name.trim()
 }
 
 /**
