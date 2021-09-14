@@ -13,12 +13,12 @@ export const MissedQueue = ({
   return <>
     <Box
       mx={20}
-      my={20}
+      my={10}
       >
       <Box>
         <Heading
           textStyle="display1"
-          mb="1em"
+          mb="0.5em"
           >
             Missed queue
         </Heading>

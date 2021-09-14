@@ -19,7 +19,7 @@ exports.handler = async function (event, context) {
      * 2. boardlists - Retrieves all the lists that a board contains
      * *  @param  {string} board The board id
      * 3. queues - Retrieve specifically the cards in Alert and Missed queues
-     * *  @param  {string} queueAlertId The id of the Alert queue
+     * *  @param  {string} queueAlertIds Comma delimited set of ids of the Alert queues
      * *  @param  {string} queueMissedId The id of the Missed queue
      */
     if (httpMethod === 'GET') {
@@ -31,20 +31,36 @@ exports.handler = async function (event, context) {
       } else if (type === 'boardlists' && queryStringParameters.board) {
         const boardLists = await axios.get(`https://api.trello.com/1/boards/${queryStringParameters.board}/lists?${tokenAndKeyParams}`)
         res = boardLists.data
-      } else if (type === 'queues' && queryStringParameters.queueAlertId && queryStringParameters.queueMissedId) {
+      } else if (type === 'queues' && queryStringParameters.queueAlertIds && queryStringParameters.queueMissedId) {
 
-        const batchUrls = [
-          `/lists/${queryStringParameters.queueAlertId}/cards`,
-          `/lists/${queryStringParameters.queueMissedId}/cards`]
-          .join(',')
+        const queueAlertIds = queryStringParameters.queueAlertIds.split(',')
+        const setOfBatchUrls = [`/lists/${queryStringParameters.queueMissedId}/cards`]
+
+        queueAlertIds.forEach(queueAlertId => {
+          setOfBatchUrls.push(`/lists/${queueAlertId}/cards`)
+        })
+
+        const batchUrls = setOfBatchUrls.join(',')
         const batchAPICall = await axios.get(`https://api.trello.com/1/batch?urls=${batchUrls}&${tokenAndKeyParams}`)
-        const [alertQueue, missedQueue] = batchAPICall.data
+        
+        const [missedQueue, ...rest] = batchAPICall.data
+        
         //Check that all Batch apis returned 200
-        if (!alertQueue['200'] || !missedQueue['200']) {
+        const allAlertQueues = rest.filter(queue => Object.keys(queue)[0] === '200')
+        
+        if (allAlertQueues.length !== queueAlertIds.length || !missedQueue['200']) {
           return { statusCode: 400, message: "Batch error" }
         };
 
-        res = [alertQueue['200'], missedQueue['200']]
+        //  Map the missed and alerted queues to the right keys
+        res = {}
+        res['missed'] = {
+          [queryStringParameters.queueMissedId]: missedQueue['200']
+        }
+        allAlertQueues.forEach((queue, index) => res['alerted'] = {
+          ...res['alerted'],
+          [queueAlertIds[index]]: queue['200']
+        })
       }
       return {
         statusCode: 200,
@@ -56,7 +72,7 @@ exports.handler = async function (event, context) {
     }
     return { statusCode: 404 };
   } catch (err) {
-    console.log(err.response)
+    console.error('error', err.response || err)
     return { statusCode: 400 };
   }
 
