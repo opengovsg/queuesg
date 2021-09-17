@@ -2,9 +2,7 @@ import {
   Box,
   Button,
   Center,
-  Heading,
   Text,
-  theme,
 } from '@chakra-ui/react'
 import useTranslation from 'next-translate/useTranslation'
 
@@ -35,13 +33,13 @@ export const Alerted = ({
       >
         {t('queue-position')}
       </Text>
-      <Heading
+      <Text
         textStyle="display3"
         color="white"
         mb="2rem"
       >
         {t('its-your-turn')}
-      </Heading>
+      </Text>
       {queueName.length > 0 &&
         <>
           <Text
@@ -50,13 +48,13 @@ export const Alerted = ({
           >
             {t('proceed-to')}
           </Text>
-          <Heading
+          <Text
             textStyle="display3"
             color="white"
             mb="2rem"
           >
             {queueName}
-          </Heading>
+          </Text>
         </>}
       <Text
         textStyle="subtitle2"
@@ -64,12 +62,12 @@ export const Alerted = ({
       >
         {t('your-queue-number-will-be-held-for')}
       </Text>
-      <Heading
+      <Text
         textStyle="display3"
         color="white"
       >
         {waitingTime} {t('minutes')}
-      </Heading>
+      </Text>
     </Box>
 
     <Button
