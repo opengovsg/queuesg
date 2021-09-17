@@ -209,14 +209,17 @@ const Index = () => {
       let ticketNumber;
       let cardId;
       let description;
-  
+      let labels;
+
       cardActions.forEach((action) => {
         const { type, data } = action;
         const date = new Date(action.date);
         if (type === 'createCard') {
           JOINED = date;
           cardId = data.card.id
-          description = cardDescriptions.get(data.card.id)
+          const cardInfo = doneCardMap.get(data.card.id)
+          description = cardInfo.desc
+          labels = cardInfo.labels.map(lbl => lbl.name).join(',')
         } else if (type === 'updateCard') {
           // Only process events with listAfter, this filters out other changes like editing card title
           if (data.listAfter) {
@@ -238,6 +241,7 @@ const Index = () => {
         name,
         ticketNumber,
         description,
+        labels,
         JOINED,
         ALERTED,
         MISSED,
