@@ -2,9 +2,7 @@ import {
   Box,
   Button,
   Center,
-  Heading,
   Text,
-  theme,
 } from '@chakra-ui/react'
 import useTranslation from 'next-translate/useTranslation'
 
@@ -33,23 +31,23 @@ export const InQueue = ({
       >
         {t('queue-position')}
       </Text>
-      <Heading
+      <Text
         textStyle="display3"
         mb="2rem"
       >
         {numberOfTicketsAhead} {t('ahead-of-you')}
-      </Heading>
+      </Text>
 
       <Text
         textStyle="subtitle2"
       >
         {t('estimated-waiting-time')}
       </Text>
-      <Heading
+      <Text
         textStyle="display3"
       >
         {waitingTime * numberOfTicketsAhead} {t('minutes')}
-      </Heading>
+      </Text>
     </Box>
 
     <Button
