@@ -199,7 +199,7 @@ const Index = () => {
   /**
    * Generates a report on the Queue
    */
-  const assembleCSVData = (batchCardActions,cardDescriptions) =>{
+  const assembleCSVData = (batchCardActions, doneCardMap) => {
     const extractDataFromCardActions = (cardActions) => {
       let JOINED;
       let ALERTED = null;
@@ -294,19 +294,19 @@ const Index = () => {
          // Get all the card ids on our '[DONE]' list
          const cardsOnList =  (await axios.get(`https://api.trello.com/1/lists/${listId}/cards?key=${apiConfig.key}&token=${apiConfig.token}`)).data
 
-         const doneCardIds = cardsOnList.map(card=>card.id)
-         if(doneCardIds.length===0) throw new Error('[DONE] list is empty')
-         let doneCardDescriptions = new Map()
-         cardsOnList.forEach(card=>{
-          doneCardDescriptions.set(card.id,card.desc)
-         })
+        const doneCardIds = cardsOnList.map(card => card.id)
+        if (doneCardIds.length === 0) throw new Error('[DONE] list is empty')
+        let doneCardMap = new Map()
+        cardsOnList.forEach(card => {
+          doneCardMap.set(card.id, card)
+        })
 
          // Batched API call to get histories of all the cards
          const batchUrls = doneCardIds.map(id=>`/cards/${id}/actions?filter=createCard%26filter=updateCard`).join(',')
 
         const batchAPICall = (await axios.get(`https://api.trello.com/1/batch?urls=${batchUrls}&key=${apiConfig.key}&token=${apiConfig.token}`))
 
-        const data = assembleCSVData(batchAPICall.data,doneCardDescriptions)
+        const data = assembleCSVData(batchAPICall.data, doneCardMap)
 
         await exportToCSV(data)
         
