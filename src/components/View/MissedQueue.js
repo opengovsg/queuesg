@@ -1,6 +1,6 @@
 import {
+  Flex,
   Box,
-  Center,
   Heading,
 } from '@chakra-ui/react'
 import { QrCode } from './QrCode'
@@ -10,48 +10,49 @@ export const MissedQueue = ({
   tickets = [],
   queuePendingUrl,
 }) => {
-  return <>
+  return <Flex
+    mx={20}
+    my={10}
+    flexDirection='column'
+    justifyContent='space-between'
+    height="100%"
+  >
     <Box
-      mx={20}
-      my={10}
-      >
+    >
       <Box>
         <Heading
           textStyle="display1"
           mb="0.5em"
-          >
-            Missed queue
+        >
+          Missed queue
         </Heading>
         {
           (tickets.length > 0)
-          ?
-          (
-            tickets.map(ticket => {
-              return <Heading
-                key={ticket.id}
-                textStyle="display2"
-                mb="0.5em"
+            ?
+            (
+              tickets.map(ticket => {
+                return <Heading
+                  key={ticket.id}
+                  textStyle="display2"
+                  mb="0.5em"
                 >
-                { getQueueNumber(ticket.name) }
-              </Heading>
-            })
-          )
-          :
-          <Heading
-            textStyle="display2"
+                  {getQueueNumber(ticket.name)}
+                </Heading>
+              })
+            )
+            :
+            <Heading
+              textStyle="display2"
             >
-            -
-          </Heading>
+              -
+            </Heading>
         }
       </Box>
     </Box>
-    <Box
-      mx={20}
-      my={20}
-      >
+    <Box >
       <QrCode
         queuePendingUrl={queuePendingUrl}
-        />
+      />
     </Box>
-  </>
+  </Flex>
 }

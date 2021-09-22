@@ -1,6 +1,7 @@
 import { ChakraProvider, ColorModeProvider } from '@chakra-ui/react'
 import { CookiesProvider } from 'react-cookie';
 import theme from '../theme'
+import Head from 'next/head'
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -12,6 +13,9 @@ function MyApp({ Component, pageProps }) {
         }}
       >
         <CookiesProvider>
+          <Head>
+            <title>QueueSG</title>
+          </Head>
           <Component {...pageProps} />
         </CookiesProvider>
       </ColorModeProvider>
