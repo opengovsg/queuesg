@@ -81,7 +81,7 @@ export const Alerted = ({
       onClick={openLeaveModal}
       disabled={!queueId || !ticketId}
     >
-      {t('leave-the-queue')}
+      {t('leave-the-queue')}1
     </Button>
   </>
 }
