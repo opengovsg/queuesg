@@ -6,7 +6,7 @@ import Head from 'next/head'
 import { useEffect, useState } from 'react'
 import queryString from 'query-string'
 import axios from 'axios'
-import { QUEUE_TITLES } from '../constants'
+import { NETLIFY_FN_ENDPOINT, QUEUE_TITLES } from '../constants'
 import { useInterval } from '../utils'
 import { CurrentlyServingQueue } from '../components/View/CurrentlyServingQueue'
 import { MissedQueue } from '../components/View/MissedQueue'
@@ -44,7 +44,7 @@ const Index = () => {
   const getBoard = async (boardId) => {
     if (boardId) {
       try {
-        const board = await axios.get(`/.netlify/functions/view?type=board&board=${boardId}`)
+        const board = await axios.get(`${NETLIFY_FN_ENDPOINT}/view?type=board&board=${boardId}`)
         setBoard(board.data)
       } catch (error) {
         console.error(error)
@@ -58,8 +58,8 @@ const Index = () => {
   const getBoardLists = async (boardId) => {
     if (boardId) {
       try {
-        const boardLists = await axios.get(`/.netlify/functions/view?type=boardlists&board=${boardId}`)
-        
+        const boardLists = await axios.get(`${NETLIFY_FN_ENDPOINT}/view?type=boardlists&board=${boardId}`)
+
         boardLists.data.forEach(list => {
           if (list.name.indexOf(QUEUE_TITLES.ALERTED) > -1) {
             setqueueAlertIds(listIds => [...listIds, list.id])
@@ -70,7 +70,7 @@ const Index = () => {
             setQueuePendingUrl(location.origin + `/queue?id=${queuePendingId}`)
           }
         })
-        
+
         const lists = {}
         boardLists.data.forEach(list => {
           lists[list.id] = list
@@ -87,8 +87,8 @@ const Index = () => {
    */
   const getQueues = async () => {
     if (queueAlertIds && queueMissedId) {
-      const tickets = await axios.get(`/.netlify/functions/view?type=queues&queueAlertIds=${queueAlertIds.join(',')}&queueMissedId=${queueMissedId}`)
-      
+      const tickets = await axios.get(`${NETLIFY_FN_ENDPOINT}/view?type=queues&queueAlertIds=${queueAlertIds.join(',')}&queueMissedId=${queueMissedId}`)
+
       // Set the missed tickets
       setTicketsMissed(tickets.data.missed[queueMissedId])
 

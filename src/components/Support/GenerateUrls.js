@@ -9,7 +9,7 @@ import axios from 'axios'
 import { useState } from 'react'
 
 import { UrlInput } from './UrlInput'
-import { QUEUE_TITLES } from '../../constants'
+import { NETLIFY_FN_ENDPOINT, QUEUE_TITLES } from '../../constants'
 
 export const GenerateUrls = () => {
   const [rootUrl, setRootUrl] = useState('')
@@ -23,9 +23,9 @@ export const GenerateUrls = () => {
    */
   const getBoard = async () => {
     try {
-      const boardLists = await axios.get(`/.netlify/functions/view?type=boardlists&board=${boardId}`)
+      const boardLists = await axios.get(`${NETLIFY_FN_ENDPOINT}/view?type=boardlists&board=${boardId}`)
       boardLists.data.forEach(list => {
-        if(list.name.indexOf(QUEUE_TITLES.PENDING) > -1) {
+        if (list.name.indexOf(QUEUE_TITLES.PENDING) > -1) {
           setQueueId(list.id)
         }
       })
@@ -69,11 +69,11 @@ export const GenerateUrls = () => {
         isInvalid={formError}
       />
       {
-        formError !== null 
-        ?
-        <Text textStyle="body2" color="error.500">{ formError }</Text>
-        :
-        null
+        formError !== null
+          ?
+          <Text textStyle="body2" color="error.500">{formError}</Text>
+          :
+          null
       }
       <Button
         bgColor="primary.500"
@@ -104,8 +104,8 @@ export const GenerateUrls = () => {
       </Text>
       <UrlInput
         url={`${rootUrl}/queue?id=${queueId}`}
-        />
-      
+      />
+
       <Text
         pt={4}
         pb="0.5rem"
@@ -115,7 +115,7 @@ export const GenerateUrls = () => {
       </Text>
       <UrlInput
         url={`${rootUrl}/qr?queue=${queueId}`}
-        />
+      />
 
       <Text
         pt={4}
@@ -126,7 +126,7 @@ export const GenerateUrls = () => {
       </Text>
       <UrlInput
         url={`${rootUrl}/view?board=${boardId}`}
-        /> 
+      />
     </Flex>
   }
 
@@ -134,7 +134,7 @@ export const GenerateUrls = () => {
     <Box
       w="800px"
       layerStyle="card"
-      >
+    >
       {
         queueId && boardId ?
           renderQueueUrls() :

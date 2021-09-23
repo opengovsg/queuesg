@@ -17,6 +17,7 @@ import { Footer } from '../components/Footer'
 import { NavBar } from '../components/Navbar'
 
 import PeopleOnPhones from '../assets/svg/people-on-phones.svg'
+import { NETLIFY_FN_ENDPOINT } from '../constants'
 
 const Index = () => {
   const { t, lang } = useTranslation('common')
@@ -39,7 +40,7 @@ const Index = () => {
   const getBoardLists = async (boardId) => {
     if (boardId) {
       try {
-        const boardLists = await axios.get(`/.netlify/functions/view?type=boardlists&board=${boardId}`)
+        const boardLists = await axios.get(`${NETLIFY_FN_ENDPOINT}/view?type=boardlists&board=${boardId}`)
         boardLists.data.forEach(list => {
           if (list.name.indexOf('[PENDING]') > -1) {
             setQueuePendingUrl(location.origin + `/queue?id=${list.id}`)
