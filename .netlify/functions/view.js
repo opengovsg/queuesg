@@ -6,7 +6,7 @@ const axios = require('axios');
 exports.handler = async function (event, context) {
   try {
     const { httpMethod, queryStringParameters, body } = event
-    const { TRELLO_KEY, TRELLO_TOKEN, IS_PUBLIC_BOARD } = process.env
+    const { TRELLO_KEY, TRELLO_TOKEN, IS_PUBLIC_BOARD, TRELLO_ENDPOINT } = process.env
     const tokenAndKeyParams = IS_PUBLIC_BOARD === 'true' ? '' : `key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`
 
     /**
@@ -26,10 +26,10 @@ exports.handler = async function (event, context) {
       let res = {}
       const { type } = queryStringParameters
       if (type === 'board' && queryStringParameters.board) {
-        const board = await axios.get(`https://api.trello.com/1/boards/${queryStringParameters.board}?${tokenAndKeyParams}`)
+        const board = await axios.get(`${TRELLO_ENDPOINT}/boards/${queryStringParameters.board}?${tokenAndKeyParams}`)
         res = board.data
       } else if (type === 'boardlists' && queryStringParameters.board) {
-        const boardLists = await axios.get(`https://api.trello.com/1/boards/${queryStringParameters.board}/lists?${tokenAndKeyParams}`)
+        const boardLists = await axios.get(`${TRELLO_ENDPOINT}/boards/${queryStringParameters.board}/lists?${tokenAndKeyParams}`)
         res = boardLists.data
       } else if (type === 'queues' && queryStringParameters.queueAlertIds && queryStringParameters.queueMissedId) {
 
@@ -41,13 +41,13 @@ exports.handler = async function (event, context) {
         })
 
         const batchUrls = setOfBatchUrls.join(',')
-        const batchAPICall = await axios.get(`https://api.trello.com/1/batch?urls=${batchUrls}&${tokenAndKeyParams}`)
-        
+        const batchAPICall = await axios.get(`${TRELLO_ENDPOINT}/batch?urls=${batchUrls}&${tokenAndKeyParams}`)
+
         const [missedQueue, ...rest] = batchAPICall.data
-        
+
         //Check that all Batch apis returned 200
         const allAlertQueues = rest.filter(queue => Object.keys(queue)[0] === '200')
-        
+
         if (allAlertQueues.length !== queueAlertIds.length || !missedQueue['200']) {
           return { statusCode: 400, message: "Batch error" }
         };

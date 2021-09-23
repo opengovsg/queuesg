@@ -6,7 +6,7 @@ const axios = require('axios');
 exports.handler = async function (event, context) {
   try {
     const { httpMethod, queryStringParameters, body } = event
-    const { TRELLO_KEY, TRELLO_TOKEN, IS_PUBLIC_BOARD } = process.env
+    const { TRELLO_KEY, TRELLO_TOKEN, IS_PUBLIC_BOARD, TRELLO_ENDPOINT } = process.env
     const tokenAndKeyParams = IS_PUBLIC_BOARD === 'true' ? '' : `key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`
 
     /**
@@ -34,7 +34,7 @@ exports.handler = async function (event, context) {
         `/cards/${id}`,
         `/cards/${id}/board`
       ].join(',')
-      const batchAPICall = await axios.get(`https://api.trello.com/1/batch?urls=${batchUrls}&${tokenAndKeyParams}`)
+      const batchAPICall = await axios.get(`${TRELLO_ENDPOINT}/batch?urls=${batchUrls}&${tokenAndKeyParams}`)
 
       //Check if rate limit hit
       if (batchAPICall.status === 429) { return { statusCode: 429, message: "Trello API rate limit" }; }
@@ -58,7 +58,7 @@ exports.handler = async function (event, context) {
 
       // Get the card's position in the current queue
       const getCardsOnList = await axios.get(
-        `https://api.trello.com/1/lists/${newQueueId}/cards?${tokenAndKeyParams}`)
+        `${TRELLO_ENDPOINT}/lists/${newQueueId}/cards?${tokenAndKeyParams}`)
 
       if (getCardsOnList.status === 429) { return { statusCode: 429, message: "Trello API rate limit" } }
       if (getCardsOnList.status !== 200) { return { statusCode: getCardsOnList.status, message: "getCardsOnList error" } }
@@ -106,7 +106,7 @@ exports.handler = async function (event, context) {
 
         // if contact is provided, search pending queue for duplicate number
         if (contact) {
-          const getCardsOnPendingList = await axios.get(`https://api.trello.com/1/lists/${queue}/cards?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`)
+          const getCardsOnPendingList = await axios.get(`${TRELLO_ENDPOINT}/lists/${queue}/cards?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`)
           const ticketsInQueue = getCardsOnPendingList.data
 
           const match = ticketsInQueue.find(ticket => ticket.name.includes(contact))
@@ -120,13 +120,13 @@ exports.handler = async function (event, context) {
         }
 
         const createCard = await axios.post(
-          `https://api.trello.com/1/cards?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}&idList=${queue}&desc=${descString}`)
+          `${TRELLO_ENDPOINT}/cards?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}&idList=${queue}&desc=${descString}`)
 
         const { id, idShort } = createCard.data
         const cardName = `${idShort}${name}${contact}${category}`
         // Update newly created card with number{-name}{-contact}{-category} and desc
         await axios.put(
-          `https://api.trello.com/1/cards/${id}?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}&name=${cardName}`)
+          `${TRELLO_ENDPOINT}/cards/${id}?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}&name=${cardName}`)
 
         return {
           statusCode: 200,
@@ -144,7 +144,7 @@ exports.handler = async function (event, context) {
     else if (httpMethod === 'PUT') {
       const { id, queue } = queryStringParameters
       if (id && queue) {
-        await axios.put(`https://api.trello.com/1/cards/${id}?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}&idList=${queue}&pos=bottom`)
+        await axios.put(`${TRELLO_ENDPOINT}/cards/${id}?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}&idList=${queue}&pos=bottom`)
       }
       return {
         statusCode: 200,
@@ -162,7 +162,7 @@ exports.handler = async function (event, context) {
     else if (httpMethod === 'DELETE') {
       const id = queryStringParameters.id
       if (id) {
-        await axios.delete(`https://api.trello.com/1/cards/${id}?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`)
+        await axios.delete(`${TRELLO_ENDPOINT}/cards/${id}?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`)
       }
       return {
         statusCode: 200,
