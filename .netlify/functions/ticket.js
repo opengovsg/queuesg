@@ -103,6 +103,22 @@ exports.handler = async function (event, context) {
 
       const queue = queryStringParameters.queue
       if (queue) {
+
+        // if contact is provided, search pending queue for duplicate number
+        if (contact) {
+          const getCardsOnPendingList = await axios.get(`https://api.trello.com/1/lists/${queue}/cards?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`)
+          const ticketsInQueue = getCardsOnPendingList.data
+
+          const match = ticketsInQueue.find(ticket => ticket.name.includes(contact))
+          // If match found return that ticket info instead of creating a new one
+          if (match) {
+            return {
+              statusCode: 200,
+              body: JSON.stringify({ ticketId: match.id, ticketNumber: match.idShort })
+            };
+          }
+        }
+
         const createCard = await axios.post(
           `https://api.trello.com/1/cards?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}&idList=${queue}&desc=${descString}`)
 
