@@ -3,9 +3,12 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 
 import LogoQueue from '../assets/svg/logo-queue.svg'
+import useTranslation from 'next-translate/useTranslation'
 
 export const NavBar = (props) => {
   const router = useRouter()
+
+  const { t, lang } = useTranslation('common')
 
 
   const languages = [
@@ -33,13 +36,14 @@ export const NavBar = (props) => {
       align="center"
       justify="space-between"
       maxW="100%"
+      width="400px"
       pt={4}
       pb={8}
       px={4}
       bg="base.100"
       color={"white"}
       {...props}>
-      <Box w="100px">
+      <Box>
         <a href="/">
           <LogoQueue
             height="40px"
@@ -47,10 +51,7 @@ export const NavBar = (props) => {
           />
         </a>
       </Box>
-      <Box
-        display={"block"}
-        flexBasis={"auto"}
-      >
+      <Box>
         {languages.map((lng, idx) => (
           <>
             {idx > 0 && <span style={{ color: "#636467" }} >|</span>}
@@ -59,7 +60,7 @@ export const NavBar = (props) => {
               href={`${router.asPath}`}
               locale={lng.locale}
             >
-              <Button textColor="#636467" variant="link" mx={1}>
+              <Button textColor="#636467" variant="link" mx={1} fontSize='14px' textDecoration={t('lang') === lng.name ? 'underline' : 'none'}>
                 {lng.name}
               </Button>
             </Link>

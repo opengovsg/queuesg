@@ -362,7 +362,7 @@ const Index = () => {
         <title>Admin - QueueUp Sg</title>
       </Head>
       <Container>
-        <Navbar width="100%" />
+        <Navbar />
         <Main justifyContent="start" minHeight="90vh" width="100%">
           <Center>
             {/* TODO: migrate to components for sanity */}
