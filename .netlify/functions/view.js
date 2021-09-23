@@ -14,24 +14,32 @@ exports.handler = async function (event, context) {
      * - Retrieves info about a ticket and its position in queue
      * @param  {string} type The type of board data to retrieve
      * There are 3 types of api calls:
-     * 1. board - Retrieves data about the board
-     * *  @param  {string} board The board id
-     * 2. boardlists - Retrieves all the lists that a board contains
-     * *  @param  {string} board The board id
-     * 3. queues - Retrieve specifically the cards in Alert and Missed queues
-     * *  @param  {string} queueAlertIds Comma delimited set of ids of the Alert queues
-     * *  @param  {string} queueMissedId The id of the Missed queue
      */
     if (httpMethod === 'GET') {
       let res = {}
       const { type } = queryStringParameters
+      /**
+       * 1. board - Retrieves data about the board
+       * *  @param  {string} board The board id
+      */
       if (type === 'board' && queryStringParameters.board) {
         const board = await axios.get(`${TRELLO_ENDPOINT}/boards/${queryStringParameters.board}?${tokenAndKeyParams}`)
         res = board.data
-      } else if (type === 'boardlists' && queryStringParameters.board) {
+      }
+      /**
+       * 2. boardlists - Retrieves all the lists that a board contains
+       * *  @param  {string} board The board id
+      */
+      else if (type === 'boardlists' && queryStringParameters.board) {
         const boardLists = await axios.get(`${TRELLO_ENDPOINT}/boards/${queryStringParameters.board}/lists?${tokenAndKeyParams}`)
         res = boardLists.data
-      } else if (type === 'queues' && queryStringParameters.queueAlertIds && queryStringParameters.queueMissedId) {
+      }
+      /**
+       * 3. queues - Retrieve specifically the cards in Alert and Missed queues
+       * *  @param  {string} queueAlertIds Comma delimited set of ids of the Alert queues
+       * *  @param  {string} queueMissedId The id of the Missed queue
+      */
+      else if (type === 'queues' && queryStringParameters.queueAlertIds && queryStringParameters.queueMissedId) {
 
         const queueAlertIds = queryStringParameters.queueAlertIds.split(',')
         const setOfBatchUrls = [`/lists/${queryStringParameters.queueMissedId}/cards`]
