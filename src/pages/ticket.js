@@ -38,7 +38,6 @@ const Index = () => {
   const [ticketId, setTicketId] = useState()
   const [queueId, setQueueId] = useState()
   const [queueName, setQueueName] = useState()
-  const [board, setBoard] = useState()
   const [ticketNumber, setTicketNumber] = useState()
   const [displayTicketInfo, setDisplayTicketInfo] = useState('')
   const [lastUpdated, setLastUpdated] = useState('')
@@ -79,8 +78,7 @@ const Index = () => {
   const getTicketStatus = async (ticket) => {
     try {
       const getTicket = await axios.get(`${NETLIFY_FN_ENDPOINT}/ticket?id=${ticket}`)
-      const { queueId, queueName, ticketDesc, numberOfTicketsAhead, board } = getTicket.data
-      setBoard(board)
+      const { queueId, queueName, ticketDesc, numberOfTicketsAhead } = getTicket.data
       //Update queueId in case ticket has been shifted
       setQueueId(queueId)
 
@@ -198,7 +196,7 @@ const Index = () => {
   return (
     <>
       <Head>
-        <title>{board ? board.name : 'QueueUp SG'}</title>
+        <title>QueueUp SG</title>
       </Head>
       <Container>
         <LeaveModal isOpen={isOpen} onOpen={onOpen} onClose={onClose} leaveQueue={leaveQueue} />

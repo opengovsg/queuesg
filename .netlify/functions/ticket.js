@@ -13,7 +13,6 @@ exports.handler = async function (event, context) {
      * GET /ticket
      * - Retrieves info about a ticket and its position in queue
      * @param  {string} id The id of the ticket
-     * @param  {string} queue The id of the queue
      * @return {queueId: string, queueName: string, ticketId: string, ticketDesc: string, numberOfTicketsAhead: Number}
      *  Returns the name and description of the Trello board that queue belongs to.
      */
@@ -32,7 +31,6 @@ exports.handler = async function (event, context) {
       const batchUrls = [
         `/cards/${id}/list?fields=name`,
         `/cards/${id}`,
-        `/cards/${id}/board`
       ].join(',')
       const batchAPICall = await axios.get(`${TRELLO_ENDPOINT}/batch?urls=${batchUrls}&${tokenAndKeyParams}`)
 
@@ -42,10 +40,10 @@ exports.handler = async function (event, context) {
         return { statusCode: batchAPICall.status, message: "BatchAPICall error" };
       }
 
-      const [getListofCard, getCardDesc, getCardBoard] = batchAPICall.data
+      const [getListofCard, getCardDesc] = batchAPICall.data
 
       //Check that all Batch apis returned 200
-      if (!getListofCard['200'] || !getCardDesc['200'] || !getCardBoard['200']) {
+      if (!getListofCard['200'] || !getCardDesc['200']) {
         return { statusCode: 400, message: "BatchAPICall subrequest error" };
       }
 
@@ -69,13 +67,6 @@ exports.handler = async function (event, context) {
         // To check position in queue
         const ticketsInQueue = getCardsOnList.data
         res.numberOfTicketsAhead = ticketsInQueue.findIndex(val => val.id === id)
-      }
-
-      //  Board information
-      // console.log(getCardBoard['200'])
-      res.board = {
-        id: getCardBoard['200'].id,
-        name: getCardBoard['200'].name,
       }
 
       return {
