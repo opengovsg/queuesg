@@ -96,8 +96,9 @@ exports.handler = async function (event, context) {
     else if (httpMethod === 'POST') {
       const { desc } = JSON.parse(body)
 
-      const name = desc.name || 'unknown user'
-      const category = desc.category
+      const name = desc.name ? `-${desc.name}` : ''
+      const contact = desc.contact ? `-${desc.contact}` : ''
+      const category = desc.category ? `-${desc.category}` : ''
       const descString = JSON.stringify(desc)
 
       const queue = queryStringParameters.queue
@@ -106,9 +107,10 @@ exports.handler = async function (event, context) {
           `https://api.trello.com/1/cards?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}&idList=${queue}&desc=${descString}`)
 
         const { id, idShort } = createCard.data
-        // Update newly created card with number-name{-category} and desc
+        const cardName = `${idShort}${name}${contact}${category}`
+        // Update newly created card with number{-name}{-contact}{-category} and desc
         await axios.put(
-          `https://api.trello.com/1/cards/${id}?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}&name=${idShort}-${name}${category ? '-'+category : ''}`)
+          `https://api.trello.com/1/cards/${id}?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}&name=${cardName}`)
 
         return {
           statusCode: 200,
