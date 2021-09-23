@@ -106,7 +106,7 @@ exports.handler = async function (event, context) {
 
         // if contact is provided, search pending queue for duplicate number
         if (contact) {
-          const getCardsOnPendingList = await axios.get(`${TRELLO_ENDPOINT}/lists/${queue}/cards?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`)
+          const getCardsOnPendingList = await axios.get(`${TRELLO_ENDPOINT}/lists/${queue}/cards?${tokenAndKeyParams}`)
           const ticketsInQueue = getCardsOnPendingList.data
 
           const match = ticketsInQueue.find(ticket => ticket.name.includes(contact))
@@ -120,13 +120,13 @@ exports.handler = async function (event, context) {
         }
 
         const createCard = await axios.post(
-          `${TRELLO_ENDPOINT}/cards?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}&idList=${queue}&desc=${descString}`)
+          `${TRELLO_ENDPOINT}/cards?${tokenAndKeyParams}&idList=${queue}&desc=${descString}`)
 
         const { id, idShort } = createCard.data
         const cardName = `${idShort}${name}${contact}${category}`
         // Update newly created card with number{-name}{-contact}{-category} and desc
         await axios.put(
-          `${TRELLO_ENDPOINT}/cards/${id}?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}&name=${cardName}`)
+          `${TRELLO_ENDPOINT}/cards/${id}?${tokenAndKeyParams}&name=${cardName}`)
 
         return {
           statusCode: 200,
@@ -144,7 +144,7 @@ exports.handler = async function (event, context) {
     else if (httpMethod === 'PUT') {
       const { id, queue } = queryStringParameters
       if (id && queue) {
-        await axios.put(`${TRELLO_ENDPOINT}/cards/${id}?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}&idList=${queue}&pos=bottom`)
+        await axios.put(`${TRELLO_ENDPOINT}/cards/${id}?${tokenAndKeyParams}&idList=${queue}&pos=bottom`)
       }
       return {
         statusCode: 200,
@@ -162,7 +162,7 @@ exports.handler = async function (event, context) {
     else if (httpMethod === 'DELETE') {
       const id = queryStringParameters.id
       if (id) {
-        await axios.delete(`${TRELLO_ENDPOINT}/cards/${id}?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`)
+        await axios.delete(`${TRELLO_ENDPOINT}/cards/${id}?${tokenAndKeyParams}`)
       }
       return {
         statusCode: 200,
