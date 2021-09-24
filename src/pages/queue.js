@@ -80,9 +80,10 @@ const Index = () => {
     if (ticketCookie &&
       ticketCookie.queue &&
       ticketCookie.queue === currentQueueId &&
-      ticketCookie.ticket && ticketCookie.ticketNumber
+      ticketCookie.ticket &&
+      ticketCookie.board
     ) {
-      return `/ticket?queue=${ticketCookie.queue}&ticket=${ticketCookie.ticket}&ticketNumber=${ticketCookie.ticketNumber}`
+      return `/ticket?queue=${ticketCookie.queue}&ticket=${ticketCookie.ticket}&board=${ticketCookie.board}`
     }
 
     return false
