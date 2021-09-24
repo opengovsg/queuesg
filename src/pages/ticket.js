@@ -13,7 +13,7 @@ import axios from 'axios'
 import { useCookies } from 'react-cookie'
 
 import { useInterval } from '../utils'
-import { NETLIFY_FN_ENDPOINT, TICKET_STATUS } from '../constants'
+import { COOKIE_MAX_AGE, NETLIFY_FN_ENDPOINT, TICKET_STATUS } from '../constants'
 import { Container } from '../components/Container'
 import { Main } from '../components/Main'
 import { Footer } from '../components/Footer'
@@ -60,7 +60,7 @@ const Index = () => {
         queue: query.queue,
         ticket: query.ticket,
         ticketNumber: query.ticketNumber
-      })
+      }, { maxAge: COOKIE_MAX_AGE })
       //Save feedback link
       if (query.feedback) setFeedbackLink(query.feedback)
 
