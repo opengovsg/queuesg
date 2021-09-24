@@ -19,6 +19,63 @@ exports.handler = async function (event, context) {
     if (httpMethod === 'GET') {
       const { id } = queryStringParameters
 
+      /**
+       *    Experimental GET /ticket flow to fetch status in a single API call.
+       *    Lays the groundwork for adding a caching layer that can store this call
+       * *  @param  {string} board The board id
+      */
+      if (queryStringParameters.board) {
+        console.log('== experimental ==');
+        const boardId = queryStringParameters.board
+        // Get the card's position in the current queue
+        const getBoardInfo = await axios.get(`${TRELLO_ENDPOINT}/boards/${boardId}/?fields=id,name,desc&cards=visible&card_fields=id,idList,name,desc,pos&lists=open&list_fields=id,name&${tokenAndKeyParams}`);
+        if (getBoardInfo.status !== 200) {
+          return { statusCode: getBoardInfo.status, message: "getBoardInfo error" };
+        }
+        const parseBoardData = (data) => {
+          const listMap = {}
+          const cardMap = new Map()
+          data.lists.forEach(list => {
+            listMap[list.id] = { ...list, cards: [] }
+          })
+
+          data.cards.forEach(card => {
+            const queueId = card.idList
+
+            // Get the name of the queue the card resides in
+            const queueName = listMap[queueId].name
+
+            let numberOfTicketsAhead = -1
+            if (!(queueName.includes('[ALERT]') || queueName.includes('[DONE]') || queueName.includes('[MISSED]'))) {
+              // Get card position based on length of list before
+              numberOfTicketsAhead = listMap[queueId].cards.length
+            }
+
+            // const listName = listMap[queueId].name
+            card = { ...card, numberOfTicketsAhead, queueName }
+            // Add listMap with card
+            listMap[queueId] = { ...listMap[queueId], cards: [...listMap[queueId].cards, card] }
+            // Add card to the card map for quick lookup
+            cardMap.set(card.id, card)
+          })
+          return { listMap, cardMap }
+        }
+
+        const { cardMap } = parseBoardData(getBoardInfo.data)
+        const card = cardMap.get(id)
+
+        return {
+          statusCode: 200,
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            queueId: card.idList,
+            queueName: card.queueName,
+            ticketId: id,
+            ticketDesc: JSON.parse(card.desc),
+            numberOfTicketsAhead: card.numberOfTicketsAhead,
+          })
+        };
+      }
       // return object
       let res = {
         queueId: '',
