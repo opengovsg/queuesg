@@ -36,6 +36,7 @@ const Index = () => {
   const router = useRouter()
   const [cookies] = useCookies(['ticket']);
 
+  const [boardId, setBoardId] = useState()
   const [boardName, setBoardName] = useState('')
   const [isQueueValid, setIsQueueValid] = useState(true)
   const [isLoading, setIsLoading] = useState(true)
@@ -98,7 +99,9 @@ const Index = () => {
       // 1. Verifies that queue actually exists
       // 2. Gets info stored as JSON in board description
       const getBoardQueueBelongsTo = await axios.get(`${NETLIFY_FN_ENDPOINT}/queue?id=${queueId}`)
-      const { name, desc } = getBoardQueueBelongsTo.data
+      const { id, name, desc } = getBoardQueueBelongsTo.data
+
+      setBoardId(id)
 
       const boardInfo = JSON.parse(desc)
 
@@ -172,7 +175,7 @@ const Index = () => {
       const { ticketId, ticketNumber } = postJoinQueue.data
       const feedback = feedbackLink ? `&feedback=${encodeURIComponent(feedbackLink)}` : ''
       const waitTime = `&waitTimePerTicket=${encodeURIComponent(waitTimePerTicket)}`
-      const url = `/ticket?queue=${query.id}&ticket=${ticketId}&ticketNumber=${ticketNumber}${feedback}${waitTime}`
+      const url = `/ticket?queue=${query.id}&board=${boardId}&ticket=${ticketId}&ticketNumber=${ticketNumber}${feedback}${waitTime}`
       router.push(url, url, { locale: lang })
     } catch (err) {
       console.log(err.response.status);

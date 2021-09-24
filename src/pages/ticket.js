@@ -34,6 +34,8 @@ const Index = () => {
   const [waitTimePerTicket, setWaitTimePerTicket] = useState(3)
   const [numberOfTicketsAhead, setNumberOfTicketsAhead] = useState()
 
+
+  const [boardId, setBoardId] = useState()
   const [ticketState, setTicketState] = useState()
   const [ticketId, setTicketId] = useState()
   const [queueId, setQueueId] = useState()
@@ -50,9 +52,10 @@ const Index = () => {
 
   useEffect(() => {
     const query = queryString.parse(location.search);
-    if (query.ticket && query.queue && query.ticketNumber) {
+    if (query.ticket && query.queue && query.ticketNumber && query.board) {
       setTicketId(query.ticket)
-      getTicketStatus(query.ticket, query.queue)
+      setBoardId(query.board)
+      getTicketStatus(query.ticket, query.board)
       setTicketNumber(query.ticketNumber)
 
       // Save ticket info to cookie
@@ -71,13 +74,13 @@ const Index = () => {
 
   const refreshInterval = process.env.NEXT_PUBLIC_REFRESH_INTERVAL || 5000
   useInterval(() => {
-    if (refreshEnabled) getTicketStatus(ticketId)
+    if (refreshEnabled) getTicketStatus(ticketId, boardId)
   }, refreshInterval);
 
 
-  const getTicketStatus = async (ticket) => {
+  const getTicketStatus = async (ticket, board) => {
     try {
-      const getTicket = await axios.get(`${NETLIFY_FN_ENDPOINT}/ticket?id=${ticket}`)
+      const getTicket = await axios.get(`${NETLIFY_FN_ENDPOINT}/ticket?id=${ticket}&board=${board}`)
       const { queueId, queueName, ticketDesc, numberOfTicketsAhead } = getTicket.data
       //Update queueId in case ticket has been shifted
       setQueueId(queueId)
