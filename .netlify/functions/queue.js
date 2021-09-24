@@ -6,7 +6,7 @@ const axios = require('axios');
 exports.handler = async function (event, context) {
   try {
     const { httpMethod, queryStringParameters, body } = event
-    const { TRELLO_KEY, TRELLO_TOKEN, IS_PUBLIC_BOARD } = process.env
+    const { TRELLO_KEY, TRELLO_TOKEN, IS_PUBLIC_BOARD, TRELLO_ENDPOINT } = process.env
     const tokenAndKeyParams = IS_PUBLIC_BOARD === 'true' ? '' : `key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`
 
     /**
@@ -18,7 +18,7 @@ exports.handler = async function (event, context) {
     if (httpMethod === 'GET') {
       const { id } = queryStringParameters
 
-      const getBoardQueueBelongsTo = await axios.get(`https://api.trello.com/1/lists/${id}/board?fields=id,name,desc&${tokenAndKeyParams}`)
+      const getBoardQueueBelongsTo = await axios.get(`${TRELLO_ENDPOINT}/lists/${id}/board?fields=id,name,desc&${tokenAndKeyParams}`)
       const { name, desc } = getBoardQueueBelongsTo.data
 
       return {

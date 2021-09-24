@@ -26,6 +26,7 @@ import {
 } from '../../components/Admin'
 
 import ManWithHourglass from "../../assets/svg/man-with-hourglass.svg"
+import { NETLIFY_FN_ENDPOINT } from '../../constants'
 
 const Index = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -35,7 +36,7 @@ const Index = () => {
   useEffect(() => {
     const query = queryString.parse(location.search)
     setBoardId(query.boardId)
-  },[])
+  }, [])
 
   const updateBoardId = (e) => {
     setBoardId(e.target.value)
@@ -49,7 +50,7 @@ const Index = () => {
     if (boardId) {
       try {
         setIsLoading(true)
-        const response = await axios.post(`/.netlify/functions/login`, {
+        const response = await axios.post(`${NETLIFY_FN_ENDPOINT}/login`, {
           boardId,
         })
         if (response.data.authorizeUrl) {
@@ -87,7 +88,7 @@ const Index = () => {
           >
             <form
               onSubmit={authoriseApp}
-              >
+            >
               <InputText
                 id="boardId"
                 label="Board ID"
@@ -99,7 +100,7 @@ const Index = () => {
                   </Text>
                 }
                 value={boardId}
-                />
+              />
 
               <Button
                 flex
@@ -126,7 +127,7 @@ const Index = () => {
           <ModalCloseButton />
           <ModalBody>
             <Text>
-              If the URL to your trello board is 
+              If the URL to your trello board is
               <Box bg="gray.200" p="2" my="5">
                 <Text fontSize="xs"><code flex>https://trello.com/b/<Box display="inline" bg="primary.500" color="white">zlksMWQT</Box>/psd-center-at-tampines</code></Text>
               </Box>
