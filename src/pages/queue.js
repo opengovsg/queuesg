@@ -172,10 +172,10 @@ const Index = () => {
       // for that queue, return the ticket id and redirect to ticket page
       const query = queryString.parse(location.search);
       const postJoinQueue = await axios.post(`${NETLIFY_FN_ENDPOINT}/ticket?queue=${query.id}`, { desc })
-      const { ticketId, ticketNumber } = postJoinQueue.data
+      const { ticketId } = postJoinQueue.data
       const feedback = feedbackLink ? `&feedback=${encodeURIComponent(feedbackLink)}` : ''
       const waitTime = `&waitTimePerTicket=${encodeURIComponent(waitTimePerTicket)}`
-      const url = `/ticket?queue=${query.id}&board=${boardId}&ticket=${ticketId}&ticketNumber=${ticketNumber}${feedback}${waitTime}`
+      const url = `/ticket?queue=${query.id}&board=${boardId}&ticket=${ticketId}${feedback}${waitTime}`
       router.push(url, url, { locale: lang })
     } catch (err) {
       console.log(err.response.status);

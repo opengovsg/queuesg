@@ -52,17 +52,16 @@ const Index = () => {
 
   useEffect(() => {
     const query = queryString.parse(location.search);
-    if (query.ticket && query.queue && query.ticketNumber && query.board) {
+    if (query.ticket && query.queue && query.board) {
       setTicketId(query.ticket)
       setBoardId(query.board)
       getTicketStatus(query.ticket, query.board)
-      setTicketNumber(query.ticketNumber)
 
       // Save ticket info to cookie
       setCookie('ticket', {
         queue: query.queue,
         ticket: query.ticket,
-        ticketNumber: query.ticketNumber
+        board: query.board,
       }, { maxAge: COOKIE_MAX_AGE })
       //Save feedback link
       if (query.feedback) setFeedbackLink(query.feedback)
@@ -81,9 +80,11 @@ const Index = () => {
   const getTicketStatus = async (ticket, board) => {
     try {
       const getTicket = await axios.get(`${NETLIFY_FN_ENDPOINT}/ticket?id=${ticket}&board=${board}`)
-      const { queueId, queueName, ticketDesc, numberOfTicketsAhead } = getTicket.data
+      const { queueId, queueName, ticketDesc, numberOfTicketsAhead, ticketNumber } = getTicket.data
       //Update queueId in case ticket has been shifted
       setQueueId(queueId)
+
+      setTicketNumber(ticketNumber)
 
       if (ticketDesc !== '') {
         setDisplayTicketInfo(`${ticketDesc.name ? ticketDesc.name : ''} ${ticketDesc.contact ? ticketDesc.contact : ''}`)

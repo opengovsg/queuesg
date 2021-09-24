@@ -28,7 +28,7 @@ exports.handler = async function (event, context) {
         console.log('== experimental ==');
         const boardId = queryStringParameters.board
         // Get the card's position in the current queue
-        const getBoardInfo = await axios.get(`${TRELLO_ENDPOINT}/boards/${boardId}/?fields=id,name,desc&cards=visible&card_fields=id,idList,name,desc,pos&lists=open&list_fields=id,name&${tokenAndKeyParams}`);
+        const getBoardInfo = await axios.get(`${TRELLO_ENDPOINT}/boards/${boardId}/?fields=id,name,desc&cards=visible&card_fields=id,idList,name,idShort,desc&lists=open&list_fields=id,name&${tokenAndKeyParams}`);
         if (getBoardInfo.status !== 200) {
           return { statusCode: getBoardInfo.status, message: "getBoardInfo error" };
         }
@@ -51,7 +51,6 @@ exports.handler = async function (event, context) {
               numberOfTicketsAhead = listMap[queueId].cards.length
             }
 
-            // const listName = listMap[queueId].name
             card = { ...card, numberOfTicketsAhead, queueName }
             // Add listMap with card
             listMap[queueId] = { ...listMap[queueId], cards: [...listMap[queueId].cards, card] }
@@ -70,6 +69,7 @@ exports.handler = async function (event, context) {
           body: JSON.stringify({
             queueId: card.idList,
             queueName: card.queueName,
+            ticketNumber: card.idShort,
             ticketId: id,
             ticketDesc: JSON.parse(card.desc),
             numberOfTicketsAhead: card.numberOfTicketsAhead,
