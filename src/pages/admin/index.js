@@ -219,6 +219,7 @@ const Index = () => {
       let cardId;
       let description;
       let labels;
+      let members;
 
       cardActions.forEach((action) => {
         const { type, data } = action;
@@ -229,6 +230,7 @@ const Index = () => {
           const cardInfo = doneCardMap.get(data.card.id);
           description = cardInfo.desc;
           labels = cardInfo.labels.map((lbl) => lbl.name).join(',');
+          members = cardInfo.members.map((mbrs) => mbrs.username).join(',');
         } else if (type === 'updateCard') {
           // Only process events with listAfter, this filters out other changes like editing card title
           if (data.listAfter) {
@@ -251,6 +253,7 @@ const Index = () => {
         ticketNumber,
         description,
         labels,
+        members,
         JOINED,
         ALERTED,
         MISSED,
@@ -309,7 +312,7 @@ const Index = () => {
         // Get all the card ids on our '[DONE]' list
         const cardsOnList = (
           await axios.get(
-            `https://api.trello.com/1/lists/${listId}/cards?key=${apiConfig.key}&token=${apiConfig.token}`
+            `https://api.trello.com/1/lists/${listId}/cards?members=true&key=${apiConfig.key}&token=${apiConfig.token}`
           )
         ).data;
 
