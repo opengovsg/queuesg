@@ -12,11 +12,11 @@ import { CurrentlyServingQueue } from '../components/View/CurrentlyServingQueue'
 import { MissedQueue } from '../components/View/MissedQueue'
 import { ViewHeader } from '../components/View/ViewHeader'
 import { ViewFooter } from '../components/View/ViewFooter'
+import * as _ from 'lodash'
 
 const Index = () => {
   const [board, setBoard] = useState(null)
   const [boardLists, setBoardLists] = useState({})
-  const [queuePendingId, setQueuePendingId] = useState(null)
   const [queuePendingUrl, setQueuePendingUrl] = useState('')
   const [queueAlertIds, setqueueAlertIds] = useState([])
   const [ticketsAlerted, setTicketsAlerted] = useState([])
@@ -26,7 +26,7 @@ const Index = () => {
   useEffect(async () => {
     const query = queryString.parse(location.search)
     await getBoard(query.board)
-    await getBoardLists(query.board)
+    await getBoardLists(query.board, query.from, query.to)
   }, [])
 
   useEffect(async () => {
@@ -55,21 +55,24 @@ const Index = () => {
   /**
    *  Gets a board with lists
    */
-  const getBoardLists = async (boardId) => {
+  const getBoardLists = async (boardId, from, to) => {
     if (boardId) {
       try {
         const boardLists = await axios.get(`${NETLIFY_FN_ENDPOINT}/view?type=boardlists&board=${boardId}`)
+        let alertQueues = boardLists.data.filter(list => list.name.indexOf(QUEUE_TITLES.ALERTED) > -1).map(q => q.id)
+        // Optionality to slice a range of queues to support large numbers on different screens
+        if (from && _.isInteger(Number(from)) && to && _.isInteger(Number(to))) {
+          alertQueues = alertQueues.slice(from, to)
+        }
+        setqueueAlertIds(alertQueues)
 
-        boardLists.data.forEach(list => {
-          if (list.name.indexOf(QUEUE_TITLES.ALERTED) > -1) {
-            setqueueAlertIds(listIds => [...listIds, list.id])
-          } else if (list.name.indexOf(QUEUE_TITLES.MISSED) > -1) {
-            setQueueMissedId(list.id)
-          } else if (list.name.indexOf(QUEUE_TITLES.PENDING) > -1) {
-            setQueuePendingId(list.id)
-            setQueuePendingUrl(location.origin + `/queue?id=${queuePendingId}`)
-          }
-        })
+        const missedQueue = boardLists.data.find(list => list.name.indexOf(QUEUE_TITLES.MISSED) > -1)
+        if (missedQueue) setQueueMissedId(missedQueue.id)
+
+        const pendingQueue = boardLists.data.find(list => list.name.indexOf(QUEUE_TITLES.PENDING) > -1)
+        if (pendingQueue) {
+          setQueuePendingUrl(location.origin + `/queue?id=${pendingQueue.id}`)
+        }
 
         const lists = {}
         boardLists.data.forEach(list => {
