@@ -143,7 +143,7 @@ const Index = () => {
     if (query.queue) {
       // NOTE: Using query string queue as that is the initial queue not the current queue
       await axios.put(`${NETLIFY_FN_ENDPOINT}/ticket?id=${ticketId}&queue=${query.queue}`)
-      getTicketStatus(query.ticket, query.queue)
+      await getTicketStatus(query.ticket, boardId)
     }
   }
 
