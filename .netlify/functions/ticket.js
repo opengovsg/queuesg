@@ -12,127 +12,65 @@ exports.handler = async function (event, context) {
     /**
      * GET /ticket
      * - Retrieves info about a ticket and its position in queue
+     *   Experimental GET flow to fetch status in a single API call.
+     *   Lays the groundwork for adding a caching layer that can store this call
      * @param  {string} id The id of the ticket
+     * @param  {string} board The board id
      * @return {queueId: string, queueName: string, ticketId: string, ticketDesc: string, numberOfTicketsAhead: Number}
      *  Returns the name and description of the Trello board that queue belongs to.
      */
     if (httpMethod === 'GET') {
-      const { id } = queryStringParameters
-
-      /**
-       *    Experimental GET /ticket flow to fetch status in a single API call.
-       *    Lays the groundwork for adding a caching layer that can store this call
-       * *  @param  {string} board The board id
-      */
-      if (queryStringParameters.board) {
-        console.log('== experimental ==');
-        const boardId = queryStringParameters.board
-        // Get the card's position in the current queue
-        const getBoardInfo = await axios.get(`${TRELLO_ENDPOINT}/boards/${boardId}/?fields=id,name,desc&cards=visible&card_fields=id,idList,name,idShort,desc&lists=open&list_fields=id,name&${tokenAndKeyParams}`);
-        if (getBoardInfo.status !== 200) {
-          return { statusCode: getBoardInfo.status, message: "getBoardInfo error" };
-        }
-        const parseBoardData = (data) => {
-          const listMap = {}
-          const cardMap = new Map()
-          data.lists.forEach(list => {
-            listMap[list.id] = { ...list, cards: [] }
-          })
-
-          data.cards.forEach(card => {
-            const queueId = card.idList
-
-            // Get the name of the queue the card resides in
-            const queueName = listMap[queueId].name
-
-            let numberOfTicketsAhead = -1
-            if (!(queueName.includes('[ALERT]') || queueName.includes('[DONE]') || queueName.includes('[MISSED]'))) {
-              // Get card position based on length of list before
-              numberOfTicketsAhead = listMap[queueId].cards.length
-            }
-
-            card = { ...card, numberOfTicketsAhead, queueName }
-            // Add listMap with card
-            listMap[queueId] = { ...listMap[queueId], cards: [...listMap[queueId].cards, card] }
-            // Add card to the card map for quick lookup
-            cardMap.set(card.id, card)
-          })
-          return { listMap, cardMap }
-        }
-
-        const { cardMap } = parseBoardData(getBoardInfo.data)
-        const card = cardMap.get(id)
-
-        return {
-          statusCode: 200,
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            queueId: card.idList,
-            queueName: card.queueName,
-            ticketNumber: card.idShort,
-            ticketId: id,
-            ticketDesc: JSON.parse(card.desc),
-            numberOfTicketsAhead: card.numberOfTicketsAhead,
-          })
-        };
-      }
-      // return object
-      let res = {
-        queueId: '',
-        queueName: '',
-        ticketId: id,
-        ticketDesc: '',
-        numberOfTicketsAhead: -1
-      }
-
-      const batchUrls = [
-        `/cards/${id}/list?fields=name`,
-        `/cards/${id}`,
-      ].join(',')
-      const batchAPICall = await axios.get(`${TRELLO_ENDPOINT}/batch?urls=${batchUrls}&${tokenAndKeyParams}`)
-
-      //Check if rate limit hit
-      if (batchAPICall.status === 429) { return { statusCode: 429, message: "Trello API rate limit" }; }
-      if (batchAPICall.status !== 200) {
-        return { statusCode: batchAPICall.status, message: "BatchAPICall error" };
-      }
-
-      const [getListofCard, getCardDesc] = batchAPICall.data
-
-      //Check that all Batch apis returned 200
-      if (!getListofCard['200'] || !getCardDesc['200']) {
-        return { statusCode: 400, message: "BatchAPICall subrequest error" };
-      }
-
-      const { id: newQueueId, name: queueName } = getListofCard['200']
-      res.queueId = newQueueId
-      res.queueName = queueName
-
-      const { desc } = getCardDesc['200']
-      if (desc !== '') res.ticketDesc = JSON.parse(desc)
+      const { id, board: boardId } = queryStringParameters
 
       // Get the card's position in the current queue
-      const getCardsOnList = await axios.get(
-        `${TRELLO_ENDPOINT}/lists/${newQueueId}/cards?${tokenAndKeyParams}`)
-
-      if (getCardsOnList.status === 429) { return { statusCode: 429, message: "Trello API rate limit" } }
-      if (getCardsOnList.status !== 200) { return { statusCode: getCardsOnList.status, message: "getCardsOnList error" } }
-
-
-      //If list isn't any of the special markers, check for position
-      if (!(queueName.includes('[ALERT]') || queueName.includes('[DONE]') || queueName.includes('[MISSED]'))) {
-        // To check position in queue
-        const ticketsInQueue = getCardsOnList.data
-        res.numberOfTicketsAhead = ticketsInQueue.findIndex(val => val.id === id)
+      const getBoardInfo = await axios.get(`${TRELLO_ENDPOINT}/boards/${boardId}/?fields=id,name,desc&cards=visible&card_fields=id,idList,name,idShort,desc&lists=open&list_fields=id,name&${tokenAndKeyParams}`);
+      if (getBoardInfo.status !== 200) {
+        return { statusCode: getBoardInfo.status, message: "getBoardInfo error" };
       }
+      const parseBoardData = (data) => {
+        const listMap = {}
+        const cardMap = new Map()
+        data.lists.forEach(list => {
+          listMap[list.id] = { ...list, cards: [] }
+        })
+
+        data.cards.forEach(card => {
+          const queueId = card.idList
+
+          // Get the name of the queue the card resides in
+          const queueName = listMap[queueId].name
+
+          let numberOfTicketsAhead = -1
+          if (!(queueName.includes('[ALERT]') || queueName.includes('[DONE]') || queueName.includes('[MISSED]'))) {
+            // Get card position based on length of list before
+            numberOfTicketsAhead = listMap[queueId].cards.length
+          }
+
+          card = { ...card, numberOfTicketsAhead, queueName }
+          // Add listMap with card
+          listMap[queueId] = { ...listMap[queueId], cards: [...listMap[queueId].cards, card] }
+          // Add card to the card map for quick lookup
+          cardMap.set(card.id, card)
+        })
+        return { listMap, cardMap }
+      }
+
+      const { cardMap } = parseBoardData(getBoardInfo.data)
+      const card = cardMap.get(id)
 
       return {
         statusCode: 200,
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(res)
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          queueId: card.idList,
+          queueName: card.queueName,
+          ticketNumber: card.idShort,
+          ticketId: id,
+          ticketDesc: JSON.parse(card.desc),
+          numberOfTicketsAhead: card.numberOfTicketsAhead,
+        })
       };
+
     }
     /**
      * POST /ticket
