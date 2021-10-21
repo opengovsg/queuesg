@@ -19,7 +19,8 @@ exports.handler = async function (event, context) {
       const { id } = queryStringParameters
 
       const getBoardQueueBelongsTo = await axios.get(`${TRELLO_ENDPOINT}/lists/${id}/board?fields=id,name,desc&${tokenAndKeyParams}`)
-      const { name, desc } = getBoardQueueBelongsTo.data
+
+      const { id: boardId, name, desc } = getBoardQueueBelongsTo.data
 
       return {
         statusCode: 200,
@@ -27,6 +28,7 @@ exports.handler = async function (event, context) {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
+          id: boardId,
           name,
           desc
         })
