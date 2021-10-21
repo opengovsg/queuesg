@@ -130,7 +130,7 @@ const Index = () => {
 
   const leaveQueue = async () => {
     try {
-      axios.delete(`${NETLIFY_FN_ENDPOINT}/ticket?id=${ticketId}`)
+      axios.delete(`${NETLIFY_FN_ENDPOINT}/ticket?id=${ticketId}&boardId=${boardId}`)
       removeCookie('ticket')
       router.push(`/`)
     } catch (error) {

@@ -146,16 +146,35 @@ exports.handler = async function (event, context) {
      * @return {statusCode: Number } Returns 200 if successful
      */
     else if (httpMethod === 'DELETE') {
-      const id = queryStringParameters.id
-      if (id) {
-        await axios.delete(`${TRELLO_ENDPOINT}/cards/${id}?${tokenAndKeyParams}`)
+      const { id, boardId } = queryStringParameters
+
+      if (id && boardId) {
+        const getBoardInfo = await axios.get(`${TRELLO_ENDPOINT}/boards/${boardId}/?fields=id,name,desc&cards=visible&card_fields=id,idList,name,idShort,desc&lists=open&list_fields=id,name&${tokenAndKeyParams}`);
+
+        const { lists } = getBoardInfo.data
+        const leftList = lists.find(l => l.name.includes('[LEFT]'))
+
+        // A [LEFT] list exists move the users ticket to the bottom of it
+        if (leftList && leftList.id) {
+          await axios.put(`${TRELLO_ENDPOINT}/cards/${id}?${tokenAndKeyParams}&idList=${leftList.id}&pos=bottom`)
+        }
+        // Otherwise delete it completely
+        else {
+          await axios.delete(`${TRELLO_ENDPOINT}/cards/${id}?${tokenAndKeyParams}`)
+        }
+        return {
+          statusCode: 200,
+        };
       }
-      return {
-        statusCode: 200,
-        headers: {
-          "Content-Type": "application/json"
-        },
-      };
+      else {
+        return {
+          statusCode: 400,
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            message: "Missing ticket or board id"
+          })
+        };
+      }
     }
     return { statusCode: 404 }
   } catch (err) {
