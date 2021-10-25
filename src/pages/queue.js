@@ -36,6 +36,7 @@ const Index = () => {
   const router = useRouter()
   const [cookies] = useCookies(['ticket']);
 
+  const [boardId, setBoardId] = useState()
   const [boardName, setBoardName] = useState('')
   const [isQueueValid, setIsQueueValid] = useState(true)
   const [isLoading, setIsLoading] = useState(true)
@@ -79,9 +80,10 @@ const Index = () => {
     if (ticketCookie &&
       ticketCookie.queue &&
       ticketCookie.queue === currentQueueId &&
-      ticketCookie.ticket && ticketCookie.ticketNumber
+      ticketCookie.ticket &&
+      ticketCookie.board
     ) {
-      return `/ticket?queue=${ticketCookie.queue}&ticket=${ticketCookie.ticket}&ticketNumber=${ticketCookie.ticketNumber}`
+      return `/ticket?queue=${ticketCookie.queue}&ticket=${ticketCookie.ticket}&board=${ticketCookie.board}`
     }
 
     return false
@@ -98,7 +100,9 @@ const Index = () => {
       // 1. Verifies that queue actually exists
       // 2. Gets info stored as JSON in board description
       const getBoardQueueBelongsTo = await axios.get(`${NETLIFY_FN_ENDPOINT}/queue?id=${queueId}`)
-      const { name, desc } = getBoardQueueBelongsTo.data
+      const { id, name, desc } = getBoardQueueBelongsTo.data
+
+      setBoardId(id)
 
       const boardInfo = JSON.parse(desc)
 
@@ -169,10 +173,10 @@ const Index = () => {
       // for that queue, return the ticket id and redirect to ticket page
       const query = queryString.parse(location.search);
       const postJoinQueue = await axios.post(`${NETLIFY_FN_ENDPOINT}/ticket?queue=${query.id}`, { desc })
-      const { ticketId, ticketNumber } = postJoinQueue.data
+      const { ticketId } = postJoinQueue.data
       const feedback = feedbackLink ? `&feedback=${encodeURIComponent(feedbackLink)}` : ''
       const waitTime = `&waitTimePerTicket=${encodeURIComponent(waitTimePerTicket)}`
-      const url = `/ticket?queue=${query.id}&ticket=${ticketId}&ticketNumber=${ticketNumber}${feedback}${waitTime}`
+      const url = `/ticket?queue=${query.id}&board=${boardId}&ticket=${ticketId}${feedback}${waitTime}`
       router.push(url, url, { locale: lang })
     } catch (err) {
       console.log(err.response.status);

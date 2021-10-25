@@ -34,6 +34,8 @@ const Index = () => {
   const [waitTimePerTicket, setWaitTimePerTicket] = useState(3)
   const [numberOfTicketsAhead, setNumberOfTicketsAhead] = useState()
 
+
+  const [boardId, setBoardId] = useState()
   const [ticketState, setTicketState] = useState()
   const [ticketId, setTicketId] = useState()
   const [queueId, setQueueId] = useState()
@@ -50,16 +52,16 @@ const Index = () => {
 
   useEffect(() => {
     const query = queryString.parse(location.search);
-    if (query.ticket && query.queue && query.ticketNumber) {
+    if (query.ticket && query.queue && query.board) {
       setTicketId(query.ticket)
-      getTicketStatus(query.ticket, query.queue)
-      setTicketNumber(query.ticketNumber)
+      setBoardId(query.board)
+      getTicketStatus(query.ticket, query.board)
 
       // Save ticket info to cookie
       setCookie('ticket', {
         queue: query.queue,
         ticket: query.ticket,
-        ticketNumber: query.ticketNumber
+        board: query.board,
       }, { maxAge: COOKIE_MAX_AGE })
       //Save feedback link
       if (query.feedback) setFeedbackLink(query.feedback)
@@ -71,16 +73,18 @@ const Index = () => {
 
   const refreshInterval = process.env.NEXT_PUBLIC_REFRESH_INTERVAL || 5000
   useInterval(() => {
-    if (refreshEnabled) getTicketStatus(ticketId)
+    if (refreshEnabled) getTicketStatus(ticketId, boardId)
   }, refreshInterval);
 
 
-  const getTicketStatus = async (ticket) => {
+  const getTicketStatus = async (ticket, board) => {
     try {
-      const getTicket = await axios.get(`${NETLIFY_FN_ENDPOINT}/ticket?id=${ticket}`)
-      const { queueId, queueName, ticketDesc, numberOfTicketsAhead } = getTicket.data
+      const getTicket = await axios.get(`${NETLIFY_FN_ENDPOINT}/ticket?id=${ticket}&board=${board}`)
+      const { queueId, queueName, ticketDesc, numberOfTicketsAhead, ticketNumber } = getTicket.data
       //Update queueId in case ticket has been shifted
       setQueueId(queueId)
+
+      setTicketNumber(ticketNumber)
 
       if (ticketDesc !== '') {
         setDisplayTicketInfo(`${ticketDesc.name ? ticketDesc.name : ''} ${ticketDesc.contact ? ticketDesc.contact : ''}`)
@@ -126,7 +130,7 @@ const Index = () => {
 
   const leaveQueue = async () => {
     try {
-      axios.delete(`${NETLIFY_FN_ENDPOINT}/ticket?id=${ticketId}`)
+      axios.delete(`${NETLIFY_FN_ENDPOINT}/ticket?id=${ticketId}&boardId=${boardId}`)
       removeCookie('ticket')
       router.push(`/`)
     } catch (error) {
@@ -139,7 +143,7 @@ const Index = () => {
     if (query.queue) {
       // NOTE: Using query string queue as that is the initial queue not the current queue
       await axios.put(`${NETLIFY_FN_ENDPOINT}/ticket?id=${ticketId}&queue=${query.queue}`)
-      getTicketStatus(query.ticket, query.queue)
+      await getTicketStatus(query.ticket, boardId)
     }
   }
 
