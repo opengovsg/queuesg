@@ -12,7 +12,6 @@ import {
   Flex,
   Grid,
   Spinner,
-  Text,
 } from '@chakra-ui/react';
 
 import { Container } from '../../components/Container';
@@ -388,6 +387,16 @@ const Index = () => {
                   />
 
                   <ButtonGroup>
+                    <Button
+                      flex
+                      colorScheme="blue"
+                      borderRadius="3px"
+                      color="white"
+                      variant="solid"
+                      onClick={() => router.push(`/support?boardId=zlksMWQT`)}
+                    >
+                      Get Links
+                    </Button>
                     <Button
                       isLoading={isSubmitting}
                       flex
