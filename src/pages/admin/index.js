@@ -12,7 +12,6 @@ import {
   Flex,
   Grid,
   Spinner,
-  Text,
 } from '@chakra-ui/react';
 
 import { Container } from '../../components/Container';
@@ -389,6 +388,16 @@ const Index = () => {
 
                   <ButtonGroup>
                     <Button
+                      flex
+                      colorScheme="blue"
+                      borderRadius="3px"
+                      color="white"
+                      variant="solid"
+                      onClick={() => router.push(`/support?boardId=zlksMWQT`)}
+                    >
+                      Get Links
+                    </Button>
+                    <Button
                       isLoading={isSubmitting}
                       flex
                       colorScheme="blue"
@@ -457,6 +466,15 @@ const Index = () => {
                           label="Privacy Policy Link"
                           type="url"
                           value={editableSettings.privacyPolicyLink}
+                          onChange={onTextInputChange}
+                        />
+
+                        {/* ticket prefix */}
+                        <InputText
+                          id="ticketPrefix"
+                          label="Ticket Prefix"
+                          type="text"
+                          value={editableSettings.ticketPrefix}
                           onChange={onTextInputChange}
                         />
 

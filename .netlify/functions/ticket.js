@@ -82,6 +82,7 @@ exports.handler = async function (event, context) {
     else if (httpMethod === 'POST') {
       const { desc } = JSON.parse(body)
 
+      const prefix = desc.ticketPrefix ? desc.ticketPrefix : ''
       const name = desc.name ? `-${desc.name}` : ''
       const contact = desc.contact ? `-${desc.contact}` : ''
       const category = desc.category ? `-${desc.category}` : ''
@@ -109,7 +110,7 @@ exports.handler = async function (event, context) {
           `${TRELLO_ENDPOINT}/cards?${tokenAndKeyParams}&idList=${queue}&desc=${descString}`)
 
         const { id, idShort } = createCard.data
-        const cardName = `${idShort}${name}${contact}${category}`
+        const cardName = `${prefix}${idShort}${name}${contact}${category}`
         // Update newly created card with number{-name}{-contact}{-category} and desc
         await axios.put(
           `${TRELLO_ENDPOINT}/cards/${id}?${tokenAndKeyParams}&name=${cardName}`)

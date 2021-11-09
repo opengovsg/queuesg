@@ -35,4 +35,4 @@ yarn-error.log*
 .vercel
 
 # Local Netlify folder
-.netlify/state.json
+.netlify

@@ -121,7 +121,7 @@ const Index = () => {
           />
         </GridItem>
         <GridItem
-          colSpan={4}
+          colSpan={5}
           rowSpan={14}
           bg="secondary.300"
         >
@@ -131,7 +131,7 @@ const Index = () => {
           />
         </GridItem>
         <GridItem
-          colSpan={3}
+          colSpan={2}
           rowSpan={14}
           bg="error.300"
         >
