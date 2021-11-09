@@ -460,6 +460,15 @@ const Index = () => {
                           onChange={onTextInputChange}
                         />
 
+                        {/* ticket prefix */}
+                        <InputText
+                          id="ticketPrefix"
+                          label="Ticket Prefix"
+                          type="text"
+                          value={editableSettings.ticketPrefix}
+                          onChange={onTextInputChange}
+                        />
+
                         {/* Submit */}
                         <Button
                           isLoading={isSubmitting}
