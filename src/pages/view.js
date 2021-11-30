@@ -108,13 +108,13 @@ const Index = () => {
       <Grid
         h="100vh"
         templateColumns="repeat(7, 1fr)"
-        templateRows="repeat(18, 1fr)"
+        templateRows="repeat(16, 1fr)"
       >
         <GridItem
           colSpan={7}
-          rowSpan={2}
+          rowSpan={1}
           bg="secondary.300"
-          height="120px"
+        // height="120px"
         >
           <ViewHeader
             board={board}
@@ -142,7 +142,7 @@ const Index = () => {
         </GridItem>
         <GridItem
           colSpan={7}
-          rowSpan={2}
+          rowSpan={1}
           bg="base"
         >
           <ViewFooter />
