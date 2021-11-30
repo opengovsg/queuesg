@@ -132,7 +132,7 @@ const Index = () => {
     try {
       axios.delete(`${NETLIFY_FN_ENDPOINT}/ticket?id=${ticketId}&boardId=${boardId}`)
       removeCookie('ticket')
-      router.push(`/`)
+      router.push(`/queue?id=${queueId}`)
     } catch (error) {
       console.log(error)
     }
