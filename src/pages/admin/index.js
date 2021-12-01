@@ -207,12 +207,9 @@ const Index = () => {
   /**
    * Generates a report on the Queue
    */
-  const assembleCSVData = (batchCardActions, doneCardMap) => {
+  const assembleCSVData = (batchCardActions, doneCardMap, listsOnBoard) => {
     const extractDataFromCardActions = (cardActions) => {
       let JOINED;
-      let ALERTED = null;
-      let MISSED = null;
-      let DONE = null;
       let name;
       let ticketNumber;
       let cardId;
@@ -220,9 +217,14 @@ const Index = () => {
       let labels;
       let members;
 
+      let columns = {}
+      listsOnBoard.forEach(l => {
+        columns[l.name] = null
+      })
+
       cardActions.forEach((action) => {
         const { type, data } = action;
-        const date = new Date(action.date);
+        const date = (new Date(action.date)).toISOString();
         if (type === 'createCard') {
           JOINED = date;
           cardId = data.card.id;
@@ -233,14 +235,11 @@ const Index = () => {
         } else if (type === 'updateCard') {
           // Only process events with listAfter, this filters out other changes like editing card title
           if (data.listAfter) {
-            // This logic takes the LAST time a card is moved to given state [ALERT] / [DONE]
-            // For simplicity ignores dragging cards back and forth
-            if (data.listAfter.name.includes('[ALERT]')) {
-              ALERTED = date;
-            } else if (data.listAfter.name.includes('[MISSED]')) {
-              MISSED = date;
-            } else if (data.listAfter.name.includes('[DONE]')) {
-              DONE = date;
+            // Only track existings lists
+            if (columns[data.listAfter.name] === null) {
+              columns[data.listAfter.name] = date
+            }
+            if (data.listAfter.name.includes('[DONE]')) {
               ticketNumber = data.card.idShort;
               name = data.card.name.replace(`${ticketNumber}-`, '');
             }
@@ -254,9 +253,7 @@ const Index = () => {
         labels,
         members,
         JOINED,
-        ALERTED,
-        MISSED,
-        DONE,
+        ...columns,
       };
     };
 
@@ -333,8 +330,7 @@ const Index = () => {
           `https://api.trello.com/1/batch?urls=${batchUrls}&key=${apiConfig.key}&token=${apiConfig.token}`
         );
 
-        const data = assembleCSVData(batchAPICall.data, doneCardMap);
-
+        const data = assembleCSVData(batchAPICall.data, doneCardMap, listsOnBoard);
         await exportToCSV(data);
       }
     } catch (error) {
