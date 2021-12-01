@@ -1,10 +1,7 @@
 import {
   Box,
-  Center,
-  Grid,
-  GridItem,
-  Heading,
   Text,
+  Flex
 } from '@chakra-ui/react'
 import QRCode from 'qrcode.react'
 
@@ -12,32 +9,25 @@ export const QrCode = ({
   queuePendingUrl
 }) => {
   return (
-    <Grid
+    <Flex
       layerStyle="card"
-      w="100%"
-      templateRows="repeat(1, 1fr)"
-      templateColumns="repeat(4, 1fr)"
-      gap={0}
-    >
-      <GridItem
-        colSpan={1}
-      >
+      width="100%"
+      flexDirection="column">
+      <Box margin="auto">
         <QRCode
+          size={180}
           value={queuePendingUrl}
         />
-      </GridItem>
-      <GridItem
-        colSpan={3}
-        alignSelf="center"
-        paddingLeft="24px"
-      >
+      </Box>
+      <Box mt={4}>
         <Text
           textStyle="heading2"
           color="primary.600"
+          fontWeight="normal"
         >
           If you have missed your queue number, scan the QR code to rejoin.
-      </Text>
-      </GridItem>
-    </Grid>
+        </Text>
+      </Box>
+    </Flex>
   )
 }

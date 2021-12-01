@@ -69,7 +69,7 @@ const Index = () => {
               className="featured-image"
             />
           </Center>
-          <Center
+          {/* <Center
             mt="4rem"
           >
             <Link
@@ -87,7 +87,7 @@ const Index = () => {
                 {t('try-the-demo')}
               </Button>
             </Link>
-          </Center>
+          </Center> */}
         </Box>
       </Main>
       <Footer />
