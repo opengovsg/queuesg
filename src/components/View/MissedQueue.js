@@ -22,7 +22,6 @@ export const MissedQueue = ({
         textStyle="display1"
         fontSize="5xl"
         mb="1em"
-        textAlign="center"
       >
         Missed
       </Heading>

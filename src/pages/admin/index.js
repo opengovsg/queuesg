@@ -389,7 +389,7 @@ const Index = () => {
                       borderRadius="3px"
                       color="white"
                       variant="solid"
-                      onClick={() => router.push(`/support?boardId=zlksMWQT`)}
+                      onClick={() => router.push(`/support`)}
                     >
                       Get Links
                     </Button>
