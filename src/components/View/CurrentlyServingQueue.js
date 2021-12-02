@@ -15,13 +15,22 @@ export const CurrentlyServingQueue = ({
       mx={20}
       my={10}
     >
-      <Flex justifyContent="center">
+      <Flex justifyContent="space-between">
         <Heading
           textStyle="display1"
           fontSize="5xl"
           mb="0.5em"
+          flex={1}
         >
           Currently serving
+        </Heading>
+        <Heading
+          textStyle="display1"
+          fontSize="5xl"
+          mb="0.5em"
+          flex={1}
+        >
+          Counter / Room
         </Heading>
       </Flex>
 
@@ -42,13 +51,14 @@ export const CurrentlyServingQueue = ({
                 mt="1.25em"
                 mb="0.25em"
                 px="0.25em"
-                justifyContent="space-around">
-                <Heading textStyle="heading2" fontSize="5xl">
-                  {queueName}
-                </Heading>
-                <Heading textStyle="heading2" fontSize="5xl">
+                justifyContent="space-between">
+                <Heading textStyle="heading2" fontSize="5xl" flex={1}>
                   {getQueueNumber(listsOfTickets[listId][0].name)}
                 </Heading>
+                <Heading textStyle="heading2" fontSize="5xl" flex={1}>
+                  {queueName}
+                </Heading>
+
               </Flex>
             </>
           )
