@@ -263,14 +263,16 @@ const Index = () => {
       if (card['200']) {
         const cardActions = card['200'];
         const row = extractDataFromCardActions(cardActions)
-        // Old format with single row of combined labels
-        // dataForExport.push(row);
 
         // If multiple labels, have a row for each
-        const labels = row.labels.split(',')
-        labels.forEach(lbl => {
-          dataForExport.push({ ...row, labels: lbl })
-        })
+        if (row.labels) {
+          const labels = row.labels.split(',')
+          labels.forEach(lbl => {
+            dataForExport.push({ ...row, labels: lbl })
+          })
+        } else {
+          dataForExport.push(row);
+        }
       }
     });
     return dataForExport;
