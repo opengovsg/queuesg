@@ -262,7 +262,15 @@ const Index = () => {
     batchCardActions.forEach((card) => {
       if (card['200']) {
         const cardActions = card['200'];
-        dataForExport.push(extractDataFromCardActions(cardActions));
+        const row = extractDataFromCardActions(cardActions)
+        // Old format with single row of combined labels
+        // dataForExport.push(row);
+
+        // If multiple labels, have a row for each
+        const labels = row.labels.split(',')
+        labels.forEach(lbl => {
+          dataForExport.push({ ...row, labels: lbl })
+        })
       }
     });
     return dataForExport;
