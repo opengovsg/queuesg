@@ -247,6 +247,8 @@ const Index = () => {
                   <Input
                     layerStyle="formInput"
                     name="name"
+                    pattern="[^0-9]*"
+                    title="Name should not contain numbers"
                     required
                   />
                 </>}
