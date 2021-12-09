@@ -4,6 +4,7 @@ import queryString from 'query-string';
 import { useRouter } from 'next/router';
 import { ExportToCsv } from 'export-to-csv';
 import Head from 'next/head';
+import moment from 'moment'
 import {
   Box,
   Button,
@@ -216,6 +217,7 @@ const Index = () => {
       let description;
       let labels;
       let members;
+      let date;
 
       let columns = {}
       listsOnBoard.forEach(l => {
@@ -224,9 +226,11 @@ const Index = () => {
 
       cardActions.forEach((action) => {
         const { type, data } = action;
-        const date = (new Date(action.date)).toISOString();
+        const actionDate = moment(action.date).utcOffset(8)
+        const timestamp = actionDate.format('HH:mm:ss');
         if (type === 'createCard') {
-          JOINED = date;
+          date = actionDate.format('DD-MM-YYYY')
+          JOINED = timestamp;
           cardId = data.card.id;
           const cardInfo = doneCardMap.get(data.card.id);
           description = cardInfo.desc;
@@ -237,7 +241,7 @@ const Index = () => {
           if (data.listAfter) {
             // Only track existings lists
             if (columns[data.listAfter.name] === null) {
-              columns[data.listAfter.name] = date
+              columns[data.listAfter.name] = timestamp
             }
             if (data.listAfter.name.includes('[DONE]')) {
               ticketNumber = data.card.idShort;
@@ -249,6 +253,7 @@ const Index = () => {
       return {
         name,
         ticketNumber,
+        date,
         description,
         labels,
         members,
