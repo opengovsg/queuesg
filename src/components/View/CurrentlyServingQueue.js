@@ -22,7 +22,7 @@ export const CurrentlyServingQueue = ({
           mb="0.5em"
           flex={1}
         >
-          Currently serving
+          Counter / Room
         </Heading>
         <Heading
           textStyle="display1"
@@ -30,7 +30,7 @@ export const CurrentlyServingQueue = ({
           mb="0.5em"
           flex={1}
         >
-          Counter / Room
+          Currently serving
         </Heading>
       </Flex>
 
@@ -53,10 +53,10 @@ export const CurrentlyServingQueue = ({
                 px="0.25em"
                 justifyContent="space-between">
                 <Heading textStyle="heading2" fontSize="5xl" flex={1}>
-                  {getQueueNumber(listsOfTickets[listId][0].name)}
+                  {queueName}
                 </Heading>
                 <Heading textStyle="heading2" fontSize="5xl" flex={1}>
-                  {queueName}
+                  {getQueueNumber(listsOfTickets[listId][0].name)}
                 </Heading>
 
               </Flex>
