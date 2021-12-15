@@ -3,6 +3,7 @@ import {
   Center,
   Text,
   Flex,
+  Button,
 } from '@chakra-ui/react'
 import useTranslation from 'next-translate/useTranslation'
 
@@ -37,11 +38,19 @@ export const Served = ({ feedbackLink }) => {
         {t('wish-you-good-day-ahead')}
       </Text>
 
-      {feedbackLink && <Text
-        textStyle="body1"
-        textDecoration="underline"
-      ><a href={feedbackLink}>Give us some feedback</a>
-      </Text>}
+      {feedbackLink &&
+        <a href={feedbackLink}>
+          <Button
+            flex
+            colorScheme="blue"
+            borderRadius="3px"
+            color="white"
+            variant="solid"
+            mt={4}
+          >
+            Give us some feedback
+          </Button>
+        </a>}
     </Box>
   </>
 }
