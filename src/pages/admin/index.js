@@ -212,12 +212,14 @@ const Index = () => {
     const extractDataFromCardActions = (cardActions) => {
       let JOINED;
       let name;
+      let nric = null;
       let ticketNumber;
       let cardId;
       let description;
       let labels;
       let members;
       let date;
+      let comments = []
 
       let columns = {}
       listsOnBoard.forEach(l => {
@@ -234,6 +236,9 @@ const Index = () => {
           cardId = data.card.id;
           const cardInfo = doneCardMap.get(data.card.id);
           description = cardInfo.desc;
+          try {
+            nric = JSON.parse(cardInfo.desc).nric ?? null
+          } catch (e) { }
           labels = cardInfo.labels.map((lbl) => lbl.name).join(',');
           members = cardInfo.members.map((mbrs) => mbrs.username).join(',');
         } else if (type === 'updateCard') {
@@ -248,13 +253,19 @@ const Index = () => {
               name = data.card.name.replace(`${ticketNumber}-`, '');
             }
           }
+        } else if (type === 'commentCard') {
+          if (data.text) {
+            comments.push(data.text)
+          }
         }
       });
       return {
         name,
         ticketNumber,
+        nric,
         date,
         description,
+        comments: comments.reverse().join('\n'),
         labels,
         members,
         JOINED,
@@ -337,7 +348,7 @@ const Index = () => {
         // Batched API call to get histories of all the cards
         const batchUrls = doneCardIds
           .map(
-            (id) => `/cards/${id}/actions?filter=createCard%26filter=updateCard`
+            (id) => `/cards/${id}/actions?filter=createCard%26filter=updateCard%26filter=commentCard`
           )
           .join(',');
 
