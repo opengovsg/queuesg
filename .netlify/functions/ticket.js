@@ -107,13 +107,13 @@ exports.handler = async function (event, context) {
         }
 
         const createCard = await axios.post(
-          `${TRELLO_ENDPOINT}/cards?${tokenAndKeyParams}&idList=${queue}&desc=${descString}`)
+          `${TRELLO_ENDPOINT}/cards?${tokenAndKeyParams}&idList=${queue}&desc=${encodeURIComponent(descString)}`)
 
         const { id, idShort } = createCard.data
         const cardName = `${prefix}${idShort}${name}${contact}${category}`
         // Update newly created card with number{-name}{-contact}{-category} and desc
         await axios.put(
-          `${TRELLO_ENDPOINT}/cards/${id}?${tokenAndKeyParams}&name=${cardName}`)
+          `${TRELLO_ENDPOINT}/cards/${id}?${tokenAndKeyParams}&name=${encodeURIComponent(cardName)}`)
 
         return {
           statusCode: 200,
