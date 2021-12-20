@@ -20,7 +20,7 @@ const Index = () => {
   const [queuePendingUrl, setQueuePendingUrl] = useState('')
   const [queueAlertIds, setqueueAlertIds] = useState([])
   const [ticketsAlerted, setTicketsAlerted] = useState([])
-  const [queueMissedId, setQueueMissedId] = useState(null)
+  const [queueMissedIds, setQueueMissedIds] = useState([])
   const [ticketsMissed, setTicketsMissed] = useState([])
 
   useEffect(async () => {
@@ -31,7 +31,7 @@ const Index = () => {
 
   useEffect(async () => {
     await getQueues()
-  }, [queueAlertIds, queueMissedId])
+  }, [queueAlertIds, queueMissedIds])
 
   const refreshInterval = 10000 //process.env.NEXT_PUBLIC_REFRESH_INTERVAL || 5000
   useInterval(() => {
@@ -66,8 +66,8 @@ const Index = () => {
         }
         setqueueAlertIds(alertQueues)
 
-        const missedQueue = boardLists.data.find(list => list.name.indexOf(QUEUE_TITLES.MISSED) > -1)
-        if (missedQueue) setQueueMissedId(missedQueue.id)
+        const missedQueues = boardLists.data.filter(list => list.name.indexOf(QUEUE_TITLES.MISSED) > -1).map(q => q.id)
+        setQueueMissedIds(missedQueues)
 
         const pendingQueue = boardLists.data.find(list => list.name.indexOf(QUEUE_TITLES.PENDING) > -1)
         if (pendingQueue) {
@@ -89,11 +89,13 @@ const Index = () => {
    * Gets Queues
    */
   const getQueues = async () => {
-    if (queueAlertIds && queueMissedId) {
-      const tickets = await axios.get(`${NETLIFY_FN_ENDPOINT}/view?type=queues&queueAlertIds=${queueAlertIds.join(',')}&queueMissedId=${queueMissedId}`)
+    if (queueAlertIds && queueMissedIds) {
+      const tickets = await axios.get(`${NETLIFY_FN_ENDPOINT}/view?type=queues&queueAlertIds=${queueAlertIds.join(',')}&queueMissedIds=${queueMissedIds.join(',')}`)
 
       // Set the missed tickets
-      setTicketsMissed(tickets.data.missed[queueMissedId])
+      // Combined all missed queues into 1
+      const combinedMissed = _.flatMap(tickets.data.missed)
+      setTicketsMissed(combinedMissed)
 
       //  Set the alerted tickets
       setTicketsAlerted(tickets.data.alerted)
