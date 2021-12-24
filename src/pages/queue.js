@@ -44,6 +44,7 @@ const Index = () => {
   const [feedbackLink, setFeedbackLink] = useState()
   const [privacyPolicyLink, setPrivacyPolicyLink] = useState()
   const [registrationFields, setRegistrationFields] = useState([])
+  const [ticketPrefix, setTicketPrefix] = useState()
   const [categories, setCategories] = useState([])
   const [waitTimePerTicket, setWaitTimePerTicket] = useState()
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -115,6 +116,10 @@ const Index = () => {
       //  Set Registration Fields
       setRegistrationFields(boardInfo.registrationFields)
 
+      if (boardInfo.ticketPrefix) {
+        setTicketPrefix(boardInfo.ticketPrefix)
+      }
+
       //  Feedback Link
       if (boardInfo.feedbackLink && url(boardInfo.feedbackLink)) {
         setFeedbackLink(boardInfo.feedbackLink)
@@ -167,6 +172,9 @@ const Index = () => {
       });
       if (Array.isArray(categories) && categories.length > 0) {
         desc.category = e.target.category.value
+      }
+      if (ticketPrefix) {
+        desc.ticketPrefix = ticketPrefix
       }
 
       // call netlify function to create a ticket
@@ -239,6 +247,8 @@ const Index = () => {
                   <Input
                     layerStyle="formInput"
                     name="name"
+                    pattern="[^0-9]*"
+                    title="Name should not contain numbers"
                     required
                   />
                 </>}

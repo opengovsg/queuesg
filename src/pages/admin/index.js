@@ -1,9 +1,11 @@
 import axios from 'axios';
+import * as _ from 'lodash'
 import { useEffect, useState } from 'react';
 import queryString from 'query-string';
 import { useRouter } from 'next/router';
 import { ExportToCsv } from 'export-to-csv';
 import Head from 'next/head';
+import moment from 'moment'
 import {
   Box,
   Button,
@@ -12,7 +14,6 @@ import {
   Flex,
   Grid,
   Spinner,
-  Text,
 } from '@chakra-ui/react';
 
 import { Container } from '../../components/Container';
@@ -208,56 +209,68 @@ const Index = () => {
   /**
    * Generates a report on the Queue
    */
-  const assembleCSVData = (batchCardActions, doneCardMap) => {
+  const assembleCSVData = (batchCardActions, doneCardMap, listsOnBoard) => {
     const extractDataFromCardActions = (cardActions) => {
       let JOINED;
-      let ALERTED = null;
-      let MISSED = null;
-      let DONE = null;
       let name;
+      let nric = null;
       let ticketNumber;
       let cardId;
       let description;
       let labels;
       let members;
+      let date;
+      let comments = []
+
+      let columns = {}
+      listsOnBoard.forEach(l => {
+        columns[l.name] = null
+      })
 
       cardActions.forEach((action) => {
         const { type, data } = action;
-        const date = new Date(action.date);
+        const actionDate = moment(action.date).utcOffset(8)
+        const timestamp = actionDate.format('HH:mm:ss');
         if (type === 'createCard') {
-          JOINED = date;
+          date = actionDate.format('DD-MM-YYYY')
+          JOINED = timestamp;
           cardId = data.card.id;
           const cardInfo = doneCardMap.get(data.card.id);
           description = cardInfo.desc;
+          try {
+            nric = JSON.parse(cardInfo.desc).nric ?? null
+          } catch (e) { }
           labels = cardInfo.labels.map((lbl) => lbl.name).join(',');
           members = cardInfo.members.map((mbrs) => mbrs.username).join(',');
         } else if (type === 'updateCard') {
           // Only process events with listAfter, this filters out other changes like editing card title
           if (data.listAfter) {
-            // This logic takes the LAST time a card is moved to given state [ALERT] / [DONE]
-            // For simplicity ignores dragging cards back and forth
-            if (data.listAfter.name.includes('[ALERT]')) {
-              ALERTED = date;
-            } else if (data.listAfter.name.includes('[MISSED]')) {
-              MISSED = date;
-            } else if (data.listAfter.name.includes('[DONE]')) {
-              DONE = date;
+            // Only track existings lists
+            if (columns[data.listAfter.name] === null) {
+              columns[data.listAfter.name] = timestamp
+            }
+            if (data.listAfter.name.includes('[DONE]')) {
               ticketNumber = data.card.idShort;
               name = data.card.name.replace(`${ticketNumber}-`, '');
             }
+          }
+        } else if (type === 'commentCard') {
+          if (data.text) {
+            comments.push(data.text)
           }
         }
       });
       return {
         name,
         ticketNumber,
+        nric,
+        date,
         description,
+        comments: comments.reverse().join('\n'),
         labels,
         members,
         JOINED,
-        ALERTED,
-        MISSED,
-        DONE,
+        ...columns,
       };
     };
 
@@ -266,7 +279,17 @@ const Index = () => {
     batchCardActions.forEach((card) => {
       if (card['200']) {
         const cardActions = card['200'];
-        dataForExport.push(extractDataFromCardActions(cardActions));
+        const row = extractDataFromCardActions(cardActions)
+
+        // If multiple labels, have a row for each
+        if (row.labels) {
+          const labels = row.labels.split(',')
+          labels.forEach(lbl => {
+            dataForExport.push({ ...row, labels: lbl })
+          })
+        } else {
+          dataForExport.push(row);
+        }
       }
     });
     return dataForExport;
@@ -302,19 +325,24 @@ const Index = () => {
           )
         ).data;
 
-        const finalBoard = listsOnBoard.find((list) =>
+        const doneLists = listsOnBoard.filter((list) =>
           list.name.includes('[DONE]')
         );
-        if (!finalBoard) throw new Error('No [DONE] list found');
+        if (doneLists.length === 0) throw new Error('No [DONE] list found');
+        const doneListIds = doneLists.map(l => l.id);
 
-        const listId = finalBoard.id;
+        const listBatchUrls = doneListIds
+          .map(
+            (id) => `/lists/${id}/cards?members=true`
+          )
+          .join(',');
 
         // Get all the card ids on our '[DONE]' list
-        const cardsOnList = (
-          await axios.get(
-            `https://api.trello.com/1/lists/${listId}/cards?members=true&key=${apiConfig.key}&token=${apiConfig.token}`
-          )
-        ).data;
+        const cardsOnDoneLists = (await axios.get(
+          `https://api.trello.com/1/batch?urls=${listBatchUrls}&key=${apiConfig.key}&token=${apiConfig.token}`
+        )).data;
+
+        const cardsOnList = _.flatten(cardsOnDoneLists.map(res => res[200]))
 
         const doneCardIds = cardsOnList.map((card) => card.id);
         if (doneCardIds.length === 0) throw new Error('[DONE] list is empty');
@@ -326,7 +354,7 @@ const Index = () => {
         // Batched API call to get histories of all the cards
         const batchUrls = doneCardIds
           .map(
-            (id) => `/cards/${id}/actions?filter=createCard%26filter=updateCard`
+            (id) => `/cards/${id}/actions?filter=createCard%26filter=updateCard%26filter=commentCard`
           )
           .join(',');
 
@@ -334,8 +362,7 @@ const Index = () => {
           `https://api.trello.com/1/batch?urls=${batchUrls}&key=${apiConfig.key}&token=${apiConfig.token}`
         );
 
-        const data = assembleCSVData(batchAPICall.data, doneCardMap);
-
+        const data = assembleCSVData(batchAPICall.data, doneCardMap, listsOnBoard);
         await exportToCSV(data);
       }
     } catch (error) {
@@ -388,6 +415,16 @@ const Index = () => {
                   />
 
                   <ButtonGroup>
+                    <Button
+                      flex
+                      colorScheme="blue"
+                      borderRadius="3px"
+                      color="white"
+                      variant="solid"
+                      onClick={() => router.push(`/support`)}
+                    >
+                      Get Links
+                    </Button>
                     <Button
                       isLoading={isSubmitting}
                       flex
@@ -457,6 +494,15 @@ const Index = () => {
                           label="Privacy Policy Link"
                           type="url"
                           value={editableSettings.privacyPolicyLink}
+                          onChange={onTextInputChange}
+                        />
+
+                        {/* ticket prefix */}
+                        <InputText
+                          id="ticketPrefix"
+                          label="Ticket Prefix"
+                          type="text"
+                          value={editableSettings.ticketPrefix}
                           onChange={onTextInputChange}
                         />
 

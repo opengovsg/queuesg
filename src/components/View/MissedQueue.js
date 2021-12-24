@@ -11,33 +11,38 @@ export const MissedQueue = ({
   queuePendingUrl,
 }) => {
   return <Flex
-    mx={20}
+    mx={12}
     my={10}
     flexDirection='column'
     justifyContent='space-between'
     height="100%"
   >
-    <Box
-    >
-      <Box>
-        <Heading
-          textStyle="display1"
-          mb="0.5em"
-        >
-          Missed queue
-        </Heading>
+    <Box>
+      <Heading
+        textStyle="display1"
+        fontSize="5xl"
+        mb="1em"
+      >
+        Missed
+      </Heading>
+      <Flex flexWrap="wrap">
         {
           (tickets.length > 0)
             ?
             (
               tickets.map(ticket => {
-                return <Heading
-                  key={ticket.id}
-                  textStyle="display2"
-                  mb="0.5em"
-                >
-                  {getQueueNumber(ticket.name)}
-                </Heading>
+                return (<>
+                  <Heading
+                    key={ticket.id}
+                    textStyle="display1"
+                    fontSize="5xl"
+                    textAlign="center"
+                    width="50%"
+                    mb="0.5em"
+                  >
+                    {getQueueNumber(ticket.name)}
+                  </Heading>
+                </>)
               })
             )
             :
@@ -47,12 +52,11 @@ export const MissedQueue = ({
               -
             </Heading>
         }
-      </Box>
+      </Flex>
     </Box>
-    <Box >
-      <QrCode
-        queuePendingUrl={queuePendingUrl}
-      />
-    </Box>
+
+    <QrCode
+      queuePendingUrl={queuePendingUrl}
+    />
   </Flex>
 }

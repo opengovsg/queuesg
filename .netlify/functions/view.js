@@ -37,12 +37,17 @@ exports.handler = async function (event, context) {
       /**
        * 3. queues - Retrieve specifically the cards in Alert and Missed queues
        * *  @param  {string} queueAlertIds Comma delimited set of ids of the Alert queues
-       * *  @param  {string} queueMissedId The id of the Missed queue
+       * *  @param  {string} queueMissedIds Comma delimited set of ids of the Missed queues
       */
-      else if (type === 'queues' && queryStringParameters.queueAlertIds && queryStringParameters.queueMissedId) {
+      else if (type === 'queues' && queryStringParameters.queueAlertIds && queryStringParameters.queueMissedIds) {
 
         const queueAlertIds = queryStringParameters.queueAlertIds.split(',')
-        const setOfBatchUrls = [`/lists/${queryStringParameters.queueMissedId}/cards`]
+        const queueMissedIds = queryStringParameters.queueMissedIds.split(',')
+        const setOfBatchUrls = []
+
+        queueMissedIds.forEach(queueMissedId => {
+          setOfBatchUrls.push(`/lists/${queueMissedId}/cards`)
+        })
 
         queueAlertIds.forEach(queueAlertId => {
           setOfBatchUrls.push(`/lists/${queueAlertId}/cards`)
@@ -51,20 +56,21 @@ exports.handler = async function (event, context) {
         const batchUrls = setOfBatchUrls.join(',')
         const batchAPICall = await axios.get(`${TRELLO_ENDPOINT}/batch?urls=${batchUrls}&${tokenAndKeyParams}`)
 
-        const [missedQueue, ...rest] = batchAPICall.data
-
         //Check that all Batch apis returned 200
-        const allAlertQueues = rest.filter(queue => Object.keys(queue)[0] === '200')
-
-        if (allAlertQueues.length !== queueAlertIds.length || !missedQueue['200']) {
+        const allQueues = batchAPICall.data.filter(queue => Object.keys(queue)[0] === '200')
+        if (allQueues.length !== (queueAlertIds.length + queueMissedIds.length)) {
           return { statusCode: 400, message: "Batch error" }
         };
 
+        const missedQueues = allQueues.slice(0, queueMissedIds.length)
+        const allAlertQueues = allQueues.slice(queueMissedIds.length)
+
         //  Map the missed and alerted queues to the right keys
         res = {}
-        res['missed'] = {
-          [queryStringParameters.queueMissedId]: missedQueue['200']
-        }
+        missedQueues.forEach((queue, index) => res['missed'] = {
+          ...res['missed'],
+          [queueMissedIds[index]]: queue['200']
+        })
         allAlertQueues.forEach((queue, index) => res['alerted'] = {
           ...res['alerted'],
           [queueAlertIds[index]]: queue['200']
