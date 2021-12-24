@@ -12,20 +12,23 @@ export const QrCode = ({
     <Flex
       layerStyle="card"
       width="100%"
-      flexDirection="column">
+      flexDirection="column"
+      padding={2}>
       <Box margin="auto">
         <QRCode
-          size={180}
+          size={160}
           value={queuePendingUrl}
         />
       </Box>
-      <Box mt={4}>
+      <Box mt={2}>
         <Text
           textStyle="heading2"
+          textAlign="center"
+          fontSize="1.5rem"
           color="primary.600"
           fontWeight="normal"
         >
-         Scan the QR code to join the queue.
+          Scan to join queue
         </Text>
       </Box>
     </Flex>
