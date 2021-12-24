@@ -25,7 +25,7 @@ export const QrCode = ({
           color="primary.600"
           fontWeight="normal"
         >
-          If you have missed your queue number, scan the QR code to rejoin.
+         Scan the QR code to join the queue.
         </Text>
       </Box>
     </Flex>
