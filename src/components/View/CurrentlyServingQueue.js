@@ -46,24 +46,22 @@ export const CurrentlyServingQueue = ({
 
         if (queueName.length > 0 && listsOfTickets[listId].length > 0) {
           return (
-            <>
-              <Flex
-                mt="1.25em"
-                mb="0.25em"
-                px="0.25em"
-                justifyContent="space-between">
-                <Heading textStyle="heading2" fontSize="5xl" flex={1}>
-                  {queueName}
-                </Heading>
-                <Heading textStyle="heading2" fontSize="5xl" flex={1}>
-                  {getQueueNumber(listsOfTickets[listId][0].name)}
-                </Heading>
-
-              </Flex>
-            </>
+            <Flex
+              key={listId}
+              mt="1.25em"
+              mb="0.25em"
+              px="0.25em"
+              justifyContent="space-between">
+              <Heading textStyle="heading2" fontSize="5xl" flex={1}>
+                {queueName}
+              </Heading>
+              <Heading textStyle="heading2" fontSize="5xl" flex={1}>
+                {getQueueNumber(listsOfTickets[listId][0].name)}
+              </Heading>
+            </Flex>
           )
         }
-        return <></>
+        return null
       })
       }
     </Box>
