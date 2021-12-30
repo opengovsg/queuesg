@@ -15,6 +15,8 @@ import { ViewFooter } from '../components/View/ViewFooter'
 import * as _ from 'lodash'
 
 const Index = () => {
+
+  const [audio, setAudio] = useState(null)
   const [board, setBoard] = useState(null)
   const [boardLists, setBoardLists] = useState({})
   const [queuePendingUrl, setQueuePendingUrl] = useState('')
@@ -27,6 +29,7 @@ const Index = () => {
     const query = queryString.parse(location.search)
     await getBoard(query.board)
     await getBoardLists(query.board, query.from, query.to)
+    setAudio(new Audio("/chime.mp3"))
   }, [])
 
   useEffect(async () => {
@@ -97,9 +100,25 @@ const Index = () => {
       const combinedMissed = _.flatMap(tickets.data.missed)
       setTicketsMissed(combinedMissed)
 
+      const chime = hasNewAlerts(ticketsAlerted, tickets.data.alerted)
+      if (audio && chime) {
+        // audio is 
+        try {
+          audio.play();
+        } catch (e) { }
+      }
       //  Set the alerted tickets
       setTicketsAlerted(tickets.data.alerted)
     }
+  }
+
+  /**
+   * Checks current alerts and compares it with latest. If latest has items not in current, trigger chime
+   */
+  const hasNewAlerts = (current, latest) => {
+    const currentAlerts = _.flatMap(current).map(tx => tx.name)
+    const latestAlerts = _.flatMap(latest).map(tx => tx.name)
+    return _.intersection(currentAlerts, latestAlerts).length < latestAlerts.length
   }
 
   return (
