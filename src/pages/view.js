@@ -116,8 +116,8 @@ const Index = () => {
    * Checks current alerts and compares it with latest. If latest has items not in current, trigger chime
    */
   const hasNewAlerts = (current, latest) => {
-    const currentAlerts = _.flatMap(current).map(tx => tx.name)
-    const latestAlerts = _.flatMap(latest).map(tx => tx.name)
+    const currentAlerts = _.flatMap(current).map(tx => `${tx.idList}${tx.name}`)
+    const latestAlerts = _.flatMap(latest).map(tx => `${tx.idList}${tx.name}`)
     return _.intersection(currentAlerts, latestAlerts).length < latestAlerts.length
   }
 
