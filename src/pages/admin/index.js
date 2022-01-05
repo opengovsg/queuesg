@@ -27,6 +27,7 @@ import {
   OpeningHours,
 } from '../../components/Admin';
 import { authentication } from '../../utils';
+import { mapSeries } from 'bluebird'
 
 const Index = () => {
   const router = useRouter();
@@ -354,18 +355,23 @@ const Index = () => {
           doneCardMap.set(card.id, card);
         });
 
-        // Batched API call to get histories of all the cards
-        const batchUrls = doneCardIds
+        // Trello Batch api limits to 10 cards at a time. So we chunk the urls to batches of 10
+        // https://developer.atlassian.com/cloud/trello/rest/api-group-batch/
+        const batchUrls = _.chunk(doneCardIds
           .map(
             (id) => `/cards/${id}/actions?filter=createCard%26filter=updateCard%26filter=commentCard`
-          )
-          .join(',');
+          ), 10)
 
-        const batchAPICall = await axios.get(
-          `https://api.trello.com/1/batch?urls=${batchUrls}&key=${apiConfig.key}&token=${apiConfig.token}`
-        );
+        // Call Trello with a mapSeries to avoid swarming the rate limit, flatten the results so combinedData 
+        // resembles results of a single API call
+        const combinedData = _.flatten(await mapSeries(batchUrls, async (urls) => {
+          const batchAPICall = await axios.get(
+            `https://api.trello.com/1/batch?urls=${urls.join(',')}&key=${apiConfig.key}&token=${apiConfig.token}`
+          );
+          return batchAPICall.data
+        }))
 
-        const data = assembleCSVData(batchAPICall.data, doneCardMap, listsOnBoard);
+        const data = assembleCSVData(combinedData, doneCardMap, listsOnBoard);
         await exportToCSV(data);
       }
     } catch (error) {
