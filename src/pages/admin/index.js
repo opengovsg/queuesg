@@ -345,7 +345,10 @@ const Index = () => {
         const cardsOnList = _.flatten(cardsOnDoneLists.map(res => res[200]))
 
         const doneCardIds = cardsOnList.map((card) => card.id);
-        if (doneCardIds.length === 0) throw new Error('[DONE] list is empty');
+        if (doneCardIds.length === 0) {
+          alert('There are no cards in the [DONE] list')
+          throw new Error('[DONE] list is empty');
+        }
         let doneCardMap = new Map();
         cardsOnList.forEach((card) => {
           doneCardMap.set(card.id, card);
