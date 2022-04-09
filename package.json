@@ -17,7 +17,7 @@
     "framer-motion": "^4.1.0",
     "is-url": "^1.2.4",
     "jimp": "^0.16.1",
-    "moment": "^2.29.1",
+    "moment": "^2.29.2",
     "next": "^10.2.3",
     "next-compose-plugins": "^2.2.1",
     "next-images": "^1.8.1",
