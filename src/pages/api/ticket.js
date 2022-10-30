@@ -98,6 +98,7 @@ export default async function handler (req, res) {
           // If match found return that ticket info instead of creating a new one
           if (match) {
             res.json({ ticketId: match.id, ticketNumber: match.idShort })
+            return
           }
         }
 
