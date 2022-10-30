@@ -1,12 +1,14 @@
-const axios = require('axios');
+const axios = require('axios')
+const { parse: parseUrl } = require('url')
 
 /**
- * Netlify function for Queue / List Trello API calls
+ * Function for Queue / List Trello API calls
  */
-exports.handler = async function (event, context) {
+export default async function handler (req, res) {
   try {
-    const { httpMethod, queryStringParameters, body } = event
-    const { TRELLO_KEY, TRELLO_TOKEN, IS_PUBLIC_BOARD, TRELLO_ENDPOINT } = process.env
+    const { method: httpMethod, url } = req
+    const { query: queryStringParameters } = parseUrl(url, true)
+    const { TRELLO_KEY, TRELLO_TOKEN, IS_PUBLIC_BOARD, TRELLO_ENDPOINT = 'https://api.trello.com/1' } = process.env
     const tokenAndKeyParams = IS_PUBLIC_BOARD === 'true' ? '' : `key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`
 
     /**
@@ -22,22 +24,17 @@ exports.handler = async function (event, context) {
 
       const { id: boardId, name, desc } = getBoardQueueBelongsTo.data
 
-      return {
-        statusCode: 200,
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          id: boardId,
-          name,
-          desc
-        })
-      };
+      res.status(200).json({
+        id: boardId,
+        name,
+        desc
+      })
+    } else {
+      res.status(404).json()
     }
-    return { statusCode: 404 };
   } catch (err) {
     console.log(err.response)
-    return { statusCode: 400 };
+    res.status(400).json()
   }
 
 

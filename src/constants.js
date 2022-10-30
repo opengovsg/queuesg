@@ -1,4 +1,4 @@
-export const NETLIFY_FN_ENDPOINT = '/.netlify/functions'
+export const API_ENDPOINT = '/api'
 
 export const COOKIE_MAX_AGE = 60 * 90
 

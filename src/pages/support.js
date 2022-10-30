@@ -17,7 +17,7 @@ import { Main } from '../components/Main'
 import { Footer } from '../components/Footer'
 import { NavBar } from '../components/Navbar'
 import { UrlInput } from '../components/Support/UrlInput'
-import { NETLIFY_FN_ENDPOINT, QUEUE_TITLES } from '../constants'
+import { API_ENDPOINT, QUEUE_TITLES } from '../constants'
 import PeopleOnPhones from '../assets/svg/people-on-phones.svg'
 
 const Index = () => {
@@ -40,7 +40,7 @@ const Index = () => {
  */
   const getBoard = async (boardId) => {
     try {
-      const boardLists = await axios.get(`${NETLIFY_FN_ENDPOINT}/view?type=boardlists&board=${boardId}`)
+      const boardLists = await axios.get(`${API_ENDPOINT}/view?type=boardlists&board=${boardId}`)
 
       boardLists.data.forEach(list => {
         if (list.name.indexOf(QUEUE_TITLES.PENDING) > -1) {

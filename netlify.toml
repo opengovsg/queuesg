@@ -1,7 +1,7 @@
 [build]
   base = "/"
-  command = "npm ci && npm run build"
-  functions = ".netlify/functions"
+  command = "npm run build"
+  publish = ".next"
 
 [template.environment]
   NEXT_PUBLIC_TRELLO_BOARD_ID="Trello Board ID"

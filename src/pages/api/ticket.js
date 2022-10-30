@@ -1,12 +1,14 @@
-const axios = require('axios');
+const axios = require('axios')
+const { parse: parseUrl } = require('url')
 
 /**
- * Netlify function for Ticket / Card Trello API calls
+ * Function for Ticket / Card Trello API calls
  */
-exports.handler = async function (event, context) {
+export default async function handler (req, res) {
   try {
-    const { httpMethod, queryStringParameters, body } = event
-    const { TRELLO_KEY, TRELLO_TOKEN, IS_PUBLIC_BOARD, TRELLO_ENDPOINT } = process.env
+    const { method: httpMethod, url, body } = req
+    const { query: queryStringParameters } = parseUrl(url, true)
+    const { TRELLO_KEY, TRELLO_TOKEN, IS_PUBLIC_BOARD, TRELLO_ENDPOINT = 'https://api.trello.com/1' } = process.env
     const tokenAndKeyParams = IS_PUBLIC_BOARD === 'true' ? '' : `key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`
 
     /**
@@ -58,18 +60,14 @@ exports.handler = async function (event, context) {
       const { cardMap } = parseBoardData(getBoardInfo.data)
       const card = cardMap.get(id)
 
-      return {
-        statusCode: 200,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          queueId: card.idList,
-          queueName: card.queueName,
-          ticketNumber: card.idShort,
-          ticketId: id,
-          ticketDesc: JSON.parse(card.desc),
-          numberOfTicketsAhead: card.numberOfTicketsAhead,
-        })
-      };
+      res.json({
+        queueId: card.idList,
+        queueName: card.queueName,
+        ticketNumber: card.idShort,
+        ticketId: id,
+        ticketDesc: JSON.parse(card.desc),
+        numberOfTicketsAhead: card.numberOfTicketsAhead,
+      })
 
     }
     /**
@@ -80,7 +78,7 @@ exports.handler = async function (event, context) {
      *  Returns the id and number of the created ticket
      */
     else if (httpMethod === 'POST') {
-      const { desc } = JSON.parse(body)
+      const { desc } = body
 
       const prefix = desc.ticketPrefix ? desc.ticketPrefix : ''
       const name = desc.name ? `-${desc.name}` : ''
@@ -99,10 +97,7 @@ exports.handler = async function (event, context) {
           const match = ticketsInQueue.find(ticket => ticket.name.includes(contact))
           // If match found return that ticket info instead of creating a new one
           if (match) {
-            return {
-              statusCode: 200,
-              body: JSON.stringify({ ticketId: match.id, ticketNumber: match.idShort })
-            };
+            res.json({ ticketId: match.id, ticketNumber: match.idShort })
           }
         }
 
@@ -115,10 +110,7 @@ exports.handler = async function (event, context) {
         await axios.put(
           `${TRELLO_ENDPOINT}/cards/${id}?${tokenAndKeyParams}&name=${encodeURIComponent(cardName)}`)
 
-        return {
-          statusCode: 200,
-          body: JSON.stringify({ ticketId: id, ticketNumber: idShort })
-        };
+        res.json({ ticketId: id, ticketNumber: idShort })
       }
     }
     /**
@@ -133,12 +125,7 @@ exports.handler = async function (event, context) {
       if (id && queue) {
         await axios.put(`${TRELLO_ENDPOINT}/cards/${id}?${tokenAndKeyParams}&idList=${queue}&pos=bottom`)
       }
-      return {
-        statusCode: 200,
-        headers: {
-          "Content-Type": "application/json"
-        },
-      };
+      res.json()
     }
     /**
      * DELETE /ticket
@@ -163,25 +150,19 @@ exports.handler = async function (event, context) {
         else {
           await axios.delete(`${TRELLO_ENDPOINT}/cards/${id}?${tokenAndKeyParams}`)
         }
-        return {
-          statusCode: 200,
-        };
+        res.json()
       }
       else {
-        return {
-          statusCode: 400,
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            message: "Missing ticket or board id"
-          })
-        };
+        res.status(400).json({
+          message: 'Missing ticket or board id'
+        })
       }
+    } 
+    else {
+      res.status(404).json()
     }
-    return { statusCode: 404 }
   } catch (err) {
     console.log(err.response)
-    return { statusCode: 400 };
+    res.status(400).json()
   }
-
-
 }

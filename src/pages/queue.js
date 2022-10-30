@@ -29,7 +29,7 @@ import {
 } from '@chakra-ui/react'
 import { useCookies } from 'react-cookie';
 import useTranslation from 'next-translate/useTranslation'
-import { NETLIFY_FN_ENDPOINT } from '../constants'
+import { API_ENDPOINT } from '../constants'
 
 const Index = () => {
   const { t, lang } = useTranslation('common')
@@ -100,7 +100,7 @@ const Index = () => {
       // Get the board queue belongs to this
       // 1. Verifies that queue actually exists
       // 2. Gets info stored as JSON in board description
-      const getBoardQueueBelongsTo = await axios.get(`${NETLIFY_FN_ENDPOINT}/queue?id=${queueId}`)
+      const getBoardQueueBelongsTo = await axios.get(`${API_ENDPOINT}/queue?id=${queueId}`)
       const { id, name, desc } = getBoardQueueBelongsTo.data
 
       setBoardId(id)
@@ -180,7 +180,7 @@ const Index = () => {
       // call netlify function to create a ticket
       // for that queue, return the ticket id and redirect to ticket page
       const query = queryString.parse(location.search);
-      const postJoinQueue = await axios.post(`${NETLIFY_FN_ENDPOINT}/ticket?queue=${query.id}`, { desc })
+      const postJoinQueue = await axios.post(`${API_ENDPOINT}/ticket?queue=${query.id}`, { desc })
       const { ticketId } = postJoinQueue.data
       const feedback = feedbackLink ? `&feedback=${encodeURIComponent(feedbackLink)}` : ''
       const waitTime = `&waitTimePerTicket=${encodeURIComponent(waitTimePerTicket)}`

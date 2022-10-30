@@ -14,7 +14,7 @@ import { Container } from '../components/Container'
 import { Main } from '../components/Main'
 import { NavBar } from '../components/Navbar'
 import PeopleOnPhones from '../assets/svg/people-on-phones.svg'
-import { NETLIFY_FN_ENDPOINT } from '../constants'
+import { API_ENDPOINT } from '../constants'
 const Index = () => {
   const [url, setUrl] = useState('')
   const [boardName, setBoardName] = useState('')
@@ -32,7 +32,7 @@ const Index = () => {
       // Get the board queue belongs to this
       // 1. Verifies that queue actually exists
       // 2. Gets info stored as JSON in board description
-      const getBoardQueueBelongsTo = await axios.get(`${NETLIFY_FN_ENDPOINT}/queue?id=${queue}`)
+      const getBoardQueueBelongsTo = await axios.get(`${API_ENDPOINT}/queue?id=${queue}`)
       const { name } = getBoardQueueBelongsTo.data
       setBoardName(name)
     } catch (err) {

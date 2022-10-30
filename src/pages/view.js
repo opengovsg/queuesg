@@ -6,7 +6,7 @@ import Head from 'next/head'
 import { useEffect, useState } from 'react'
 import queryString from 'query-string'
 import axios from 'axios'
-import { NETLIFY_FN_ENDPOINT, QUEUE_TITLES } from '../constants'
+import { API_ENDPOINT, QUEUE_TITLES } from '../constants'
 import { useInterval } from '../utils'
 import { CurrentlyServingQueue } from '../components/View/CurrentlyServingQueue'
 import { MissedQueue } from '../components/View/MissedQueue'
@@ -47,7 +47,7 @@ const Index = () => {
   const getBoard = async (boardId) => {
     if (boardId) {
       try {
-        const board = await axios.get(`${NETLIFY_FN_ENDPOINT}/view?type=board&board=${boardId}`)
+        const board = await axios.get(`${API_ENDPOINT}/view?type=board&board=${boardId}`)
         setBoard(board.data)
       } catch (error) {
         console.error(error)
@@ -61,7 +61,7 @@ const Index = () => {
   const getBoardLists = async (boardId, from, to) => {
     if (boardId) {
       try {
-        const boardLists = await axios.get(`${NETLIFY_FN_ENDPOINT}/view?type=boardlists&board=${boardId}`)
+        const boardLists = await axios.get(`${API_ENDPOINT}/view?type=boardlists&board=${boardId}`)
         let alertQueues = boardLists.data.filter(list => list.name.indexOf(QUEUE_TITLES.ALERTED) > -1).map(q => q.id)
         // Optionality to slice a range of queues to support large numbers on different screens
         if (from && _.isInteger(Number(from)) && to && _.isInteger(Number(to))) {
@@ -93,7 +93,7 @@ const Index = () => {
    */
   const getQueues = async () => {
     if (queueAlertIds && queueMissedIds) {
-      const tickets = await axios.get(`${NETLIFY_FN_ENDPOINT}/view?type=queues&queueAlertIds=${queueAlertIds.join(',')}&queueMissedIds=${queueMissedIds.join(',')}`)
+      const tickets = await axios.get(`${API_ENDPOINT}/view?type=queues&queueAlertIds=${queueAlertIds.join(',')}&queueMissedIds=${queueMissedIds.join(',')}`)
 
       // Set the missed tickets
       // Combined all missed queues into 1
