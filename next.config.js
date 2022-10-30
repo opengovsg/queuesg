@@ -15,8 +15,5 @@ module.exports = withPlugins([
   ],
   [
     nextTranslate,
-    {
-      target: "serverless"
-    }
   ]
 ])
