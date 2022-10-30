@@ -13,7 +13,7 @@ import axios from 'axios'
 import { useCookies } from 'react-cookie'
 
 import { useInterval } from '../utils'
-import { COOKIE_MAX_AGE, NETLIFY_FN_ENDPOINT, TICKET_STATUS } from '../constants'
+import { COOKIE_MAX_AGE, API_ENDPOINT, TICKET_STATUS } from '../constants'
 import { Container } from '../components/Container'
 import { Main } from '../components/Main'
 import { Footer } from '../components/Footer'
@@ -79,7 +79,7 @@ const Index = () => {
 
   const getTicketStatus = async (ticket, board) => {
     try {
-      const getTicket = await axios.get(`${NETLIFY_FN_ENDPOINT}/ticket?id=${ticket}&board=${board}`)
+      const getTicket = await axios.get(`${API_ENDPOINT}/ticket?id=${ticket}&board=${board}`)
       const { queueId, queueName, ticketDesc, numberOfTicketsAhead, ticketNumber } = getTicket.data
       //Update queueId in case ticket has been shifted
       setQueueId(queueId)
@@ -130,7 +130,7 @@ const Index = () => {
 
   const leaveQueue = async () => {
     try {
-      axios.delete(`${NETLIFY_FN_ENDPOINT}/ticket?id=${ticketId}&boardId=${boardId}`)
+      axios.delete(`${API_ENDPOINT}/ticket?id=${ticketId}&boardId=${boardId}`)
       removeCookie('ticket')
       router.push(`/queue?id=${queueId}`)
     } catch (error) {
@@ -142,7 +142,7 @@ const Index = () => {
     const query = queryString.parse(location.search);
     if (query.queue) {
       // NOTE: Using query string queue as that is the initial queue not the current queue
-      await axios.put(`${NETLIFY_FN_ENDPOINT}/ticket?id=${ticketId}&queue=${query.queue}`)
+      await axios.put(`${API_ENDPOINT}/ticket?id=${ticketId}&queue=${query.queue}`)
       await getTicketStatus(query.ticket, boardId)
     }
   }

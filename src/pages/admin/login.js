@@ -26,7 +26,7 @@ import {
 } from '../../components/Admin'
 
 import ManWithHourglass from "../../assets/svg/man-with-hourglass.svg"
-import { NETLIFY_FN_ENDPOINT } from '../../constants'
+import { API_ENDPOINT } from '../../constants'
 
 const Index = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -50,7 +50,7 @@ const Index = () => {
     if (boardId) {
       try {
         setIsLoading(true)
-        const response = await axios.post(`${NETLIFY_FN_ENDPOINT}/login`, {
+        const response = await axios.post(`${API_ENDPOINT}/login`, {
           boardId,
         })
         if (response.data.authorizeUrl) {
