@@ -357,7 +357,7 @@ const Index = () => {
                   loadingText={t('joining')}
                   colorScheme="primary"
                   borderRadius="3px"
-                  isFullWidth={true}
+                  width="100%"
                   color="white"
                   size="lg"
                   variant="solid"

@@ -23,14 +23,14 @@ const Index = () => {
   const { t, lang } = useTranslation('common')
   const [queuePendingUrl, setQueuePendingUrl] = useState('')
 
-  useEffect(async () => {
+  useEffect(() => {
     const query = queryString.parse(location.search)
 
     if (query.board_id) {
-      await getBoardLists(query.board_id)
+      getBoardLists(query.board_id)
     } else {
       //  Defaults to board id in the netlify env
-      await getBoardLists(process.env.NEXT_PUBLIC_TRELLO_BOARD_ID || '')
+      getBoardLists(process.env.NEXT_PUBLIC_TRELLO_BOARD_ID || '')
     }
   }, [])
 
@@ -78,7 +78,7 @@ const Index = () => {
               <Button
                 bgColor="primary.500"
                 borderRadius="3px"
-                isFullWidth={true}
+                width="100%"
                 color="white"
                 size="lg"
                 variant="solid"

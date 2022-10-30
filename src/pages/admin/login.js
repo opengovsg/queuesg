@@ -105,7 +105,7 @@ const Index = () => {
               <Button
                 flex
                 isLoading={isLoading}
-                isFullWidth
+                width="100%"
                 colorScheme="primary"
                 borderRadius="3px"
                 color="white"

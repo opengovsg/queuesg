@@ -9,7 +9,6 @@ function MyApp({ Component, pageProps }) {
       <ColorModeProvider
         options={{
           initialColorMode: 'light',
-          useSystemColorMode: false,
         }}
       >
         <CookiesProvider>

@@ -40,7 +40,7 @@ export const Skipped = ({
     <Button
       bgColor="primary.500"
       borderRadius="3px"
-      isFullWidth={true}
+      width="100%"
       color="white"
       size="lg"
       variant="solid"
