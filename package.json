@@ -2,7 +2,7 @@
   "name": "queueup",
   "version": "0.1.0",
   "scripts": {
-    "dev": "netlify dev -c \"next dev\"",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start"
   },
@@ -33,6 +33,6 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@netlify/plugin-nextjs": "^3.9.0"
+    "@netlify/plugin-nextjs": "^4.28.3"
   }
 }

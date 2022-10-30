@@ -1,12 +1,15 @@
 const axios = require('axios');
+const { parse: parseUrl } = require('url')
 
 /**
- * Netlify function for Board Trello API calls
+ * Function for Board Trello API calls
  */
-exports.handler = async function (event, context) {
+export default async function handler (req, res) {
   try {
-    const { httpMethod, queryStringParameters, body } = event
-    const { TRELLO_KEY, TRELLO_TOKEN, IS_PUBLIC_BOARD, TRELLO_ENDPOINT } = process.env
+
+    const { method: httpMethod, url } = req
+    const { query: queryStringParameters } = parseUrl(url, true)
+    const { TRELLO_KEY, TRELLO_TOKEN, IS_PUBLIC_BOARD, TRELLO_ENDPOINT = 'https://api.trello.com/1' } = process.env
     const tokenAndKeyParams = IS_PUBLIC_BOARD === 'true' ? '' : `key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`
 
     /**
@@ -16,7 +19,7 @@ exports.handler = async function (event, context) {
      * There are 3 types of api calls:
      */
     if (httpMethod === 'GET') {
-      let res = {}
+      let result = {}
       const { type } = queryStringParameters
       /**
        * 1. board - Retrieves data about the board
@@ -24,7 +27,7 @@ exports.handler = async function (event, context) {
       */
       if (type === 'board' && queryStringParameters.board) {
         const board = await axios.get(`${TRELLO_ENDPOINT}/boards/${queryStringParameters.board}?${tokenAndKeyParams}`)
-        res = board.data
+        result = board.data
       }
       /**
        * 2. boardlists - Retrieves all the lists that a board contains
@@ -32,7 +35,7 @@ exports.handler = async function (event, context) {
       */
       else if (type === 'boardlists' && queryStringParameters.board) {
         const boardLists = await axios.get(`${TRELLO_ENDPOINT}/boards/${queryStringParameters.board}/lists?${tokenAndKeyParams}`)
-        res = boardLists.data
+        result = boardLists.data
       }
       /**
        * 3. queues - Retrieve specifically the cards in Alert and Missed queues
@@ -59,36 +62,30 @@ exports.handler = async function (event, context) {
         //Check that all Batch apis returned 200
         const allQueues = batchAPICall.data.filter(queue => Object.keys(queue)[0] === '200')
         if (allQueues.length !== (queueAlertIds.length + queueMissedIds.length)) {
-          return { statusCode: 400, message: "Batch error" }
-        };
+          res.status(400).json('Batch error')
+          return
+        }
 
         const missedQueues = allQueues.slice(0, queueMissedIds.length)
         const allAlertQueues = allQueues.slice(queueMissedIds.length)
 
         //  Map the missed and alerted queues to the right keys
-        res = {}
-        missedQueues.forEach((queue, index) => res['missed'] = {
-          ...res['missed'],
+        result = {}
+        missedQueues.forEach((queue, index) => result['missed'] = {
+          ...result['missed'],
           [queueMissedIds[index]]: queue['200']
         })
-        allAlertQueues.forEach((queue, index) => res['alerted'] = {
-          ...res['alerted'],
+        allAlertQueues.forEach((queue, index) => result['alerted'] = {
+          ...result['alerted'],
           [queueAlertIds[index]]: queue['200']
         })
       }
-      return {
-        statusCode: 200,
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(res)
-      };
+      res.json(result)
+    } else {
+      res.status(404).json()
     }
-    return { statusCode: 404 };
   } catch (err) {
     console.error('error', err.response || err)
-    return { statusCode: 400 };
+    res.status(400).json()
   }
-
-
 }
