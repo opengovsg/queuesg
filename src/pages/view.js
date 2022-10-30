@@ -25,15 +25,15 @@ const Index = () => {
   const [queueMissedIds, setQueueMissedIds] = useState([])
   const [ticketsMissed, setTicketsMissed] = useState([])
 
-  useEffect(async () => {
+  useEffect(() => {
     const query = queryString.parse(location.search)
-    await getBoard(query.board)
-    await getBoardLists(query.board, query.from, query.to)
+    getBoard(query.board)
+    getBoardLists(query.board, query.from, query.to)
     setAudio(new Audio("/chime.mp3"))
   }, [])
 
-  useEffect(async () => {
-    await getQueues()
+  useEffect(() => {
+    getQueues()
   }, [queueAlertIds, queueMissedIds])
 
   const refreshInterval = 10000 //process.env.NEXT_PUBLIC_REFRESH_INTERVAL || 5000

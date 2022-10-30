@@ -42,7 +42,7 @@ export function LeaveModal({ isOpen, onOpen, onClose, leaveQueue }) {
             <Button
               bgColor="error.500"
               borderRadius="3px"
-              isFullWidth={true}
+              width="100%"
               color="white"
               size="lg"
               variant="solid"
@@ -53,7 +53,7 @@ export function LeaveModal({ isOpen, onOpen, onClose, leaveQueue }) {
             </Button>
             <Button
               borderRadius="3px"
-              isFullWidth={true}
+              width="100%"
               color="primary.600"
               size="lg"
               variant="ghost"

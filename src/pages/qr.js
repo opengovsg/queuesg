@@ -19,11 +19,11 @@ const Index = () => {
   const [url, setUrl] = useState('')
   const [boardName, setBoardName] = useState('')
 
-  useEffect(async () => {
+  useEffect(() => {
     const query = queryString.parse(location.search)
     if (query.queue) {
       setUrl(`${location.origin}/queue?id=${query.queue}`)
-      await getQueue(query.queue)
+      getQueue(query.queue)
     }
   }, [])
 

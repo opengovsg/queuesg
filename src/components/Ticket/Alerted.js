@@ -73,7 +73,7 @@ export const Alerted = ({
     <Button
       bgColor="error.500"
       borderRadius="3px"
-      isFullWidth={true}
+      width="100%"
       color="white"
       size="lg"
       variant="solid"
